@@ -1,0 +1,109 @@
+{
+    "@@locale": "ms",
+    "appTitle": "Penterjemahan Flutter",
+    "@appTitle": {
+        "description": "Tajuk aplikasi utama"
+    },
+    "welcome": "Selamat datang!",
+    "createdBy": "Tutorial oleh {company}",
+    "@createdBy": {
+        "description": "Mesej hak cipta",
+        "placeholders": {
+            "company": {
+                "type": "String",
+                "example": "Demo"
+            }
+        }
+    },
+    "currentLocale": "Lokaliti semasa ialah {locale}",
+    "currentDate": "Hari ini {date}",
+    "@currentDate": {
+        "description": "Tarikh semasa yang diterjemahkan",
+        "placeholders": {
+            "date": {
+                "type": "DateTime",
+                "format": "yMMMMEEEEd"
+            }
+        }
+    },
+    "currencyDemo": "Ini adalah harga contoh: {value}",
+    "@currencyDemo": {
+        "description": "Demo menunjukkan cara untuk lokalitasi mata wang",
+        "placeholders": {
+            "value": {
+                "type": "int",
+                "format": "currency",
+                "optionalParameters": {
+                    "decimalDigits": 2
+                }
+            }
+        }
+    },
+    "pressButton": "Tekan butang di bawah",
+    "buttonPressed": "{count, plural, =0{Belum ditekan} =1{Ditekan 1 kali} other{Ditekan {count} kali}}",
+    "@buttonPressed": {
+        "description": "Menunjukkan berapa kali butang telah ditekan (jamak)",
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
+    "selectLaguageTitle": "Sila pilih bahasa",
+    
+    "homePageTitle": "Halaman Utama",
+    "aboutPageTitle": "Perihal",
+    "aboutPageContent": "Perihal",
+    "contactPageTitle": "Hubungi Kami",
+    "contactPageContent": "Hubungi Kami",
+    "profilePageTitle": "Profil",
+    "profilePageContent": "Profil",
+
+    "welcomePageTitle": "Selamat Kembali",
+    "welcomePageSubTitle": "Masukkan butiran peribadi ke akaun anda",
+    "welcomePageSignInBtn": "Log Masuk",
+    "welcomePageSignUpBtn": "Daftar",
+    "verificationCodeBtn": "Terima Verifikasi Kod",
+    
+    "companyValidation": "Sila masukkan nama syarikat",
+    "companyLabel": "Nama Syarikat",
+    "hintCompanyLabel": "Masukkan Nama Syarikat",
+    "accountNameValidation": "Sila masukkan nama akaun",
+    "accountNameLabel": "Nama Akaun",
+    "hintAccountNameLabel": "Masukkan Nama Akaun",
+    "emailValidation": "Sila masukkan emel",
+    "emailLabel": "Emel",
+    "hintEmailLabel": "Masukkan Emel",
+    "passwordValidation": "Sila masukkan kata laluan",
+    "passwordLabel": "Kata Laluan",
+    "hintPasswordLabel": "Masukkan Kata Laluan",
+    "repasswordValidation": "Sila masukkan kata laluan sama",
+    "repasswordLabel": "Kata Laluan Sama",
+    "hintRePasswordLabel": "Masukkan kata laluan sama",
+    "codeValidation": "Sila masukkan kod negara",
+    "codeLabel": "Kod",
+    "hintCodeLabel": "Kod",
+    "mobileNumberValidation": "Sila masukkan nombor telefon",
+    "mobileNumberLabel": "nombor Telefon",
+    "hintMobileNumberLabel": "Masukkan Nombor Telefon",
+    
+    "rememberMe": "Ingat saya",
+    "resetPassword": "Set semula kata laluan?",
+    "forgotPassword": "Lupa kata laluan ? ",
+    "clickHere": "Tekan Sini",
+    "signWithIconDesc": "Daftar masuk dengan",
+    "requestNewAccount": "Tiada akaun ? ",
+    "registerNewAccount": "Daftar Sini",
+    "messageSnackBar1": "Memproses Data",
+    "messageSnackBar2": "Sila bersetuju dengan pemprosesan data peribadi",
+    
+    "signUpPageTitle": "Daftar Perniagaan Anda",
+    "registerBusinessTitle": "Pendaftaran Perniagaan",
+    "registerIndividualTitle": "Pendaftaran Perseorangan",
+    "signUpTerms": "Saya bersetuju dengan pemprosesan ",
+    "personalData": "Data Peribadi",
+    "requestSignIn": "Sudah ada akaun? ",
+
+    "signatureTitle": "Tandatangan"
+}
