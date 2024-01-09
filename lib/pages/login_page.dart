@@ -52,8 +52,15 @@ class _LoginPageState extends State<LoginPage> {
                             height: 10.h,
                           ),
                           Text(
-                            AppLocalizations.of(context)!.welcomePageTitle,
+                            "DINESOFT LIVE",
                             style: AppTextStyle.titleLarge,
+                          ),
+                          SizedBox(
+                            height: 5.h,
+                          ),
+                          Text(
+                            AppLocalizations.of(context)!.welcomePageTitle,
+                            style: AppTextStyle.titleMedium,
                           ),
                           SizedBox(
                             height: 5.h,
