@@ -31,6 +31,7 @@ Future<Map<String, dynamic>> fetchSalesData(DateTime date) async {
 
     for (var item in json) {
       if (item is Map<String, dynamic> && item.containsKey('txSalesDetails')) {
+        print('txSalesDetails: ${item['txSalesDetails']}');
         // Iterate through txSalesDetails and sum up the amount
         totalSalesAmount += calculateTotalSalesAmount(item['txSalesDetails']);
         totalSubSalesAmount +=
@@ -94,6 +95,7 @@ class _LiveSalesState extends State<LiveSales> {
     futureSalesData = fetchSalesData(selectedDate);
     futureNetSalesData =
         fetchSalesData(selectedDate); // Initialize futureNetSalesData
+
     // Set up a periodic timer to fetch data every 30 seconds
     _timer = Timer.periodic(const Duration(seconds: 30), (Timer timer) {
       if (!isFetchingData) {
@@ -246,7 +248,7 @@ class _LiveSalesState extends State<LiveSales> {
                         children: [
                           Text(
                             'Gross Sales:',
-                            style: AppTextStyle.textmedium,
+                            style: AppTextStyle.textsmall,
                           ),
                           Text(
                             'RM${totalSalesAmount.toStringAsFixed(2)}',
@@ -283,12 +285,49 @@ class _LiveSalesState extends State<LiveSales> {
                         children: [
                           Text(
                             'Net Sales:',
-                            style: AppTextStyle.textmedium,
+                            style: AppTextStyle.textsmall,
                           ),
                           Text(
                             'RM${totalNetSalesAmount.toStringAsFixed(2)}',
                             style: AppTextStyle.textmedium,
                           )
+                        ],
+                      );
+                    }
+                  },
+                ),
+              ),
+              SizedBox(
+                width: 2.w,
+              ),
+              Container(
+                padding: const EdgeInsets.all(14.0),
+                decoration: BoxDecoration(
+                  color: darkColorScheme.primary,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: FutureBuilder(
+                  future: futureSalesData,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else if (!snapshot.hasData) {
+                      return const Text('No data available');
+                    } else {
+                      int salesCount = calculateSalesCountForDay(
+                          snapshot.data!['rawData'], selectedDate);
+                      return Column(
+                        children: [
+                          Text(
+                            'Count:',
+                            style: AppTextStyle.textsmall,
+                          ),
+                          Text(
+                            '$salesCount',
+                            style: AppTextStyle.textmedium,
+                          ),
                         ],
                       );
                     }
@@ -323,5 +362,31 @@ class _LiveSalesState extends State<LiveSales> {
       }
     }
     return totalAmount;
+  }
+
+  int calculateSalesCountForDay(
+      List<dynamic> salesDetails, DateTime targetDate) {
+    // Filter salesDetails based on the target date
+    List<dynamic> salesForTargetDate = salesDetails
+        .where((salesDetail) =>
+            salesDetail is Map<String, dynamic> &&
+            salesDetail.containsKey('txDate') &&
+            DateTime.parse(salesDetail['txDate']).isAtSameMomentAs(targetDate))
+        .toList();
+
+    // Create a set to store unique txSalesHeaderId values
+    Set<int> uniqueTxSalesHeaderIds = {};
+
+    // Iterate through salesForTargetDate and add txSalesHeaderId values to the set
+    for (var salesDetail in salesForTargetDate) {
+      if (salesDetail is Map<String, dynamic> &&
+          salesDetail.containsKey('txSalesHeaderId')) {
+        uniqueTxSalesHeaderIds.add(salesDetail['txSalesHeaderId']
+            as int); // Assuming txSalesHeaderId is of type int
+      }
+    }
+
+    // Return the count of unique txSalesHeaderId values
+    return uniqueTxSalesHeaderIds.length;
   }
 }

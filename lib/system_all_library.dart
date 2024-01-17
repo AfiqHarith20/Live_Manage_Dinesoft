@@ -24,6 +24,7 @@ export 'package:live_manage_dinesoft/functions/local_switcher_widget.dart';
 
 //components
 export 'package:live_manage_dinesoft/components/live_sales.dart';
+export 'package:live_manage_dinesoft/components/report_sales.dart';
 
 //page
 export 'package:live_manage_dinesoft/pages/login_page.dart';

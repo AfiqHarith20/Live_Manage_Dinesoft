@@ -11,6 +11,21 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   bool _loading = true;
   Timer? _timer;
+  DateTime selectedDate = DateTime.now();
+  final GlobalKey<ReportSalesState> keyReportSales = GlobalKey();
+  late Future<dynamic> futureSalesData;
+  late Future<dynamic> futureNetSalesData;
+
+  void _onDateChanged(DateTime newDate) {
+    setState(() {
+      selectedDate = newDate;
+      futureSalesData = fetchSalesData(selectedDate);
+      futureNetSalesData = fetchSalesData(selectedDate);
+    });
+
+    // Notify ReportSales widget about the date change
+    updateSelectedDateInReportSales(selectedDate);
+  }
 
   // Add a method to simulate content loading
   void loadData() {
@@ -25,6 +40,10 @@ class _HomePageState extends State<HomePage> {
         _loading = false;
       });
     });
+  }
+
+  void updateSelectedDateInReportSales(DateTime newDate) {
+    keyReportSales.currentState?.updateDate(newDate);
   }
 
   @override
@@ -67,6 +86,16 @@ class _HomePageState extends State<HomePage> {
                 Skeletonizer(
                   enabled: _loading,
                   child: const LiveSales(),
+                ),
+                SizedBox(
+                  height: 2.h,
+                ),
+                Skeletonizer(
+                  enabled: _loading,
+                  child: ReportSales(
+                    selectedDate: selectedDate,
+                    key: keyReportSales,
+                  ),
                 ),
               ],
             ),
