@@ -14,6 +14,9 @@ export 'package:live_manage_dinesoft/theme/signature_theme/app_color.dart';
 export 'package:live_manage_dinesoft/theme/application_theme.dart';
 export 'package:live_manage_dinesoft/theme/signature_theme/app_textstyle.dart';
 
+//model
+export 'package:live_manage_dinesoft/model/sales_header_enquiry_model.dart';
+
 //functions
 export 'package:live_manage_dinesoft/functions/local_provider.dart';
 export 'package:live_manage_dinesoft/functions/secure_storage.dart';
