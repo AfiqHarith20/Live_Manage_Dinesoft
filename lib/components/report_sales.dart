@@ -64,28 +64,16 @@ List<Map<String, dynamic>> extractSummaryData(List<dynamic> json) {
   List<Map<String, dynamic>> summaryList = [];
   for (var item in json) {
     if (item is Map<String, dynamic>) {
-      String orderDateTimeStr = item['orderDateTime'] ?? 'Unknown';
-      DateTime orderDateTime;
+      String workdayPeriodName = item['startWorkdayPeriodName'] ?? 'Unknown';
 
-      if (orderDateTimeStr.toLowerCase() == 'unknown') {
-        // Handle the case where orderDateTime is "Unknown"
-        orderDateTime = DateTime.now(); // Use current date as a fallback
-      } else {
-        try {
-          orderDateTime = DateTime.parse(orderDateTimeStr);
-        } catch (e) {
-          print('Error parsing date: $e');
-          orderDateTime = DateTime.now(); // Use current date as a fallback
-        }
-      }
-
+      // Add other properties as needed
       String txSalesHeaderId = item['txSalesHeaderId'].toString();
       List<Map<String, dynamic>> txSalesDetails = item['txSalesDetails'] != null
           ? extractTxSalesDetails(item['txSalesDetails'])
           : [];
 
       summaryList.add({
-        'orderDateTime': orderDateTime,
+        'workdayPeriodName': workdayPeriodName,
         'txSalesHeaderId': txSalesHeaderId,
         'txSalesDetails': txSalesDetails,
       });
@@ -193,7 +181,7 @@ class ReportSalesState extends State<ReportSales> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
-                                'Order Time: ${DateFormat('HH:mm').format(order['orderDateTime'])}',
+                                'Workday Period: ${order['workdayPeriodName']}',
                                 style: AppTextStyle.textmedium,
                               ),
                             ),
@@ -206,22 +194,25 @@ class ReportSalesState extends State<ReportSales> {
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: ListTile(
-                                  title: Text(detail['itemName'].toString()),
+                                  title: Text(
+                                    detail['itemName'].toString(),
+                                    style: AppTextStyle.textmedium,
+                                  ),
                                   subtitle: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'txSalesDetailId: ${detail['txSalesDetailId']}',
-                                      ),
-                                      Text(
                                         'Category: ${detail['categoryName']}',
+                                        style: AppTextStyle.textsmall,
                                       ),
                                       Text(
                                         'Quantity: ${detail['quantity']}',
+                                        style: AppTextStyle.textsmall,
                                       ),
                                       Text(
                                         'Price: RM${detail['price'].toStringAsFixed(2)}',
+                                        style: AppTextStyle.textsmall,
                                       ),
                                     ],
                                   ),

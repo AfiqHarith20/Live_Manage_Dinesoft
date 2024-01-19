@@ -5,10 +5,14 @@ import 'dart:convert';
 import 'dart:async';
 
 class LiveSales extends StatefulWidget {
-  const LiveSales({super.key});
+  DateTime selectedDate;
+  final Function(DateTime) onDateChanged;
+
+  LiveSales({Key? key, required this.selectedDate, required this.onDateChanged})
+      : super(key: key);
 
   @override
-  State<LiveSales> createState() => _LiveSalesState();
+  State<LiveSales> createState() => LiveSalesState();
 }
 
 Future<Map<String, dynamic>> fetchSalesData(DateTime date) async {
@@ -16,14 +20,16 @@ Future<Map<String, dynamic>> fetchSalesData(DateTime date) async {
       "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
   final url = Uri.parse(
       "https://ewapi.azurewebsites.net/api/shop/orders?date=$formattedDate");
+
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final http.Response response = await http.get(
     url,
-    headers: ({
+    headers: {
       'access_token': '00a333f4-6b41-4151-afa4-3259b2aa0bd4',
       'shop_token': 'a746cb2f-2772-4016-a312-60a6ca8f4f7a'
-    }),
+    },
   );
+
   if (response.statusCode == 200) {
     final List<dynamic> json = jsonDecode(response.body);
     double totalSalesAmount = 0.0;
@@ -31,15 +37,12 @@ Future<Map<String, dynamic>> fetchSalesData(DateTime date) async {
 
     for (var item in json) {
       if (item is Map<String, dynamic> && item.containsKey('txSalesDetails')) {
-        print('txSalesDetails: ${item['txSalesDetails']}');
-        // Iterate through txSalesDetails and sum up the amount
         totalSalesAmount += calculateTotalSalesAmount(item['txSalesDetails']);
         totalSubSalesAmount +=
             calculateSubTotalSalesAmount(item['txSalesDetails']);
       }
     }
 
-    // Return a map with both the raw response, total sales amount, and totalSubSalesAmount
     return {
       'rawData': json,
       'totalSalesAmount': totalSalesAmount,
@@ -72,40 +75,66 @@ double calculateTotalSalesAmount(List<dynamic> salesDetails) {
   return totalAmount;
 }
 
-class _LiveSalesState extends State<LiveSales> {
+int calculateSalesCountForDay(List<dynamic> salesDetails, DateTime targetDate) {
+  // Filter salesDetails based on the target date
+  List<dynamic> salesForTargetDate = salesDetails
+      .where((salesDetail) =>
+          salesDetail is Map<String, dynamic> &&
+          salesDetail.containsKey('txDate') &&
+          DateTime.parse(salesDetail['txDate']).isAtSameMomentAs(targetDate))
+      .toList();
+
+  // Create a set to store unique txSalesHeaderId values
+  Set<int> uniqueTxSalesHeaderIds = {};
+
+  // Iterate through salesForTargetDate and add txSalesHeaderId values to the set
+  for (var salesDetail in salesForTargetDate) {
+    if (salesDetail is Map<String, dynamic> &&
+        salesDetail.containsKey('txSalesHeaderId')) {
+      uniqueTxSalesHeaderIds.add(salesDetail['txSalesHeaderId']
+          as int); // Assuming txSalesHeaderId is of type int
+    }
+  }
+
+  // Return the count of unique txSalesHeaderId values
+  return uniqueTxSalesHeaderIds.length;
+}
+
+class LiveSalesState extends State<LiveSales> {
   late Future<dynamic> futureSalesData;
   late Future<dynamic> futureNetSalesData;
   late Timer _timer;
-  double totalAmount = 0.0; // Variable to store cumulative sales
+  double totalAmount = 0.0;
   double subTotalAmount = 0.0;
-  late DateTime selectedDate;
   bool isFetchingData = false;
   bool isCalculatingTotal = false;
   bool isCalculatingSubTotal = false;
 
-  // Add the getCurrentDate method here
-  DateTime getCurrentDate() {
-    return DateTime.now();
+  void updateDate(DateTime newDate) {
+    setState(() {
+      widget.selectedDate = newDate;
+      fetchDataAndUpdateState();
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    selectedDate = getCurrentDate();
-    futureSalesData = fetchSalesData(selectedDate);
-    futureNetSalesData =
-        fetchSalesData(selectedDate); // Initialize futureNetSalesData
+    fetchDataAndUpdateState();
 
-    // Set up a periodic timer to fetch data every 30 seconds
+    // Perform initial loading when the widget is initialized
+    updateTotalAmount();
+
     _timer = Timer.periodic(const Duration(seconds: 30), (Timer timer) {
-      if (!isFetchingData) {
-        setState(() {
-          isFetchingData = true; // Set the flag to true before fetching data
-          // futureSalesData = fetchSalesData(selectedDate);
-          updateTotalAmount(); // Call the updateTotalAmount function
-        });
-      }
+      setState(() {
+        fetchDataAndUpdateState();
+      });
     });
+  }
+
+  void fetchDataAndUpdateState() {
+    futureSalesData = fetchSalesData(widget.selectedDate);
+    futureNetSalesData = fetchSalesData(widget.selectedDate);
   }
 
   // Function to update the total amount based on new payments
@@ -138,9 +167,9 @@ class _LiveSalesState extends State<LiveSales> {
 
       // Accumulate the new payment amounts
       double newPaymentAmount =
-          calculateTotalSalesAmount(latestSalesData as List);
+          calculateTotalSalesAmount(latestSalesData['rawData']);
       double newNetPaymentAmount =
-          calculateNetSalesAmount(latestNetSalesData as List);
+          calculateNetSalesAmount(latestNetSalesData['rawData']);
 
       // Update the total amount by adding the new payment amount
       setState(() {
@@ -161,32 +190,31 @@ class _LiveSalesState extends State<LiveSales> {
     }
   }
 
-  // Function to get the previous date
-  DateTime getPreviousDate(DateTime currentDate) {
-    return currentDate.subtract(const Duration(days: 1));
+  // Function to calculate the total amount from sales data
+  double calculateTotalSalesAmount(List<dynamic> salesDetails) {
+    double totalAmount = 0.0;
+    for (var salesDetail in salesDetails) {
+      if (salesDetail is Map<String, dynamic> &&
+          salesDetail.containsKey('amountTotal')) {
+        totalAmount += (salesDetail['amountTotal'] ?? 0.0);
+      }
+    }
+    return totalAmount;
   }
 
-  // Function to show date picker and refresh data
-  Future<void> _selectDate(BuildContext context) async {
-    DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: selectedDate,
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2025),
-    );
-
-    if (pickedDate != null && pickedDate != selectedDate) {
-      setState(() {
-        selectedDate = pickedDate;
-        futureSalesData = fetchSalesData(selectedDate);
-        futureNetSalesData = fetchSalesData(selectedDate);
-      });
+  double calculateNetSalesAmount(List<dynamic> salesDetails) {
+    double totalAmount = 0.0;
+    for (var salesDetail in salesDetails) {
+      if (salesDetail is Map<String, dynamic> &&
+          salesDetail.containsKey('amountTotal')) {
+        totalAmount += (salesDetail['amountTotal'] ?? 0.0);
+      }
     }
+    return totalAmount;
   }
 
   @override
   void dispose() {
-    // Cancel the timer when the widget is disposed
     _timer.cancel();
     super.dispose();
   }
@@ -197,40 +225,46 @@ class _LiveSalesState extends State<LiveSales> {
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: darkColorScheme.surface,
-        borderRadius: BorderRadius.circular(10.0), // Set border radius here
+        borderRadius: BorderRadius.circular(10.0),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const FaIcon(
-                FontAwesomeIcons.calendar,
+              Text(
+                'Date: ${DateFormat('yyyy-MM-dd').format(widget.selectedDate)}',
+                style: AppTextStyle.textmedium,
               ),
-              SizedBox(
-                width: 2.h,
-              ),
-              InkWell(
-                onTap: () => _selectDate(context),
-                child: Text(
-                  'Date: ${DateFormat('yyyy-MM-dd').format(selectedDate)}',
-                  style: AppTextStyle.textmedium,
-                  textAlign: TextAlign.center,
-                ),
+              ElevatedButton(
+                onPressed: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: widget.selectedDate,
+                    firstDate: DateTime(2020),
+                    lastDate: DateTime(2025),
+                  );
+
+                  if (pickedDate != null && pickedDate != widget.selectedDate) {
+                    setState(() {
+                      widget.selectedDate = pickedDate;
+                      fetchDataAndUpdateState();
+                    });
+                  }
+                },
+                child: const Text('Change Date'),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          // Add this Text widget to display total sales amount
           Row(
             children: <Widget>[
               Container(
                 padding: const EdgeInsets.all(14.0),
                 decoration: BoxDecoration(
                   color: darkColorScheme.secondary,
-                  borderRadius:
-                      BorderRadius.circular(10.0), // Set border radius here
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: FutureBuilder(
                   future: futureSalesData,
@@ -279,6 +313,7 @@ class _LiveSalesState extends State<LiveSales> {
                     } else if (!snapshot.hasData) {
                       return const Text('No data available');
                     } else {
+                      print('Raw Data: ${snapshot.data!['rawData']}');
                       double totalNetSalesAmount =
                           calculateNetSalesAmount(snapshot.data!['rawData']);
                       return Column(
@@ -317,7 +352,7 @@ class _LiveSalesState extends State<LiveSales> {
                       return const Text('No data available');
                     } else {
                       int salesCount = calculateSalesCountForDay(
-                          snapshot.data!['rawData'], selectedDate);
+                          snapshot.data!['rawData'], widget.selectedDate);
                       return Column(
                         children: [
                           Text(
@@ -339,54 +374,5 @@ class _LiveSalesState extends State<LiveSales> {
         ],
       ),
     );
-  }
-
-  // Function to calculate the total amount from sales data
-  double calculateTotalSalesAmount(List<dynamic> salesDetails) {
-    double totalAmount = 0.0;
-    for (var salesDetail in salesDetails) {
-      if (salesDetail is Map<String, dynamic> &&
-          salesDetail.containsKey('amountTotal')) {
-        totalAmount += (salesDetail['amountTotal'] ?? 0.0);
-      }
-    }
-    return totalAmount;
-  }
-
-  double calculateNetSalesAmount(List<dynamic> salesDetails) {
-    double totalAmount = 0.0;
-    for (var salesDetail in salesDetails) {
-      if (salesDetail is Map<String, dynamic> &&
-          salesDetail.containsKey('amountTotal')) {
-        totalAmount += (salesDetail['amountTotal'] ?? 0.0);
-      }
-    }
-    return totalAmount;
-  }
-
-  int calculateSalesCountForDay(
-      List<dynamic> salesDetails, DateTime targetDate) {
-    // Filter salesDetails based on the target date
-    List<dynamic> salesForTargetDate = salesDetails
-        .where((salesDetail) =>
-            salesDetail is Map<String, dynamic> &&
-            salesDetail.containsKey('txDate') &&
-            DateTime.parse(salesDetail['txDate']).isAtSameMomentAs(targetDate))
-        .toList();
-
-    // Create a set to store unique txSalesHeaderId values
-    Set<int> uniqueTxSalesHeaderIds = {};
-
-    // Iterate through salesForTargetDate and add txSalesHeaderId values to the set
-    for (var salesDetail in salesForTargetDate) {
-      if (salesDetail is Map<String, dynamic> &&
-          salesDetail.containsKey('txSalesHeaderId')) {
-        uniqueTxSalesHeaderIds.add(salesDetail['txSalesHeaderId']
-            as int); // Assuming txSalesHeaderId is of type int
-      }
-    }
-
-    // Return the count of unique txSalesHeaderId values
-    return uniqueTxSalesHeaderIds.length;
   }
 }
