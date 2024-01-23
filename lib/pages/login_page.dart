@@ -67,7 +67,13 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           SizedBox(
                             width: 85.w,
-                            child: TextField(
+                            child: TextFormField(
+                              validator: (value) {
+                                if (value?.isEmpty ?? true) {
+                                  return 'Please enter your username';
+                                }
+                                return null;
+                              },
                               // controller: userNameController,
                               decoration: InputDecoration(
                                 prefixIcon: const Padding(
@@ -99,7 +105,13 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           SizedBox(
                             width: 85.w,
-                            child: TextField(
+                            child: TextFormField(
+                              validator: (value) {
+                                if (value?.isEmpty ?? true) {
+                                  return 'Please enter your password';
+                                }
+                                return null;
+                              },
                               // controller: passwordController,
                               obscureText: _obscureText,
                               decoration: InputDecoration(
@@ -173,6 +185,22 @@ class _LoginPageState extends State<LoginPage> {
                             onPressed: () {
                               if (_formKey.currentState?.validate() ?? false) {
                                 // All fields are valid, call the userLogin function
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const AuthenticationPage(),
+                                  ),
+                                );
+                              } else {
+                                // Show a snackbar with a warning
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Please enter both username and password',
+                                    ),
+                                  ),
+                                );
                               }
                             },
                             style: ElevatedButton.styleFrom(

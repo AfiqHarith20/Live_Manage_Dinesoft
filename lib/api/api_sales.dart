@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
 
+//API sales data
+
 Future<Map<String, dynamic>> fetchSalesData(DateTime date) async {
   final formattedDate =
       "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
@@ -37,6 +39,33 @@ Future<Map<String, dynamic>> fetchSalesData(DateTime date) async {
       'totalSalesAmount': totalSalesAmount,
       'totalSubSalesAmount': totalSubSalesAmount,
     };
+  } else {
+    throw Exception('Failed to fetch sales');
+  }
+}
+
+//API report data
+
+Future<List<Map<String, dynamic>>> fetchReportData(DateTime date) async {
+  final formattedDate =
+      "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+  final url = Uri.parse(
+      "https://ewapi.azurewebsites.net/api/shop/orders?date=$formattedDate");
+
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final http.Response response = await http.get(
+    url,
+    headers: {
+      'access_token': '00a333f4-6b41-4151-afa4-3259b2aa0bd4',
+      'shop_token': 'a746cb2f-2772-4016-a312-60a6ca8f4f7a'
+    },
+  );
+
+  if (response.statusCode == 200) {
+    final List<dynamic> json = jsonDecode(response.body);
+    print('API Response: $json');
+    // Extract and return the required data directly
+    return extractSummaryData(json);
   } else {
     throw Exception('Failed to fetch sales');
   }

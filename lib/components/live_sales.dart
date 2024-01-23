@@ -1,7 +1,8 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:intl/intl.dart';
 import 'package:live_manage_dinesoft/system_all_library.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+
 import 'dart:async';
 
 class LiveSales extends StatefulWidget {
@@ -13,44 +14,6 @@ class LiveSales extends StatefulWidget {
 
   @override
   State<LiveSales> createState() => LiveSalesState();
-}
-
-Future<Map<String, dynamic>> fetchSalesData(DateTime date) async {
-  final formattedDate =
-      "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
-  final url = Uri.parse(
-      "https://ewapi.azurewebsites.net/api/shop/orders?date=$formattedDate");
-
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  final http.Response response = await http.get(
-    url,
-    headers: {
-      'access_token': '00a333f4-6b41-4151-afa4-3259b2aa0bd4',
-      'shop_token': 'a746cb2f-2772-4016-a312-60a6ca8f4f7a'
-    },
-  );
-
-  if (response.statusCode == 200) {
-    final List<dynamic> json = jsonDecode(response.body);
-    double totalSalesAmount = 0.0;
-    double totalSubSalesAmount = 0.0;
-
-    for (var item in json) {
-      if (item is Map<String, dynamic> && item.containsKey('txSalesDetails')) {
-        totalSalesAmount += calculateTotalSalesAmount(item['txSalesDetails']);
-        totalSubSalesAmount +=
-            calculateSubTotalSalesAmount(item['txSalesDetails']);
-      }
-    }
-
-    return {
-      'rawData': json,
-      'totalSalesAmount': totalSalesAmount,
-      'totalSubSalesAmount': totalSubSalesAmount,
-    };
-  } else {
-    throw Exception('Failed to fetch sales');
-  }
 }
 
 double calculateSubTotalSalesAmount(List<dynamic> salesDetails) {
@@ -230,34 +193,13 @@ class LiveSalesState extends State<LiveSales> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Date: ${DateFormat('yyyy-MM-dd').format(widget.selectedDate)}',
-                style: AppTextStyle.textmedium,
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  DateTime? pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: widget.selectedDate,
-                    firstDate: DateTime(2020),
-                    lastDate: DateTime(2025),
-                  );
-
-                  if (pickedDate != null && pickedDate != widget.selectedDate) {
-                    setState(() {
-                      widget.selectedDate = pickedDate;
-                      fetchDataAndUpdateState();
-                    });
-                  }
-                },
-                child: const Text('Change Date'),
-              ),
-            ],
+          Text(
+            'Date: ${DateFormat('yyyy-MM-dd').format(widget.selectedDate)}',
+            style: AppTextStyle.textmedium,
           ),
-          const SizedBox(height: 16),
+          SizedBox(
+            height: 1.h,
+          ),
           Row(
             children: <Widget>[
               Container(

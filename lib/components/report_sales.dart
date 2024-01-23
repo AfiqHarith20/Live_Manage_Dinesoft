@@ -1,10 +1,6 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:live_manage_dinesoft/system_all_library.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'dart:async';
-import 'package:intl/intl.dart';
 
 class ReportSales extends StatefulWidget {
   DateTime selectedDate;
@@ -13,31 +9,6 @@ class ReportSales extends StatefulWidget {
 
   @override
   State<ReportSales> createState() => ReportSalesState();
-}
-
-Future<List<Map<String, dynamic>>> fetchReportData(DateTime date) async {
-  final formattedDate =
-      "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
-  final url = Uri.parse(
-      "https://ewapi.azurewebsites.net/api/shop/orders?date=$formattedDate");
-
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  final http.Response response = await http.get(
-    url,
-    headers: {
-      'access_token': '00a333f4-6b41-4151-afa4-3259b2aa0bd4',
-      'shop_token': 'a746cb2f-2772-4016-a312-60a6ca8f4f7a'
-    },
-  );
-
-  if (response.statusCode == 200) {
-    final List<dynamic> json = jsonDecode(response.body);
-    print('API Response: $json');
-    // Extract and return the required data directly
-    return extractSummaryData(json);
-  } else {
-    throw Exception('Failed to fetch sales');
-  }
 }
 
 DateTime parseApiDateTime(String apiDateTime) {
@@ -126,29 +97,10 @@ class ReportSalesState extends State<ReportSales> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Date: ${DateFormat('yyyy-MM-dd').format(widget.selectedDate)}',
-                  style: AppTextStyle.textmedium,
-                ),
-                ElevatedButton(
-                  onPressed: () async {
-                    DateTime? pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: widget.selectedDate,
-                      firstDate: DateTime(2020),
-                      lastDate: DateTime(2025),
-                    );
-
-                    if (pickedDate != null &&
-                        pickedDate != widget.selectedDate) {
-                      setState(() {
-                        widget.selectedDate = pickedDate;
-                      });
-                    }
-                  },
-                  child: const Text('Change Date'),
+                  "List Sales",
+                  style: AppTextStyle.titleMedium,
                 ),
               ],
             ),
@@ -162,9 +114,9 @@ class ReportSalesState extends State<ReportSales> {
                   return Text('Error: ${snapshot.error}');
                 } else if (!snapshot.hasData || snapshot.data == null) {
                   print('Snapshot: $snapshot');
-                  return const Text('No data available');
+                  return const Text(
+                      'No data available. Please refresh or select a date.');
                 } else {
-                  // Access rawData directly
                   List<Map<String, dynamic>>? summaryList = snapshot.data;
                   // Display the data in a ListView
                   return Column(

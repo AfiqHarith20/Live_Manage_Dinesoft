@@ -1,7 +1,11 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:live_manage_dinesoft/system_all_library.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -76,11 +80,14 @@ class _HomePageState extends State<HomePage> {
               PopupMenuItem(
                 child: InkWell(
                   onTap: () => _selectDate(context),
-                  child: const Row(
+                  child: Row(
                     children: [
-                      Icon(Icons.calendar_today),
-                      SizedBox(width: 8.0),
-                      Text('Select Date'),
+                      const FaIcon(FontAwesomeIcons.calendar),
+                      const SizedBox(width: 8.0),
+                      Text(
+                        'Select Date',
+                        style: AppTextStyle.textsmall,
+                      ),
                     ],
                   ),
                 ),
@@ -108,6 +115,13 @@ class _HomePageState extends State<HomePage> {
                       reportSalesKey.currentState?.updateDate(newDate);
                     },
                   ),
+                ),
+                SizedBox(
+                  height: 2.h,
+                ),
+                Skeletonizer(
+                  enabled: _loading,
+                  child: const MenuList(),
                 ),
                 SizedBox(
                   height: 2.h,
