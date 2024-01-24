@@ -52,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
                             height: 10.h,
                           ),
                           Text(
-                            "DINESOFT LIVE",
+                            "DINESMART",
                             style: AppTextStyle.titleLarge,
                           ),
                           SizedBox(
@@ -195,9 +195,11 @@ class _LoginPageState extends State<LoginPage> {
                               } else {
                                 // Show a snackbar with a warning
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
+                                  SnackBar(
                                     content: Text(
-                                      'Please enter both username and password',
+                                      AppLocalizations.of(context)!
+                                          .messageSnackBar3,
+                                      style: AppTextStyle.textsmall,
                                     ),
                                   ),
                                 );

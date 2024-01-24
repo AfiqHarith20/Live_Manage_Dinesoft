@@ -53,12 +53,13 @@
     "selectLaguageTitle": "Sila pilih bahasa",
     
     "homePageTitle": "Halaman Utama",
+    "authPageTitle": "Pengesahan",
     "aboutPageTitle": "Perihal",
     "aboutPageContent": "Perihal",
     "contactPageTitle": "Hubungi Kami",
     "contactPageContent": "Hubungi Kami",
-    "profilePageTitle": "Profil",
-    "profilePageContent": "Profil",
+    "settingPageTitle": "Seting",
+    "settingPageContent": "Seting",
 
     "welcomePageTitle": "Selamat Kembali",
     "welcomePageSubTitle": "Masukkan butiran peribadi ke akaun anda",
@@ -66,28 +67,8 @@
     "welcomePageSignUpBtn": "Daftar",
     "verificationCodeBtn": "Terima Verifikasi Kod",
     
-    "companyValidation": "Sila masukkan nama syarikat",
-    "companyLabel": "Nama Syarikat",
-    "hintCompanyLabel": "Masukkan Nama Syarikat",
-    "accountNameValidation": "Sila masukkan nama akaun",
-    "accountNameLabel": "Nama Akaun",
     "hintAccountNameLabel": "Masukkan Nama Akaun",
-    "emailValidation": "Sila masukkan emel",
-    "emailLabel": "Emel",
-    "hintEmailLabel": "Masukkan Emel",
-    "passwordValidation": "Sila masukkan kata laluan",
-    "passwordLabel": "Kata Laluan",
     "hintPasswordLabel": "Masukkan Kata Laluan",
-    "repasswordValidation": "Sila masukkan kata laluan sama",
-    "repasswordLabel": "Kata Laluan Sama",
-    "hintRePasswordLabel": "Masukkan kata laluan sama",
-    "codeValidation": "Sila masukkan kod negara",
-    "codeLabel": "Kod",
-    "hintCodeLabel": "Kod",
-    "mobileNumberValidation": "Sila masukkan nombor telefon",
-    "mobileNumberLabel": "nombor Telefon",
-    "hintMobileNumberLabel": "Masukkan Nombor Telefon",
-    
     "rememberMe": "Ingat saya",
     "resetPassword": "Set semula kata laluan?",
     "forgotPassword": "Lupa kata laluan ? ",
@@ -97,6 +78,7 @@
     "registerNewAccount": "Daftar Sini",
     "messageSnackBar1": "Memproses Data",
     "messageSnackBar2": "Sila bersetuju dengan pemprosesan data peribadi",
+    "messageSnackBar3": "Sila masukkan kedua-dua nama akaun dan kata laluan",
     
     "signUpPageTitle": "Daftar Perniagaan Anda",
     "registerBusinessTitle": "Pendaftaran Perniagaan",
@@ -105,5 +87,19 @@
     "personalData": "Data Peribadi",
     "requestSignIn": "Sudah ada akaun? ",
 
-    "signatureTitle": "Tandatangan"
+    "signatureTitle": "Tandatangan",
+
+    "selectDate": "Pilih Tarikh",
+    "savebtn": "Simpan",
+    "authKeyTxt": "Pengesahan Kunci",
+    "date": "Tarikh",
+
+    "grossSales": "Jualan Kasar",
+    "netSales": "Jualan Bersih",
+    "count": "Kira",
+    "listSales": "Senarai Jualan",
+    "workdayPeriod": "Waktu Kerja",
+    "category": "Kategori",
+    "qty": "Kuantiti",
+    "price": "Harga"
 }

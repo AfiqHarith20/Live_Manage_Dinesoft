@@ -8,9 +8,16 @@ import 'dart:async';
 class LiveSales extends StatefulWidget {
   DateTime selectedDate;
   final Function(DateTime) onDateChanged;
+  final String accessToken;
+  final String shopToken;
 
-  LiveSales({Key? key, required this.selectedDate, required this.onDateChanged})
-      : super(key: key);
+  LiveSales({
+    Key? key,
+    required this.selectedDate,
+    required this.onDateChanged,
+    required this.accessToken,
+    required this.shopToken,
+  }) : super(key: key);
 
   @override
   State<LiveSales> createState() => LiveSalesState();
@@ -96,8 +103,10 @@ class LiveSalesState extends State<LiveSales> {
   }
 
   void fetchDataAndUpdateState() {
-    futureSalesData = fetchSalesData(widget.selectedDate);
-    futureNetSalesData = fetchSalesData(widget.selectedDate);
+    futureSalesData = fetchSalesData(
+        widget.selectedDate, widget.accessToken, widget.shopToken);
+    futureNetSalesData = fetchSalesData(
+        widget.selectedDate, widget.accessToken, widget.shopToken);
   }
 
   // Function to update the total amount based on new payments
@@ -194,7 +203,7 @@ class LiveSalesState extends State<LiveSales> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Date: ${DateFormat('yyyy-MM-dd').format(widget.selectedDate)}',
+            '${AppLocalizations.of(context)!.date}: ${DateFormat('yyyy-MM-dd').format(widget.selectedDate)}',
             style: AppTextStyle.textmedium,
           ),
           SizedBox(
@@ -223,7 +232,7 @@ class LiveSalesState extends State<LiveSales> {
                       return Column(
                         children: [
                           Text(
-                            'Gross Sales:',
+                            AppLocalizations.of(context)!.grossSales,
                             style: AppTextStyle.textsmall,
                           ),
                           Text(
@@ -261,7 +270,7 @@ class LiveSalesState extends State<LiveSales> {
                       return Column(
                         children: [
                           Text(
-                            'Net Sales:',
+                            AppLocalizations.of(context)!.netSales,
                             style: AppTextStyle.textsmall,
                           ),
                           Text(
@@ -298,7 +307,7 @@ class LiveSalesState extends State<LiveSales> {
                       return Column(
                         children: [
                           Text(
-                            'Count:',
+                            AppLocalizations.of(context)!.count,
                             style: AppTextStyle.textsmall,
                           ),
                           Text(

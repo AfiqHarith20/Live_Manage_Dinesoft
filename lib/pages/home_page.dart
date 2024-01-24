@@ -1,10 +1,14 @@
-// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: library_private_types_in_public_api, prefer_typing_uninitialized_variables
 
 import 'package:live_manage_dinesoft/system_all_library.dart';
 
 class HomePage extends StatefulWidget {
+  final String accessToken;
+  final String shopToken;
   const HomePage({
     Key? key,
+    required this.accessToken,
+    required this.shopToken,
   }) : super(key: key);
 
   @override
@@ -69,7 +73,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "General",
+          AppLocalizations.of(context)!.homePageTitle,
           style: AppTextStyle.titleMedium,
         ),
         backgroundColor: darkColorScheme.primary,
@@ -85,7 +89,7 @@ class _HomePageState extends State<HomePage> {
                       const FaIcon(FontAwesomeIcons.calendar),
                       const SizedBox(width: 8.0),
                       Text(
-                        'Select Date',
+                        AppLocalizations.of(context)!.selectDate,
                         style: AppTextStyle.textsmall,
                       ),
                     ],
@@ -114,6 +118,8 @@ class _HomePageState extends State<HomePage> {
                       // Update the selected date in ReportSales
                       reportSalesKey.currentState?.updateDate(newDate);
                     },
+                    accessToken: widget.accessToken,
+                    shopToken: widget.shopToken,
                   ),
                 ),
                 SizedBox(
@@ -131,6 +137,8 @@ class _HomePageState extends State<HomePage> {
                   child: ReportSales(
                     selectedDate: selectedDate,
                     key: reportSalesKey,
+                    accessToken: widget.accessToken,
+                    shopToken: widget.shopToken,
                   ),
                 ),
               ],

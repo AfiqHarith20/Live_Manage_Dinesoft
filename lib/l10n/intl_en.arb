@@ -52,13 +52,14 @@
     },
     "selectLaguageTitle": "Please select a language",
     
-    "homePageTitle": "Home",
+    "homePageTitle": "General",
+    "authPageTitle": "Authentication",
     "aboutPageTitle": "About",
     "aboutPageContent": "About",
     "contactPageTitle": "Contact Us",
     "contactPageContent": "Contact Us",
-    "profilePageTitle": "Profile",
-    "profilePageContent": "Profile",
+    "settingPageTitle": "Setting",
+    "settingPageContent": "Setting",
 
     "welcomePageTitle": "Welcome Back",
     "welcomePageSubTitle": "Enter personal details to your account",
@@ -66,28 +67,8 @@
     "welcomePageSignUpBtn": "Sign Up",
     "verificationCodeBtn": "Receive Verification Code",
 
-    "companyValidation": "Please enter company name",
-    "companyLabel": "Company Name",
-    "hintCompanyLabel": "Enter Company Name",
-    "accountNameValidation": "Please enter Account Name",
-    "accountNameLabel": "Account Name",
     "hintAccountNameLabel": "Enter Account Name",
-    "emailValidation": "Please enter email",
-    "emailLabel": "Email",
-    "hintEmailLabel": "Enter Email",
-    "passwordValidation": "Please enter password",
-    "passwordLabel": "Password",
     "hintPasswordLabel": "Enter Password",
-    "repasswordValidation": "Please repeat password",
-    "repasswordLabel": "Re-Password",
-    "hintRePasswordLabel": "Enter Repeat Password",
-    "codeValidation": "Please enter country code",
-    "codeLabel": "Code",
-    "hintCodeLabel": "Code",
-    "mobileNumberValidation": "Please enter mobile number",
-    "mobileNumberLabel": "Mobile Number",
-    "hintMobileNumberLabel": "Enter Mobile Number",
-
     "rememberMe": "Remember me",
     "resetPassword": "Reset password?",
     "forgotPassword": "Forgot Password ? ",
@@ -97,6 +78,7 @@
     "registerNewAccount": "Register Here",
     "messageSnackBar1": "Processing Data",
     "messageSnackBar2": "Please agree to the processing of personal data",
+    "messageSnackBar3": "Please enter both username and password",
 
     "signUpPageTitle": "Let's Start Business",
     "registerBusinessTitle": "Business Registration",
@@ -105,5 +87,19 @@
     "personalData": "Personal Data",
     "requestSignIn": "Already have an account? ",
 
-    "signatureTitle": "Signature"
+    "signatureTitle": "Signature",
+
+    "selectDate": "Select Date",
+    "savebtn": "Save",
+    "authKeyTxt": "Authentication Key",
+    "date": "Date",
+    
+    "grossSales": "Gross Sales",
+    "netSales": "Net Sales",
+    "count": "Order",
+    "listSales": "List Sales",
+    "workdayPeriod": "Workday Period",
+    "category": "Category",
+    "qty": "Quantity",
+    "price": "Price"
 }

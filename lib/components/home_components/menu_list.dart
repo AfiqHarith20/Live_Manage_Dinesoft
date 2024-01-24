@@ -41,7 +41,7 @@ class _MenuListState extends State<MenuList> {
                       //   height: 2.h,
                       // ),
                       Text(
-                        'Settings',
+                        AppLocalizations.of(context)!.settingPageTitle,
                         style: AppTextStyle.textsmall,
                       ),
                     ],

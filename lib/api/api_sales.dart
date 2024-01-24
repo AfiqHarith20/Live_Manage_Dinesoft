@@ -5,7 +5,8 @@ import 'dart:async';
 
 //API sales data
 
-Future<Map<String, dynamic>> fetchSalesData(DateTime date) async {
+Future<Map<String, dynamic>> fetchSalesData(
+    DateTime date, String accessToken, String shopToken) async {
   final formattedDate =
       "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
   final url = Uri.parse(
@@ -14,8 +15,8 @@ Future<Map<String, dynamic>> fetchSalesData(DateTime date) async {
   final http.Response response = await http.get(
     url,
     headers: ({
-      'access_token': '00a333f4-6b41-4151-afa4-3259b2aa0bd4',
-      'shop_token': 'a746cb2f-2772-4016-a312-60a6ca8f4f7a'
+      'access_token': accessToken,
+      'shop_token': shopToken,
     }),
   );
   if (response.statusCode == 200) {
@@ -46,7 +47,8 @@ Future<Map<String, dynamic>> fetchSalesData(DateTime date) async {
 
 //API report data
 
-Future<List<Map<String, dynamic>>> fetchReportData(DateTime date) async {
+Future<List<Map<String, dynamic>>> fetchReportData(
+    DateTime date, String accessToken, String shopToken) async {
   final formattedDate =
       "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
   final url = Uri.parse(
@@ -56,8 +58,8 @@ Future<List<Map<String, dynamic>>> fetchReportData(DateTime date) async {
   final http.Response response = await http.get(
     url,
     headers: {
-      'access_token': '00a333f4-6b41-4151-afa4-3259b2aa0bd4',
-      'shop_token': 'a746cb2f-2772-4016-a312-60a6ca8f4f7a'
+      'access_token': accessToken,
+      'shop_token': shopToken,
     },
   );
 

@@ -15,7 +15,7 @@ class _SettingPageState extends State<SettingPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Settings",
+          AppLocalizations.of(context)!.settingPageContent,
           style: AppTextStyle.titleMedium,
         ),
         backgroundColor: darkColorScheme.primary,
@@ -52,7 +52,7 @@ class _SettingPageState extends State<SettingPage> {
                   );
                 },
                 title: Text(
-                  "Authentication Key",
+                  AppLocalizations.of(context)!.authKeyTxt,
                   style: AppTextStyle.textmedium.copyWith(
                     color: Colors.black,
                   ),
@@ -80,7 +80,7 @@ class _SettingPageState extends State<SettingPage> {
                   }
                 },
                 title: Text(
-                  "About Us",
+                  AppLocalizations.of(context)!.aboutPageContent,
                   style: AppTextStyle.textmedium.copyWith(
                     color: Colors.black,
                   ),

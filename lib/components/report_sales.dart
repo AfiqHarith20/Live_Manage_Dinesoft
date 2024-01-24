@@ -4,8 +4,15 @@ import 'package:live_manage_dinesoft/system_all_library.dart';
 
 class ReportSales extends StatefulWidget {
   DateTime selectedDate;
+  final String accessToken;
+  final String shopToken;
 
-  ReportSales({Key? key, required this.selectedDate}) : super(key: key);
+  ReportSales({
+    Key? key,
+    required this.selectedDate,
+    required this.accessToken,
+    required this.shopToken,
+  }) : super(key: key);
 
   @override
   State<ReportSales> createState() => ReportSalesState();
@@ -99,13 +106,14 @@ class ReportSalesState extends State<ReportSales> {
             Row(
               children: [
                 Text(
-                  "List Sales",
+                  AppLocalizations.of(context)!.listSales,
                   style: AppTextStyle.titleMedium,
                 ),
               ],
             ),
             FutureBuilder(
-              future: fetchReportData(widget.selectedDate),
+              future: fetchReportData(
+                  widget.selectedDate, widget.accessToken, widget.shopToken),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const CircularProgressIndicator();
@@ -133,7 +141,7 @@ class ReportSalesState extends State<ReportSales> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
-                                'Workday Period: ${order['workdayPeriodName']}',
+                                '${AppLocalizations.of(context)!.workdayPeriod}: ${order['workdayPeriodName']}',
                                 style: AppTextStyle.textmedium,
                               ),
                             ),
@@ -155,15 +163,15 @@ class ReportSalesState extends State<ReportSales> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'Category: ${detail['categoryName']}',
+                                        '${AppLocalizations.of(context)!.category}: ${detail['categoryName']}',
                                         style: AppTextStyle.textsmall,
                                       ),
                                       Text(
-                                        'Quantity: ${detail['quantity']}',
+                                        '${AppLocalizations.of(context)!.qty}: ${detail['quantity']}',
                                         style: AppTextStyle.textsmall,
                                       ),
                                       Text(
-                                        'Price: RM${detail['price'].toStringAsFixed(2)}',
+                                        '${AppLocalizations.of(context)!.price}: RM${detail['price'].toStringAsFixed(2)}',
                                         style: AppTextStyle.textsmall,
                                       ),
                                     ],

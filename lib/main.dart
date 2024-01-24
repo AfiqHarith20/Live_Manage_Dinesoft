@@ -1,6 +1,6 @@
 import 'package:live_manage_dinesoft/system_all_library.dart';
 
-bool isDebugMode = true;
+bool isDebugMode = false;
 void main() {
   runApp(const MyApp());
 }
