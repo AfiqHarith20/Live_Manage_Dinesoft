@@ -1,6 +1,6 @@
-# live_manage_dinesoft
+# Dinesmart
 
-A new Flutter project.
+Show latest total sales and product that sales, will add new feature in future
 
 ## Getting Started
 
