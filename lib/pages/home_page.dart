@@ -71,7 +71,24 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: DrawerPage(
+        accessToken: widget.accessToken,
+        shopToken: widget.shopToken,
+        selectedDate: selectedDate,
+      ),
       appBar: AppBar(
+        leading: Builder(
+          builder: (context) {
+            return IconButton(
+              icon: const FaIcon(
+                FontAwesomeIcons.bars,
+              ),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            );
+          },
+        ),
         title: Text(
           AppLocalizations.of(context)!.homePageTitle,
           style: AppTextStyle.titleMedium,
@@ -125,22 +142,30 @@ class _HomePageState extends State<HomePage> {
                 SizedBox(
                   height: 2.h,
                 ),
+                // Skeletonizer(
+                //   enabled: _loading,
+                //   child: const MenuList(),
+                // ),
                 Skeletonizer(
                   enabled: _loading,
-                  child: const MenuList(),
-                ),
-                SizedBox(
-                  height: 2.h,
-                ),
-                Skeletonizer(
-                  enabled: _loading,
-                  child: ReportSales(
+                  child: PaymentSales(
                     selectedDate: selectedDate,
-                    key: reportSalesKey,
                     accessToken: widget.accessToken,
                     shopToken: widget.shopToken,
                   ),
                 ),
+                SizedBox(
+                  height: 2.h,
+                ),
+                // Skeletonizer(
+                //   enabled: _loading,
+                //   child: ReportSales(
+                //     selectedDate: selectedDate,
+                //     key: reportSalesKey,
+                //     accessToken: widget.accessToken,
+                //     shopToken: widget.shopToken,
+                //   ),
+                // ),
               ],
             ),
           ),

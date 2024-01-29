@@ -3,11 +3,11 @@
 import 'package:live_manage_dinesoft/system_all_library.dart';
 
 class ReportSales extends StatefulWidget {
-  DateTime selectedDate;
+  final DateTime selectedDate;
   final String accessToken;
   final String shopToken;
 
-  ReportSales({
+  const ReportSales({
     Key? key,
     required this.selectedDate,
     required this.accessToken,
@@ -84,108 +84,117 @@ List<Map<String, dynamic>> extractTxSalesDetails(List<dynamic> txSalesDetails) {
 
 class ReportSalesState extends State<ReportSales> {
   final GlobalKey<ReportSalesState> keyReportSales = GlobalKey();
+  late DateTime selectedDate; // Declare selectedDate variable
 
   void updateDate(DateTime newDate) {
     setState(() {
-      widget.selectedDate = newDate;
+      selectedDate = newDate; // Update selectedDate
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        padding: const EdgeInsets.all(30.0),
-        decoration: BoxDecoration(
-          color: darkColorScheme.surface,
-          borderRadius: BorderRadius.circular(10.0),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          AppLocalizations.of(context)!.listSales,
+          style: AppTextStyle.titleMedium,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Text(
-                  AppLocalizations.of(context)!.listSales,
-                  style: AppTextStyle.titleMedium,
-                ),
-              ],
-            ),
-            FutureBuilder(
-              future: fetchReportData(
-                  widget.selectedDate, widget.accessToken, widget.shopToken),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  print('Error: ${snapshot.error}');
-                  return Text('Error: ${snapshot.error}');
-                } else if (!snapshot.hasData || snapshot.data == null) {
-                  print('Snapshot: $snapshot');
-                  return const Text(
-                      'No data available. Please refresh or select a date.');
-                } else {
-                  List<Map<String, dynamic>>? summaryList = snapshot.data;
-                  // Display the data in a ListView
-                  return Column(
-                    children: [
-                      for (var order in summaryList!)
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              margin: const EdgeInsets.only(bottom: 10),
-                              decoration: BoxDecoration(
-                                color: Colors.grey.shade300,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text(
-                                '${AppLocalizations.of(context)!.workdayPeriod}: ${order['workdayPeriodName']}',
-                                style: AppTextStyle.textmedium,
-                              ),
-                            ),
-                            for (var detail in order['txSalesDetails'])
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.all(30.0),
+          decoration: BoxDecoration(
+            color: darkColorScheme.surface,
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Row(
+              //   children: [
+              //     Text(
+              //       AppLocalizations.of(context)!.listSales,
+              //       style: AppTextStyle.titleMedium,
+              //     ),
+              //   ],
+              // ),
+              FutureBuilder(
+                future: fetchReportData(
+                    widget.selectedDate, widget.accessToken, widget.shopToken),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    print('Error: ${snapshot.error}');
+                    return Text('Error: ${snapshot.error}');
+                  } else if (!snapshot.hasData || snapshot.data == null) {
+                    print('Snapshot: $snapshot');
+                    return const Text(
+                        'No data available. Please refresh or select a date.');
+                  } else {
+                    List<Map<String, dynamic>>? summaryList = snapshot.data;
+                    // Display the data in a ListView
+                    return Column(
+                      children: [
+                        for (var order in summaryList!)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
                               Container(
                                 padding: const EdgeInsets.all(10),
                                 margin: const EdgeInsets.only(bottom: 10),
                                 decoration: BoxDecoration(
-                                  color: Colors.grey.shade100,
+                                  color: Colors.grey.shade300,
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                                child: ListTile(
-                                  title: Text(
-                                    detail['itemName'].toString(),
-                                    style: AppTextStyle.textmedium,
-                                  ),
-                                  subtitle: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        '${AppLocalizations.of(context)!.category}: ${detail['categoryName']}',
-                                        style: AppTextStyle.textsmall,
-                                      ),
-                                      Text(
-                                        '${AppLocalizations.of(context)!.qty}: ${detail['quantity']}',
-                                        style: AppTextStyle.textsmall,
-                                      ),
-                                      Text(
-                                        '${AppLocalizations.of(context)!.price}: RM${detail['price'].toStringAsFixed(2)}',
-                                        style: AppTextStyle.textsmall,
-                                      ),
-                                    ],
-                                  ),
+                                child: Text(
+                                  '${AppLocalizations.of(context)!.workdayPeriod}: ${order['workdayPeriodName']}',
+                                  style: AppTextStyle.textmedium,
                                 ),
                               ),
-                          ],
-                        ),
-                    ],
-                  );
-                }
-              },
-            )
-          ],
+                              for (var detail in order['txSalesDetails'])
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  margin: const EdgeInsets.only(bottom: 10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.shade100,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: ListTile(
+                                    title: Text(
+                                      detail['itemName'].toString(),
+                                      style: AppTextStyle.textmedium,
+                                    ),
+                                    subtitle: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '${AppLocalizations.of(context)!.category}: ${detail['categoryName']}',
+                                          style: AppTextStyle.textsmall,
+                                        ),
+                                        Text(
+                                          '${AppLocalizations.of(context)!.qty}: ${detail['quantity']}',
+                                          style: AppTextStyle.textsmall,
+                                        ),
+                                        Text(
+                                          '${AppLocalizations.of(context)!.price}: RM${detail['price'].toStringAsFixed(2)}',
+                                          style: AppTextStyle.textsmall,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                      ],
+                    );
+                  }
+                },
+              )
+            ],
+          ),
         ),
       ),
     );

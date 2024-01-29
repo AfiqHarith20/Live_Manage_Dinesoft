@@ -21,22 +21,42 @@ Future<Map<String, dynamic>> fetchSalesData(
   );
   if (response.statusCode == 200) {
     final List<dynamic> json = jsonDecode(response.body);
+
+    // Print the txPayments section of the response
+    if (json.isNotEmpty && json.first.containsKey('txPayments')) {
+      print('txPayments section: ${json.first['txPayments']}');
+    } else {
+      print('No txPayments section found in the response.');
+    }
+
+    Map<String, dynamic> paymentMethodTotals = {};
     double totalSalesAmount = 0.0;
     double totalSubSalesAmount = 0.0;
 
     for (var item in json) {
+      if (item is Map<String, dynamic> && item.containsKey('txPayments')) {
+        List<dynamic> payments = item['txPayments'];
+        for (var payment in payments) {
+          String paymentMethodName = payment['paymentMethodName'] ?? 'Unknown';
+          double totalAmount = payment['totalAmount'] ?? 0.0;
+          paymentMethodTotals.update(
+              paymentMethodName, (value) => (value ?? 0.0) + totalAmount,
+              ifAbsent: () => totalAmount);
+        }
+      }
       if (item is Map<String, dynamic> && item.containsKey('txSalesDetails')) {
-        print('txSalesDetails: ${item['txSalesDetails']}');
-        // Iterate through txSalesDetails and sum up the amount
+        // Calculate total sales amount and total sub sales amount
         totalSalesAmount += calculateTotalSalesAmount(item['txSalesDetails']);
         totalSubSalesAmount +=
             calculateSubTotalSalesAmount(item['txSalesDetails']);
       }
     }
 
-    // Return a map with both the raw response, total sales amount, and totalSubSalesAmount
+    // Return a map with both the raw response, payment method totals,
+    // total sales amount, and total sub sales amount
     return {
       'rawData': json,
+      'paymentMethodTotals': paymentMethodTotals,
       'totalSalesAmount': totalSalesAmount,
       'totalSubSalesAmount': totalSubSalesAmount,
     };
