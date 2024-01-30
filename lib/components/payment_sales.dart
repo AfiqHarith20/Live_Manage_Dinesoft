@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:live_manage_dinesoft/system_all_library.dart';
 
 class PaymentSales extends StatefulWidget {
@@ -18,6 +19,7 @@ class PaymentSales extends StatefulWidget {
 
 class _PaymentSalesState extends State<PaymentSales> {
   Map<String, dynamic> paymentData = {};
+  late Timer _timer;
 
   @override
   void initState() {
@@ -26,6 +28,17 @@ class _PaymentSalesState extends State<PaymentSales> {
     fetchPaymentData();
     // Initialize paymentData with default values
     initializePaymentData();
+
+    // Set up a timer to refresh data every 30 seconds
+    _timer = Timer.periodic(const Duration(seconds: 30), (Timer timer) {
+      fetchPaymentData();
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel(); // Cancel the timer to avoid memory leaks
+    super.dispose();
   }
 
   // Initialize paymentData with default values
@@ -147,7 +160,7 @@ class _PaymentSalesState extends State<PaymentSales> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Payment List:',
+            AppLocalizations.of(context)!.paymentListType,
             style: AppTextStyle.titleMedium.copyWith(color: Colors.white),
           ),
           const SizedBox(height: 8.0),
@@ -182,7 +195,7 @@ class _PaymentSalesState extends State<PaymentSales> {
                                     .copyWith(color: Colors.black),
                               ),
                               Text(
-                                'Count: $count',
+                                '${AppLocalizations.of(context)!.cnt}: $count',
                                 style: AppTextStyle.textsmall
                                     .copyWith(color: Colors.black),
                               ),
@@ -192,7 +205,7 @@ class _PaymentSalesState extends State<PaymentSales> {
                             height: 3.h, // Adjust the height as needed
                           ),
                           Text(
-                            'Total Amount: RM$totalAmount',
+                            '${AppLocalizations.of(context)!.totalAmount}: RM$totalAmount',
                             style: AppTextStyle.textsmall
                                 .copyWith(color: Colors.black),
                           ),
@@ -209,7 +222,7 @@ class _PaymentSalesState extends State<PaymentSales> {
           else
             Center(
               child: Text(
-                'No payment available',
+                AppLocalizations.of(context)!.msgNoPayment,
                 style: AppTextStyle.titleMedium.copyWith(color: Colors.white),
               ),
             ),

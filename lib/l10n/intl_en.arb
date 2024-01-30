@@ -100,8 +100,18 @@
     "netSales": "Net Sales",
     "count": "Order",
     "listSales": "List Sales",
-    "workdayPeriod": "Workday Period",
+    "workingPeriod": "Working Period",
     "category": "Category",
     "qty": "Quantity",
-    "price": "Price"
+    "price": "Price",
+
+    "paymentListType": "Payment List Type",
+    "cnt": "Count",
+    "totalAmount": "Total Amount",
+
+    "msgNoPayment": "No Payment Available",
+    "noDataAvailable": "No Data Available",
+    "noSalesAvailable": "No Sales Available"
+
+
 }

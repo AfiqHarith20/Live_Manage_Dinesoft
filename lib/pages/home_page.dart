@@ -118,55 +118,48 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 7,
-              vertical: 8,
-            ),
-            child: Column(
-              children: <Widget>[
-                Skeletonizer(
-                  enabled: _loading,
-                  child: LiveSales(
-                    selectedDate: selectedDate,
-                    onDateChanged: (newDate) {
-                      // Update the selected date in ReportSales
-                      reportSalesKey.currentState?.updateDate(newDate);
-                    },
-                    accessToken: widget.accessToken,
-                    shopToken: widget.shopToken,
+        child: RefreshIndicator(
+          onRefresh: () async {
+            // Perform the data loading here
+            loadData();
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 7,
+                vertical: 8,
+              ),
+              child: Column(
+                children: <Widget>[
+                  Skeletonizer(
+                    enabled: _loading,
+                    child: LiveSales(
+                      selectedDate: selectedDate,
+                      onDateChanged: (newDate) {
+                        // Update the selected date in ReportSales
+                        reportSalesKey.currentState?.updateDate(newDate);
+                      },
+                      accessToken: widget.accessToken,
+                      shopToken: widget.shopToken,
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: 2.h,
-                ),
-                // Skeletonizer(
-                //   enabled: _loading,
-                //   child: const MenuList(),
-                // ),
-                Skeletonizer(
-                  enabled: _loading,
-                  child: PaymentSales(
-                    selectedDate: selectedDate,
-                    accessToken: widget.accessToken,
-                    shopToken: widget.shopToken,
+                  SizedBox(
+                    height: 2.h,
                   ),
-                ),
-                SizedBox(
-                  height: 2.h,
-                ),
-                // Skeletonizer(
-                //   enabled: _loading,
-                //   child: ReportSales(
-                //     selectedDate: selectedDate,
-                //     key: reportSalesKey,
-                //     accessToken: widget.accessToken,
-                //     shopToken: widget.shopToken,
-                //   ),
-                // ),
-              ],
+                  Skeletonizer(
+                    enabled: _loading,
+                    child: PaymentSales(
+                      selectedDate: selectedDate,
+                      accessToken: widget.accessToken,
+                      shopToken: widget.shopToken,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 2.h,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

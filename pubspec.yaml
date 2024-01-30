@@ -42,6 +42,7 @@ dependencies:
   provider: ^6.1.1
   beamer: ^1.6.0
   skeletonizer: ^1.0.1
+  
   flutter_localizations:
     sdk: flutter
   intl: any
@@ -49,6 +50,7 @@ dependencies:
   http: ^1.1.2
   url_launcher: ^6.2.4
   getwidget: ^4.0.0
+  rename: ^3.0.1
 
 dev_dependencies:
   flutter_test:

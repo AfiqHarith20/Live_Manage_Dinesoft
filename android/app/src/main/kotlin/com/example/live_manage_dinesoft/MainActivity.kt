@@ -1,4 +1,4 @@
-package com.example.live_manage_dinesoft
+package com.example.dinesmart
 
 import io.flutter.embedding.android.FlutterActivity
 

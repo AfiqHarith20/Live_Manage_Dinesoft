@@ -1,5 +1,4 @@
-// ignore_for_file: must_be_immutable
-
+import 'package:flutter/material.dart';
 import 'package:live_manage_dinesoft/system_all_library.dart';
 
 class ReportSales extends StatefulWidget {
@@ -83,7 +82,6 @@ List<Map<String, dynamic>> extractTxSalesDetails(List<dynamic> txSalesDetails) {
 }
 
 class ReportSalesState extends State<ReportSales> {
-  final GlobalKey<ReportSalesState> keyReportSales = GlobalKey();
   late DateTime selectedDate; // Declare selectedDate variable
 
   void updateDate(DateTime newDate) {
@@ -93,78 +91,95 @@ class ReportSalesState extends State<ReportSales> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    selectedDate = widget.selectedDate;
+  }
+
+  Future<void> _refreshData() async {
+    setState(() {
+      // Manually trigger the loading state
+    });
+    // Fetch new data here
+    await fetchReportData(
+        widget.selectedDate, widget.accessToken, widget.shopToken);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: darkColorScheme.primary,
         title: Text(
-          AppLocalizations.of(context)!.listSales,
+          AppLocalizations.of(context)!.salesReportPageTitle,
           style: AppTextStyle.titleMedium,
         ),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(30.0),
-          decoration: BoxDecoration(
-            color: darkColorScheme.surface,
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Row(
-              //   children: [
-              //     Text(
-              //       AppLocalizations.of(context)!.listSales,
-              //       style: AppTextStyle.titleMedium,
-              //     ),
-              //   ],
-              // ),
-              FutureBuilder(
-                future: fetchReportData(
-                    widget.selectedDate, widget.accessToken, widget.shopToken),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
-                  } else if (snapshot.hasError) {
-                    print('Error: ${snapshot.error}');
-                    return Text('Error: ${snapshot.error}');
-                  } else if (!snapshot.hasData || snapshot.data == null) {
-                    print('Snapshot: $snapshot');
-                    return const Text(
-                        'No data available. Please refresh or select a date.');
-                  } else {
-                    List<Map<String, dynamic>>? summaryList = snapshot.data;
-                    // Display the data in a ListView
-                    return Column(
-                      children: [
-                        for (var order in summaryList!)
-                          Column(
+      body: RefreshIndicator(
+        onRefresh: _refreshData,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Container(
+            padding: const EdgeInsets.all(20.0),
+            child: FutureBuilder(
+              future: fetchReportData(
+                widget.selectedDate,
+                widget.accessToken,
+                widget.shopToken,
+              ),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (snapshot.hasError) {
+                  return Text(
+                    'Error: ${snapshot.error}',
+                    style: const TextStyle(
+                      color: Colors.red,
+                      fontSize: 16,
+                    ),
+                  );
+                } else if (!snapshot.hasData ||
+                    (snapshot.data as List).isEmpty) {
+                  return Center(
+                    child: Text(
+                      AppLocalizations.of(context)!.noSalesAvailable,
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        fontSize: 16,
+                      ),
+                    ),
+                  );
+                } else {
+                  List<Map<String, dynamic>>? summaryList =
+                      snapshot.data as List<Map<String, dynamic>>;
+                  return Column(
+                    children: summaryList.map((order) {
+                      return Card(
+                        margin: const EdgeInsets.symmetric(vertical: 10),
+                        elevation: 3,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                padding: const EdgeInsets.all(10),
-                                margin: const EdgeInsets.only(bottom: 10),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade300,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Text(
-                                  '${AppLocalizations.of(context)!.workdayPeriod}: ${order['workdayPeriodName']}',
-                                  style: AppTextStyle.textmedium,
-                                ),
+                              Text(
+                                '${AppLocalizations.of(context)!.workingPeriod}: ${order['workdayPeriodName']}',
+                                style: AppTextStyle.textmedium,
                               ),
-                              for (var detail in order['txSalesDetails'])
-                                Container(
-                                  padding: const EdgeInsets.all(10),
-                                  margin: const EdgeInsets.only(bottom: 10),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey.shade100,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
+                              const SizedBox(height: 10),
+                              ...order['txSalesDetails'].map<Widget>((detail) {
+                                return Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8.0),
                                   child: ListTile(
                                     title: Text(
                                       detail['itemName'].toString(),
-                                      style: AppTextStyle.textmedium,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                     subtitle: Column(
                                       crossAxisAlignment:
@@ -185,15 +200,17 @@ class ReportSalesState extends State<ReportSales> {
                                       ],
                                     ),
                                   ),
-                                ),
+                                );
+                              }).toList(),
                             ],
                           ),
-                      ],
-                    );
-                  }
-                },
-              )
-            ],
+                        ),
+                      );
+                    }).toList(),
+                  );
+                }
+              },
+            ),
           ),
         ),
       ),

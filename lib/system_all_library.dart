@@ -10,6 +10,7 @@ export 'package:skeletonizer/skeletonizer.dart';
 export 'package:flutter_gen/gen_l10n/app_localizations.dart';
 export 'package:url_launcher/url_launcher.dart';
 export 'package:getwidget/components/drawer/gf_drawer.dart';
+export 'package:rename/rename.dart';
 
 //theme
 export 'package:live_manage_dinesoft/theme/signature_theme/app_color.dart';

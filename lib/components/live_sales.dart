@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable
+// ignore_for_file: must_be_immutable, unnecessary_string_interpolations
 
 import 'package:intl/intl.dart';
 import 'package:live_manage_dinesoft/system_all_library.dart';
@@ -196,7 +196,7 @@ class LiveSalesState extends State<LiveSales> {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: darkColorScheme.surface,
+        color: const Color.fromARGB(255, 206, 206, 202),
         borderRadius: BorderRadius.circular(10.0),
       ),
       child: Column(
@@ -204,125 +204,124 @@ class LiveSalesState extends State<LiveSales> {
         children: [
           Text(
             '${AppLocalizations.of(context)!.date}: ${DateFormat('yyyy-MM-dd').format(widget.selectedDate)}',
-            style: AppTextStyle.textmedium,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           SizedBox(
-            height: 1.h,
+            height: 2.h,
           ),
-          Row(
-            children: <Widget>[
-              Container(
-                padding: const EdgeInsets.all(14.0),
-                decoration: BoxDecoration(
-                  color: darkColorScheme.secondary,
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: FutureBuilder(
+          Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                _buildSalesCard(
+                  title: '${AppLocalizations.of(context)!.grossSales}\n(RM)',
                   future: futureSalesData,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CircularProgressIndicator();
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else if (!snapshot.hasData) {
-                      return const Text('No data available');
-                    } else {
-                      double totalSalesAmount =
-                          snapshot.data!['totalSalesAmount'];
-                      return Column(
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.grossSales,
-                            style: AppTextStyle.textsmall,
-                          ),
-                          Text(
-                            'RM${totalSalesAmount.toStringAsFixed(2)}',
-                            style: AppTextStyle.textmedium,
-                          )
-                        ],
-                      );
-                    }
-                  },
+                  color: Colors.blue,
+                  dataSelector: (data) => data['totalSalesAmount'],
                 ),
-              ),
-              SizedBox(
-                width: 2.w,
-              ),
-              Container(
-                padding: const EdgeInsets.all(14.0),
-                decoration: BoxDecoration(
-                  color: darkColorScheme.tertiary,
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: FutureBuilder(
+                _buildSalesCard(
+                  title: '${AppLocalizations.of(context)!.netSales}\n(RM)',
                   future: futureNetSalesData,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CircularProgressIndicator();
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else if (!snapshot.hasData) {
-                      return const Text('No data available');
-                    } else {
-                      print('Raw Data: ${snapshot.data!['rawData']}');
-                      double totalNetSalesAmount =
-                          calculateNetSalesAmount(snapshot.data!['rawData']);
-                      return Column(
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.netSales,
-                            style: AppTextStyle.textsmall,
-                          ),
-                          Text(
-                            'RM${totalNetSalesAmount.toStringAsFixed(2)}',
-                            style: AppTextStyle.textmedium,
-                          )
-                        ],
-                      );
-                    }
-                  },
+                  color: Colors.green,
+                  dataSelector: (data) =>
+                      calculateNetSalesAmount(data['rawData']),
                 ),
-              ),
-              SizedBox(
-                width: 2.w,
-              ),
-              Container(
-                padding: const EdgeInsets.all(14.0),
-                decoration: BoxDecoration(
-                  color: darkColorScheme.primary,
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: FutureBuilder(
+                _buildSalesCard(
+                  title: AppLocalizations.of(context)!.count,
                   future: futureSalesData,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CircularProgressIndicator();
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else if (!snapshot.hasData) {
-                      return const Text('No data available');
-                    } else {
-                      int salesCount = calculateSalesCountForDay(
-                          snapshot.data!['rawData'], widget.selectedDate);
-                      return Column(
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.count,
-                            style: AppTextStyle.textsmall,
-                          ),
-                          Text(
-                            '$salesCount',
-                            style: AppTextStyle.textmedium,
-                          ),
-                        ],
-                      );
-                    }
-                  },
+                  color: Colors.orange,
+                  dataSelector: (data) => calculateSalesCountForDay(
+                    data['rawData'],
+                    widget.selectedDate,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSalesCard({
+    required String title,
+    required Future future,
+    required Color color,
+    required dynamic Function(dynamic) dataSelector,
+  }) {
+    return Expanded(
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+        ),
+        color: color,
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          child: FutureBuilder(
+            future: future,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                  ),
+                );
+              } else if (snapshot.hasError) {
+                return Center(
+                  child: Text(
+                    'Error: ${snapshot.error}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                );
+              } else if (!snapshot.hasData) {
+                return Center(
+                  child: Text(
+                    AppLocalizations.of(context)!.noDataAvailable,
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                );
+              } else {
+                dynamic data = snapshot.data;
+                dynamic value = dataSelector(data);
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        title,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        '${value.toString()}',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
+            },
+          ),
+        ),
       ),
     );
   }

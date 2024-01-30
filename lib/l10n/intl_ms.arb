@@ -100,8 +100,16 @@
     "netSales": "Jualan Bersih",
     "count": "Kira",
     "listSales": "Senarai Jualan",
-    "workdayPeriod": "Waktu Kerja",
+    "workingPeriod": "Waktu Kerja",
     "category": "Kategori",
     "qty": "Kuantiti",
-    "price": "Harga"
+    "price": "Harga",
+
+    "paymentListType": "Senarai Jenis Bayaran",
+    "cnt": "Bilangan",
+    "totalAmount": "Jumlah Dibayar",
+
+    "msgNoPayment": "Tiada Bayaran Tersedia",
+    "noDataAvailable": "Tiada Data Tersedia",
+    "noSalesAvailable": "Tiada Jualan Berlaku"
 }
