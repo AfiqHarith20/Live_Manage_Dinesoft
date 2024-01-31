@@ -11,6 +11,8 @@ export 'package:flutter_gen/gen_l10n/app_localizations.dart';
 export 'package:url_launcher/url_launcher.dart';
 export 'package:getwidget/components/drawer/gf_drawer.dart';
 export 'package:rename/rename.dart';
+export 'package:graphic/graphic.dart';
+export 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 //theme
 export 'package:live_manage_dinesoft/theme/signature_theme/app_color.dart';
@@ -30,10 +32,11 @@ export 'package:live_manage_dinesoft/debugging/system_log.dart';
 export 'package:live_manage_dinesoft/functions/local_switcher_widget.dart';
 
 //components
-export 'package:live_manage_dinesoft/components/live_sales.dart';
+export 'package:live_manage_dinesoft/components/home_components/live_sales.dart';
 export 'package:live_manage_dinesoft/components/report_sales.dart';
 export 'package:live_manage_dinesoft/components/home_components/menu_list.dart';
-export 'package:live_manage_dinesoft/components/payment_sales.dart';
+export 'package:live_manage_dinesoft/components/home_components/payment_sales.dart';
+export 'package:live_manage_dinesoft/components/home_components/chart_components.dart';
 
 //page
 export 'package:live_manage_dinesoft/pages/login_page.dart';

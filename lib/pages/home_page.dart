@@ -71,11 +71,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: DrawerPage(
-        accessToken: widget.accessToken,
-        shopToken: widget.shopToken,
-        selectedDate: selectedDate,
-      ),
       appBar: AppBar(
         leading: Builder(
           builder: (context) {
@@ -94,28 +89,6 @@ class _HomePageState extends State<HomePage> {
           style: AppTextStyle.titleMedium,
         ),
         backgroundColor: darkColorScheme.primary,
-        actions: [
-          // Add a PopupMenuButton for the date selection
-          PopupMenuButton(
-            itemBuilder: (BuildContext context) => [
-              PopupMenuItem(
-                child: InkWell(
-                  onTap: () => _selectDate(context),
-                  child: Row(
-                    children: [
-                      const FaIcon(FontAwesomeIcons.calendar),
-                      const SizedBox(width: 8.0),
-                      Text(
-                        AppLocalizations.of(context)!.selectDate,
-                        style: AppTextStyle.textsmall,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
       body: SafeArea(
         child: RefreshIndicator(
@@ -155,14 +128,25 @@ class _HomePageState extends State<HomePage> {
                       shopToken: widget.shopToken,
                     ),
                   ),
-                  SizedBox(
-                    height: 2.h,
-                  ),
                 ],
               ),
             ),
           ),
         ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: SpeedDial(
+        icon: Icons.add,
+        tooltip: AppLocalizations.of(context)!.selectDate,
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+        children: [
+          SpeedDialChild(
+            child: const FaIcon(FontAwesomeIcons.calendar),
+            label: AppLocalizations.of(context)!.selectDate,
+            onTap: () => _selectDate(context),
+          ),
+        ],
       ),
     );
   }

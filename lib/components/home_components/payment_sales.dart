@@ -20,6 +20,17 @@ class PaymentSales extends StatefulWidget {
 class _PaymentSalesState extends State<PaymentSales> {
   Map<String, dynamic> paymentData = {};
   late Timer _timer;
+  List<Map<String, dynamic>> chartData = [];
+
+  // Map full payment type names to short forms
+  final Map<String, String> paymentShortForms = {
+    'Cash': 'CS',
+    'VISA': 'VISA',
+    'MasterCard': 'MCard',
+    'TNG E-Wallet': 'TNG',
+    'Maybank QR': 'MbQR',
+    'ShopeePay': 'SPay',
+  };
 
   @override
   void initState() {
@@ -76,8 +87,6 @@ class _PaymentSalesState extends State<PaymentSales> {
         widget.shopToken,
       );
 
-      print('Raw response: $responseData');
-
       if (responseData.containsKey('rawData') &&
           responseData['rawData'] is List &&
           responseData['rawData'].isNotEmpty) {
@@ -89,26 +98,21 @@ class _PaymentSalesState extends State<PaymentSales> {
           }
         }
 
-        // Define your list of payment types
-        List<String> paymentTypes = [
+        // Create a set of payment types for quick lookup
+        final Set<String> paymentTypes = {
           'Cash',
           'VISA',
           'MasterCard',
           'TNG E-Wallet',
           'Maybank QR',
           'ShopeePay'
-        ];
+        };
 
         // Create a map to hold payment type counts and total amounts
-        Map<String, Map<String, dynamic>> paymentTypeDetails = {};
-
-        // Initialize counts and total amounts for each payment type
-        for (var paymentType in paymentTypes) {
-          paymentTypeDetails[paymentType] = {
-            'count': 0,
-            'totalAmount': 0.0,
-          };
-        }
+        Map<String, Map<String, dynamic>> paymentTypeDetails = {
+          for (var paymentType in paymentTypes)
+            paymentType: {'count': 0, 'totalAmount': 0.0}
+        };
 
         // Calculate counts and total amounts for each payment type
         for (var payment in allPayments) {
@@ -120,13 +124,19 @@ class _PaymentSalesState extends State<PaymentSales> {
           }
         }
 
-        print('Payment Type Details: $paymentTypeDetails');
+        // Calculate chart data
+        List<Map<String, dynamic>> newChartData = paymentTypeDetails.entries
+            .map((entry) => {
+                  'genre': paymentShortForms[entry.key] ?? entry.key,
+                  'sold': entry.value['count'],
+                })
+            .toList();
 
         setState(() {
+          chartData = newChartData;
           paymentData['paymentTypeDetails'] = paymentTypeDetails;
         });
       } else {
-        print('No rawData or empty rawData in the response.');
         setState(() {
           paymentData.clear();
         });
@@ -159,6 +169,21 @@ class _PaymentSalesState extends State<PaymentSales> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Container(
+            padding: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+              color: Colors.white,
+            ),
+            child: Column(
+              children: <Widget>[
+                PaymentChart(chartData: chartData),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 2.h,
+          ),
           Text(
             AppLocalizations.of(context)!.paymentListType,
             style: AppTextStyle.titleMedium.copyWith(color: Colors.white),
@@ -223,7 +248,9 @@ class _PaymentSalesState extends State<PaymentSales> {
             Center(
               child: Text(
                 AppLocalizations.of(context)!.msgNoPayment,
-                style: AppTextStyle.titleMedium.copyWith(color: Colors.white),
+                style: AppTextStyle.titleMedium.copyWith(
+                  color: Colors.white,
+                ),
               ),
             ),
         ],

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:live_manage_dinesoft/system_all_library.dart';
 
 bool isDebugMode = false;
@@ -8,7 +7,9 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key});
+  const MyApp({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -51,6 +51,8 @@ dependencies:
   url_launcher: ^6.2.4
   getwidget: ^4.0.0
   rename: ^3.0.1
+  graphic: ^2.2.1
+  flutter_speed_dial: ^7.0.0
 
 dev_dependencies:
   flutter_test:

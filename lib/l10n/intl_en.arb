@@ -111,7 +111,8 @@
 
     "msgNoPayment": "No Payment Available",
     "noDataAvailable": "No Data Available",
-    "noSalesAvailable": "No Sales Available"
+    "noSalesAvailable": "No Sales Available",
+    "noChartAvailable": "No Chart Available"
 
 
 }

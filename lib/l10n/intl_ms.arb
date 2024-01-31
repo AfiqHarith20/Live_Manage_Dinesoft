@@ -111,5 +111,6 @@
 
     "msgNoPayment": "Tiada Bayaran Tersedia",
     "noDataAvailable": "Tiada Data Tersedia",
-    "noSalesAvailable": "Tiada Jualan Berlaku"
+    "noSalesAvailable": "Tiada Jualan Berlaku",
+    "noChartAvailable": "Tiada Carta Alir"
 }
