@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
       context: context,
       initialDate: selectedDate,
       firstDate: DateTime(2020),
-      lastDate: DateTime(2025),
+      lastDate: DateTime(2030),
     );
 
     if (pickedDate != null && pickedDate != selectedDate) {
@@ -71,6 +71,11 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: DrawerPage(
+        accessToken: widget.accessToken,
+        shopToken: widget.shopToken,
+        selectedDate: selectedDate,
+      ),
       appBar: AppBar(
         leading: Builder(
           builder: (context) {

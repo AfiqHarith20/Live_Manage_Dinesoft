@@ -23,59 +23,13 @@ class LiveSales extends StatefulWidget {
   State<LiveSales> createState() => LiveSalesState();
 }
 
-double calculateSubTotalSalesAmount(List<dynamic> salesDetails) {
-  double totalSubAmount = 0.0;
-  for (var salesDetail in salesDetails) {
-    if (salesDetail is Map<String, dynamic> &&
-        salesDetail.containsKey('amount')) {
-      totalSubAmount += (salesDetail['amount'] ?? 0.0);
-    }
-  }
-  return totalSubAmount;
-}
-
-double calculateTotalSalesAmount(List<dynamic> salesDetails) {
-  double totalAmount = 0.0;
-  for (var salesDetail in salesDetails) {
-    if (salesDetail is Map<String, dynamic> &&
-        salesDetail.containsKey('amount')) {
-      totalAmount += (salesDetail['amount'] ?? 0.0);
-    }
-  }
-  return totalAmount;
-}
-
-int calculateSalesCountForDay(List<dynamic> salesDetails, DateTime targetDate) {
-  // Filter salesDetails based on the target date
-  List<dynamic> salesForTargetDate = salesDetails
-      .where((salesDetail) =>
-          salesDetail is Map<String, dynamic> &&
-          salesDetail.containsKey('txDate') &&
-          DateTime.parse(salesDetail['txDate']).isAtSameMomentAs(targetDate))
-      .toList();
-
-  // Create a set to store unique txSalesHeaderId values
-  Set<int> uniqueTxSalesHeaderIds = {};
-
-  // Iterate through salesForTargetDate and add txSalesHeaderId values to the set
-  for (var salesDetail in salesForTargetDate) {
-    if (salesDetail is Map<String, dynamic> &&
-        salesDetail.containsKey('txSalesHeaderId')) {
-      uniqueTxSalesHeaderIds.add(salesDetail['txSalesHeaderId']
-          as int); // Assuming txSalesHeaderId is of type int
-    }
-  }
-
-  // Return the count of unique txSalesHeaderId values
-  return uniqueTxSalesHeaderIds.length;
-}
-
 class LiveSalesState extends State<LiveSales> {
   late Future<dynamic> futureSalesData;
   late Future<dynamic> futureNetSalesData;
   late Timer _timer;
   double totalAmount = 0.0;
   double subTotalAmount = 0.0;
+  int orderCount = 0; // New variable to hold the order count
   bool isFetchingData = false;
   bool isCalculatingTotal = false;
   bool isCalculatingSubTotal = false;
@@ -143,6 +97,9 @@ class LiveSalesState extends State<LiveSales> {
       double newNetPaymentAmount =
           calculateNetSalesAmount(latestNetSalesData['rawData']);
 
+      // Calculate order count
+      orderCount = calculateOrderCount(latestSalesData['rawData']);
+
       // Update the total amount by adding the new payment amount
       setState(() {
         totalAmount += newPaymentAmount;
@@ -178,11 +135,23 @@ class LiveSalesState extends State<LiveSales> {
     double totalAmount = 0.0;
     for (var salesDetail in salesDetails) {
       if (salesDetail is Map<String, dynamic> &&
-          salesDetail.containsKey('amountTotal')) {
-        totalAmount += (salesDetail['amountTotal'] ?? 0.0);
+          salesDetail.containsKey('amountSubtotal')) {
+        totalAmount += (salesDetail['amountSubtotal'] ?? 0.0);
       }
     }
     return totalAmount;
+  }
+
+  // Function to calculate the order count based on txSalesHeaderId
+  int calculateOrderCount(List<dynamic> salesDetails) {
+    Set<int> uniqueTxSalesHeaderIds = {};
+    for (var salesDetail in salesDetails) {
+      if (salesDetail is Map<String, dynamic> &&
+          salesDetail.containsKey('txSalesHeaderId')) {
+        uniqueTxSalesHeaderIds.add(salesDetail['txSalesHeaderId'] as int);
+      }
+    }
+    return uniqueTxSalesHeaderIds.length;
   }
 
   @override
@@ -231,13 +200,12 @@ class LiveSalesState extends State<LiveSales> {
                       calculateNetSalesAmount(data['rawData']),
                 ),
                 _buildSalesCard(
-                  title: AppLocalizations.of(context)!.count,
+                  title: AppLocalizations.of(context)!
+                      .count, // Uncommented for order count
                   future: futureSalesData,
                   color: Colors.orange,
-                  dataSelector: (data) => calculateSalesCountForDay(
-                    data['rawData'],
-                    widget.selectedDate,
-                  ),
+                  dataSelector: (data) =>
+                      orderCount, // Use order count as data selector
                 ),
               ],
             ),
@@ -292,6 +260,12 @@ class LiveSalesState extends State<LiveSales> {
               } else {
                 dynamic data = snapshot.data;
                 dynamic value = dataSelector(data);
+
+                // Check if value is null, and handle accordingly
+                final formattedValue = value != null
+                    ? value.toString()
+                    : 'N/A'; // Adjusted formatting
+
                 return Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -307,7 +281,7 @@ class LiveSalesState extends State<LiveSales> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        '${value.toString()}',
+                        formattedValue,
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           color: Colors.white,

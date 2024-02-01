@@ -28,7 +28,7 @@ class _PaymentChartState extends State<PaymentChart> {
 
     return Container(
       margin: const EdgeInsets.only(top: 10),
-      width: 360,
+      width: 400,
       height: 300,
       child: Chart(
         rebuild: rebuild,
