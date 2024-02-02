@@ -104,6 +104,8 @@
     "category": "Kategori",
     "qty": "Kuantiti",
     "price": "Harga",
+    "totalQty": "Jumlah Kuantiti",
+    "totalPrice": "Jumlah Harga",
 
     "paymentListType": "Senarai Jenis Bayaran",
     "cnt": "Bilangan",

@@ -82,11 +82,13 @@ List<Map<String, dynamic>> extractTxSalesDetails(List<dynamic> txSalesDetails) {
 }
 
 class ReportSalesState extends State<ReportSales> {
-  late DateTime selectedDate; // Declare selectedDate variable
+  late DateTime selectedDate;
+  late Map<String, Map<String, dynamic>> salesByCategory;
+  bool sortDescending = true; // Indicates whether to sort in descending order
 
   void updateDate(DateTime newDate) {
     setState(() {
-      selectedDate = newDate; // Update selectedDate
+      selectedDate = newDate;
     });
   }
 
@@ -94,6 +96,7 @@ class ReportSalesState extends State<ReportSales> {
   void initState() {
     super.initState();
     selectedDate = widget.selectedDate;
+    salesByCategory = {};
   }
 
   Future<void> _refreshData() async {
@@ -102,7 +105,34 @@ class ReportSalesState extends State<ReportSales> {
     });
     // Fetch new data here
     await fetchReportData(
-        widget.selectedDate, widget.accessToken, widget.shopToken);
+      widget.selectedDate,
+      widget.accessToken,
+      widget.shopToken,
+    );
+  }
+
+  void _toggleSorting() {
+    setState(() {
+      // Toggle sorting order
+      sortDescending = !sortDescending;
+
+      // Sort categories by total price
+      salesByCategory.forEach((key, value) {
+        print('Category: $key, Items: ${value.length}');
+        var sortedEntries = value.entries.toList()
+          ..sort((a, b) {
+            if (sortDescending) {
+              return b.value['price'].compareTo(a.value['price']);
+            } else {
+              return a.value['price'].compareTo(b.value['price']);
+            }
+          });
+        salesByCategory[key] = Map.fromEntries(sortedEntries);
+      });
+
+      // Print sorted categories
+      print('Sorted Categories: $salesByCategory');
+    });
   }
 
   @override
@@ -114,6 +144,23 @@ class ReportSalesState extends State<ReportSales> {
           AppLocalizations.of(context)!.salesReportPageTitle,
           style: AppTextStyle.titleMedium,
         ),
+        actions: <Widget>[
+          Ink(
+            decoration: const ShapeDecoration(
+              color: Colors.transparent,
+              shape: CircleBorder(),
+            ),
+            child: IconButton(
+              splashColor: Colors.blueAccent, // Set the splash color
+              icon: FaIcon(
+                sortDescending
+                    ? FontAwesomeIcons.sortDown
+                    : FontAwesomeIcons.sortUp,
+              ),
+              onPressed: _toggleSorting,
+            ),
+          ),
+        ],
       ),
       body: RefreshIndicator(
         onRefresh: _refreshData,
@@ -154,56 +201,77 @@ class ReportSalesState extends State<ReportSales> {
                 } else {
                   List<Map<String, dynamic>>? summaryList =
                       snapshot.data as List<Map<String, dynamic>>;
+                  salesByCategory = {};
+                  for (var order in summaryList) {
+                    for (var detail in order['txSalesDetails']) {
+                      String category = detail['categoryName'];
+                      if (!salesByCategory.containsKey(category)) {
+                        salesByCategory[category] = {};
+                      }
+                      String itemName = detail['itemName'];
+                      if (!salesByCategory[category]!.containsKey(itemName)) {
+                        salesByCategory[category]![itemName] = {
+                          'quantity': detail['quantity'],
+                          'price': detail['price'],
+                        };
+                      } else {
+                        salesByCategory[category]![itemName]['quantity'] +=
+                            detail['quantity'];
+                        salesByCategory[category]![itemName]['price'] +=
+                            detail['price'];
+                      }
+                    }
+                  }
+
+                  // Sort categories by total price in descending order
+                  salesByCategory.forEach((key, value) {
+                    var sortedEntries = value.entries.toList()
+                      ..sort((a, b) => sortDescending
+                          ? b.value['price'].compareTo(a.value['price'])
+                          : a.value['price'].compareTo(b.value['price']));
+                    salesByCategory[key] = Map.fromEntries(sortedEntries);
+                  });
+
                   return Column(
-                    children: summaryList.map((order) {
+                    children: salesByCategory.keys.map((category) {
                       return Card(
                         margin: const EdgeInsets.symmetric(vertical: 10),
                         elevation: 3,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '${AppLocalizations.of(context)!.workingPeriod}: ${order['workdayPeriodName']}',
-                                style: AppTextStyle.textmedium,
-                              ),
-                              const SizedBox(height: 10),
-                              ...order['txSalesDetails'].map<Widget>((detail) {
-                                return Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8.0),
-                                  child: ListTile(
-                                    title: Text(
-                                      detail['itemName'].toString(),
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    subtitle: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          '${AppLocalizations.of(context)!.category}: ${detail['categoryName']}',
-                                          style: AppTextStyle.textsmall,
-                                        ),
-                                        Text(
-                                          '${AppLocalizations.of(context)!.qty}: ${detail['quantity']}',
-                                          style: AppTextStyle.textsmall,
-                                        ),
-                                        Text(
-                                          '${AppLocalizations.of(context)!.price}: RM${detail['price'].toStringAsFixed(2)}',
-                                          style: AppTextStyle.textsmall,
-                                        ),
-                                      ],
+                        child: ExpansionTile(
+                          title: Text(
+                            category,
+                            style: AppTextStyle.textmedium,
+                          ),
+                          children: salesByCategory[category]!.entries.map(
+                            (entry) {
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ListTile(
+                                  title: Text(
+                                    entry.key,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                );
-                              }).toList(),
-                            ],
-                          ),
+                                  subtitle: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '${AppLocalizations.of(context)!.totalQty}: ${entry.value['quantity']}',
+                                        style: AppTextStyle.textsmall,
+                                      ),
+                                      Text(
+                                        '${AppLocalizations.of(context)!.totalPrice}: RM${entry.value['price'].toStringAsFixed(2)}',
+                                        style: AppTextStyle.textsmall,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ).toList(),
                         ),
                       );
                     }).toList(),

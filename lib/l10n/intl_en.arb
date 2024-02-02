@@ -104,6 +104,8 @@
     "category": "Category",
     "qty": "Quantity",
     "price": "Price",
+    "totalQty": "Total Quantity",
+    "totalPrice": "Total Price",
 
     "paymentListType": "Payment List Type",
     "cnt": "Count",
