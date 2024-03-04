@@ -1,3 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:convert';
+import 'dart:async';
+import 'package:http/http.dart' as http;
 import 'package:live_manage_dinesoft/system_all_library.dart';
 
 class LoginPage extends StatefulWidget {
@@ -12,6 +17,88 @@ bool _obscureText = true;
 class _LoginPageState extends State<LoginPage> {
   @override
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController userNameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  Future<bool> _validateLoginResponse(http.Response response) async {
+    if (response.statusCode == 200) {
+      // Login successful, return true
+      return true;
+    } else {
+      // Login failed, show an error message and return false
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.messageSnackBar2,
+            style: AppTextStyle.textsmall,
+          ),
+        ),
+      );
+      return false;
+    }
+  }
+
+  Future<void> _fetchUserData(BuildContext context) async {
+    if (_formKey.currentState?.validate() ?? false) {
+      // All fields are valid, call the login API
+      final String username = userNameController.text;
+      final String password = passwordController.text;
+      final http.Response response = await http.post(
+        Uri.parse(
+            'https://ewapi.azurewebsites.net/api/UserAccess/ShopTokenInfoList'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: json.encode(<String, String>{
+          'username': username,
+          'password': password,
+        }),
+      );
+      if (await _validateLoginResponse(response)) {
+        // Login successful, fetch user data
+        final http.Response userDataResponse = await http.get(
+          Uri.parse(
+              'https://ewapi.azurewebsites.net/api/UserAccess/ShopTokenInfoList'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer ${response.body}',
+          },
+        );
+        if (userDataResponse.statusCode == 200) {
+          // User data fetched successfully, navigate to the AuthenticationPage
+          final Map<String, dynamic> userData =
+              json.decode(userDataResponse.body);
+          print(userData);
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AuthenticationPage(),
+            ),
+          );
+        } else {
+          // Failed to fetch user data, show an error message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                AppLocalizations.of(context)!.messageSnackBar1,
+                style: AppTextStyle.textsmall,
+              ),
+            ),
+          );
+        }
+      }
+    } else {
+      // Show a snackbar with a warning
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.messageSnackBar3,
+            style: AppTextStyle.textsmall,
+          ),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +161,7 @@ class _LoginPageState extends State<LoginPage> {
                                 }
                                 return null;
                               },
-                              // controller: userNameController,
+                              controller: userNameController,
                               decoration: InputDecoration(
                                 prefixIcon: const Padding(
                                   padding: EdgeInsets.symmetric(
@@ -112,7 +199,7 @@ class _LoginPageState extends State<LoginPage> {
                                 }
                                 return null;
                               },
-                              // controller: passwordController,
+                              controller: passwordController,
                               obscureText: _obscureText,
                               decoration: InputDecoration(
                                 prefixIcon: const Padding(
@@ -182,16 +269,10 @@ class _LoginPageState extends State<LoginPage> {
                             height: 5.h,
                           ),
                           ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (_formKey.currentState?.validate() ?? false) {
-                                // All fields are valid, call the userLogin function
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const AuthenticationPage(),
-                                  ),
-                                );
+                                // All fields are valid, call the login API
+                                await _fetchUserData(context);
                               } else {
                                 // Show a snackbar with a warning
                                 ScaffoldMessenger.of(context).showSnackBar(
