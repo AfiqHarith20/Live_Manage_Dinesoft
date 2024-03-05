@@ -19,23 +19,16 @@ class _DrawerPageState extends State<DrawerPage> {
   final GlobalKey<ReportSalesState> reportSalesKey = GlobalKey();
   DateTime selectedDate = DateTime.now();
 
-  // Future<void> _selectDate(BuildContext context) async {
-  //   DateTime? pickedDate = await showDatePicker(
-  //     context: context,
-  //     initialDate: selectedDate,
-  //     firstDate: DateTime(2020),
-  //     lastDate: DateTime(2025),
-  //   );
-
-  //   if (pickedDate != null && pickedDate != selectedDate) {
-  //     setState(() {
-  //       selectedDate = pickedDate;
-  //     });
-
-  //     // Update the selected date in ReportSales
-  //     reportSalesKey.currentState?.updateDate(selectedDate);
-  //   }
-  // }
+  Future<void> logout() async {
+    // Clear user's tokens here
+    // Navigate back to the login page
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const LoginPage(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,6 +109,33 @@ class _DrawerPageState extends State<DrawerPage> {
                   ),
                   Text(
                     AppLocalizations.of(context)!.settingPageTitle,
+                    style: AppTextStyle.textmedium,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              logout();
+            },
+            child: Container(
+              height: 8.h,
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const FaIcon(
+                    FontAwesomeIcons.rightFromBracket,
+                  ),
+                  SizedBox(
+                    width: 2.h,
+                  ),
+                  Text(
+                    AppLocalizations.of(context)!.logoutBtn,
                     style: AppTextStyle.textmedium,
                   ),
                 ],

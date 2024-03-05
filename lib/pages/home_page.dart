@@ -6,10 +6,10 @@ class HomePage extends StatefulWidget {
   final String accessToken;
   final String shopToken;
   const HomePage({
-    Key? key,
+    super.key,
     required this.accessToken,
     required this.shopToken,
-  }) : super(key: key);
+  });
 
   @override
   _HomePageState createState() => _HomePageState();

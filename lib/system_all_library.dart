@@ -13,6 +13,7 @@ export 'package:getwidget/components/drawer/gf_drawer.dart';
 export 'package:rename/rename.dart';
 export 'package:graphic/graphic.dart';
 export 'package:flutter_speed_dial/flutter_speed_dial.dart';
+export 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 //theme
 export 'package:live_manage_dinesoft/theme/signature_theme/app_color.dart';
@@ -26,7 +27,6 @@ export 'package:live_manage_dinesoft/api/api_sales.dart';
 //functions
 export 'package:live_manage_dinesoft/functions/local_provider.dart';
 export 'package:live_manage_dinesoft/functions/secure_storage.dart';
-export 'package:flutter_secure_storage/flutter_secure_storage.dart';
 export 'package:live_manage_dinesoft/functions/language_prefs.dart';
 export 'package:live_manage_dinesoft/debugging/system_log.dart';
 export 'package:live_manage_dinesoft/functions/local_switcher_widget.dart';
@@ -37,6 +37,7 @@ export 'package:live_manage_dinesoft/components/report_sales.dart';
 export 'package:live_manage_dinesoft/components/home_components/menu_list.dart';
 export 'package:live_manage_dinesoft/components/home_components/payment_sales.dart';
 export 'package:live_manage_dinesoft/components/home_components/chart_components.dart';
+export 'package:live_manage_dinesoft/components/shop_selection_dialog.dart';
 
 //page
 export 'package:live_manage_dinesoft/pages/login_page.dart';

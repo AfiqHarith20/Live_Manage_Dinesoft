@@ -67,6 +67,7 @@
     "welcomePageSubTitle": "Enter personal details to your account",
     "welcomePageSignInBtn": "Sign In",
     "welcomePageSignUpBtn": "Sign Up",
+    "logoutBtn": "Log Out",
     "verificationCodeBtn": "Receive Verification Code",
 
     "hintAccountNameLabel": "Enter Account Name",

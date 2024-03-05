@@ -67,6 +67,7 @@
     "welcomePageSubTitle": "Masukkan butiran peribadi ke akaun anda",
     "welcomePageSignInBtn": "Log Masuk",
     "welcomePageSignUpBtn": "Daftar",
+    "logoutBtn": "Log Keluar",
     "verificationCodeBtn": "Terima Verifikasi Kod",
     
     "hintAccountNameLabel": "Masukkan Nama Akaun",

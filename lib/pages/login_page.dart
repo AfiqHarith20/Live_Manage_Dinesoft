@@ -54,47 +54,92 @@ class _LoginPageState extends State<LoginPage> {
           'password': password,
         }),
       );
-      if (await _validateLoginResponse(response)) {
-        // Login successful, fetch user data
-        final http.Response userDataResponse = await http.get(
-          Uri.parse(
-              'https://ewapi.azurewebsites.net/api/UserAccess/ShopTokenInfoList'),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer ${response.body}',
-          },
-        );
-        if (userDataResponse.statusCode == 200) {
-          // User data fetched successfully, navigate to the AuthenticationPage
-          final Map<String, dynamic> userData =
-              json.decode(userDataResponse.body);
-          print(userData);
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const AuthenticationPage(),
+
+      // Validate login response
+      dynamic validateResponse = await _validateLoginResponse(response);
+
+      if (validateResponse) {
+        // Parse JSON array and show the shop selection dialog
+        final List<dynamic> userDataList = json.decode(response.body);
+        if (userDataList.isNotEmpty) {
+          showDialog(
+            context: context,
+            builder: (context) => ShopSelectionDialog(
+              userDataList: userDataList,
             ),
-          );
+          ).then((selectedShop) async {
+            if (selectedShop != null) {
+              final Map<String, dynamic> userData = selectedShop;
+              final String secretCode = userData['secretCode'];
+              final String accessToken = userData['accessToken'];
+
+              // Call saveTokens method here
+              await saveTokens(context, accessToken, secretCode);
+            }
+          });
         } else {
-          // Failed to fetch user data, show an error message
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                AppLocalizations.of(context)!.messageSnackBar1,
-                style: AppTextStyle.textsmall,
-              ),
-            ),
-          );
+          print('No user data found in the JSON array');
         }
-      }
-    } else {
-      // Show a snackbar with a warning
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            AppLocalizations.of(context)!.messageSnackBar3,
-            style: AppTextStyle.textsmall,
+      } else {
+        // Show a snackbar with a warning
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              AppLocalizations.of(context)!.messageSnackBar3,
+              style: AppTextStyle.textsmall,
+            ),
           ),
+        );
+      }
+    }
+  }
+
+  Future<void> saveTokens(
+      BuildContext context, String accessToken, String secretCode) async {
+    try {
+      // Check if tokens are not empty
+      if (accessToken.isEmpty || secretCode.isEmpty) {
+        // Show an error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please enter both tokens.'),
+          ),
+        );
+        return;
+      }
+
+      // Print the tokens before saving
+      print('Access Token: $accessToken');
+      print('Shop Token: $secretCode');
+
+      // Save the tokens to SharedPreferences (you may need to add await here if SharedPreferences is used)
+      // final SharedPreferences prefs = await SharedPreferences.getInstance();
+      // prefs.setString('access_token', accessToken);
+      // prefs.setString('shop_token', shopToken);
+
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Tokens saved successfully.'),
+        ),
+      );
+
+      // Navigate to the home page with the tokens
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(
+            accessToken: accessToken,
+            shopToken: secretCode,
+          ),
+        ),
+      );
+    } catch (e) {
+      // Handle specific exceptions and show error message
+      print('Error saving tokens: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Error saving tokens. Please try again.'),
         ),
       );
     }
