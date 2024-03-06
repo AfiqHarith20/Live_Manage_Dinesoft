@@ -18,7 +18,6 @@ class MyApp extends StatelessWidget {
       builder: (context, AsyncSnapshot<Map<String, String>> snapshot) {
         final accessToken = snapshot.data?['access_token'] ?? '';
         final shopToken = snapshot.data?['shop_token'] ?? '';
-
         final isLoggedIn = snapshot.data?['is_logged_in'] == 'true';
 
         if (isLoggedIn && accessToken.isNotEmpty && shopToken.isNotEmpty) {
@@ -39,6 +38,12 @@ class MyApp extends StatelessWidget {
                     home: HomePage(
                       accessToken: accessToken,
                       shopToken: shopToken,
+                      username: snapshot.data?['username'] ?? '',
+                      password: snapshot.data?['password'] ?? '',
+                      onShopSelected:
+                          (String newShopToken, String newAccessToken) {
+                        // Implement your logic here
+                      },
                     ),
                   );
                 },
@@ -75,9 +80,13 @@ class MyApp extends StatelessWidget {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final accessToken = prefs.getString('access_token') ?? '';
     final shopToken = prefs.getString('shop_token') ?? '';
+    final username = prefs.getString('username') ?? '';
+    final password = prefs.getString('password') ?? '';
     return {
       'access_token': accessToken,
       'shop_token': shopToken,
+      'username': username,
+      'password': password,
       'is_logged_in': 'true'
     };
   }

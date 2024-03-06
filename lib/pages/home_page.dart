@@ -1,14 +1,21 @@
-// ignore_for_file: library_private_types_in_public_api, prefer_typing_uninitialized_variables
+// ignore_for_file: library_private_types_in_public_api, prefer_typing_uninitialized_variables, must_be_immutable
 
 import 'package:live_manage_dinesoft/system_all_library.dart';
+import 'dart:async';
 
 class HomePage extends StatefulWidget {
-  final String accessToken;
-  final String shopToken;
-  const HomePage({
+  late String accessToken;
+  late String shopToken;
+  final String username;
+  final String password;
+  final Function(String, String) onShopSelected;
+  HomePage({
     super.key,
     required this.accessToken,
     required this.shopToken,
+    required this.username,
+    required this.password,
+    required this.onShopSelected,
   });
 
   @override
@@ -43,7 +50,18 @@ class _HomePageState extends State<HomePage> {
     loadData();
   }
 
-  // Method to show DatePicker and update selectedDate
+  // Function to handle shop selection
+  void _handleShopSelection(String newShopToken, String newAccessToken) {
+    setState(() {
+      // Update tokens with new values
+      widget.shopToken = newShopToken;
+      widget.accessToken = newAccessToken;
+    });
+
+    // Invoke the onShopSelected callback with the new shop token
+    widget.onShopSelected(newShopToken, newAccessToken);
+  }
+
   // Method to show DatePicker and update selectedDate
   Future<void> _selectDate(BuildContext context) async {
     DateTime? pickedDate = await showDatePicker(
@@ -110,6 +128,16 @@ class _HomePageState extends State<HomePage> {
               ),
               child: Column(
                 children: <Widget>[
+                  Skeletonizer(
+                    enabled: _loading,
+                    child: AppBarWithShopSelector(
+                      accessToken: widget.accessToken,
+                      shopToken: widget.shopToken,
+                      username: widget.username,
+                      password: widget.password,
+                      onShopSelected: _handleShopSelection,
+                    ),
+                  ),
                   Skeletonizer(
                     enabled: _loading,
                     child: LiveSales(

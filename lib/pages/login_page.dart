@@ -74,7 +74,10 @@ class _LoginPageState extends State<LoginPage> {
               final String accessToken = userData['accessToken'];
 
               // Call saveTokens method here
-              await saveTokens(context, accessToken, secretCode);
+              await saveTokens(context, accessToken, secretCode,
+                  (String newShopToken, String newAccessToken) {
+                // Implement your logic here
+              }, username, password);
             }
           });
         } else {
@@ -95,7 +98,12 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> saveTokens(
-      BuildContext context, String accessToken, String secretCode) async {
+      BuildContext context,
+      String accessToken,
+      String secretCode,
+      Function(String, String) onShopSelected,
+      String username,
+      String password) async {
     try {
       // Check if tokens are not empty
       if (accessToken.isEmpty || secretCode.isEmpty) {
@@ -107,15 +115,13 @@ class _LoginPageState extends State<LoginPage> {
         );
         return;
       }
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('username', username);
+      await prefs.setString('password', password);
 
       // Print the tokens before saving
       print('Access Token: $accessToken');
       print('Shop Token: $secretCode');
-
-      // Save the tokens to SharedPreferences (you may need to add await here if SharedPreferences is used)
-      // final SharedPreferences prefs = await SharedPreferences.getInstance();
-      // prefs.setString('access_token', accessToken);
-      // prefs.setString('shop_token', shopToken);
 
       // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
@@ -131,6 +137,9 @@ class _LoginPageState extends State<LoginPage> {
           builder: (context) => HomePage(
             accessToken: accessToken,
             shopToken: secretCode,
+            onShopSelected: onShopSelected,
+            username: username,
+            password: password,
           ),
         ),
       );
@@ -143,6 +152,13 @@ class _LoginPageState extends State<LoginPage> {
         ),
       );
     }
+  }
+
+  @override
+  void dispose() {
+    userNameController.dispose();
+    passwordController.dispose();
+    super.dispose();
   }
 
   @override

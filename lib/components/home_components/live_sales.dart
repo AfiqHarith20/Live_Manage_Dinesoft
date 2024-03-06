@@ -12,12 +12,12 @@ class LiveSales extends StatefulWidget {
   final String shopToken;
 
   LiveSales({
-    Key? key,
+    super.key,
     required this.selectedDate,
     required this.onDateChanged,
     required this.accessToken,
     required this.shopToken,
-  }) : super(key: key);
+  });
 
   @override
   State<LiveSales> createState() => LiveSalesState();

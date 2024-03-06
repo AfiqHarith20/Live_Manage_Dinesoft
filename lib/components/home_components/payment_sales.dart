@@ -7,11 +7,11 @@ class PaymentSales extends StatefulWidget {
   final String shopToken;
 
   const PaymentSales({
-    Key? key,
+    super.key,
     required this.selectedDate,
     required this.accessToken,
     required this.shopToken,
-  }) : super(key: key);
+  });
 
   @override
   State<PaymentSales> createState() => _PaymentSalesState();

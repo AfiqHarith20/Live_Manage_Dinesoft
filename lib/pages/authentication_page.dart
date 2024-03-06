@@ -12,6 +12,8 @@ class AuthenticationPage extends StatefulWidget {
 class _AuthenticationPageState extends State<AuthenticationPage> {
   TextEditingController accessTokenController = TextEditingController();
   TextEditingController shopTokenController = TextEditingController();
+  late String username;
+  late String password;
 
   Future<void> saveTokens() async {
     try {
@@ -31,11 +33,6 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
       print('Access Token: ${accessTokenController.text}');
       print('Shop Token: ${shopTokenController.text}');
 
-      // Save the tokens to SharedPreferences
-      // final SharedPreferences prefs = await SharedPreferences.getInstance();
-      // prefs.setString('access_token', accessTokenController.text);
-      // prefs.setString('shop_token', shopTokenController.text);
-
       // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -50,6 +47,11 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
           builder: (context) => HomePage(
             accessToken: accessTokenController.text,
             shopToken: shopTokenController.text,
+            username: username,
+            password: password,
+            onShopSelected: (String newShopToken, String newAccessToken) {
+              // Implement your logic here
+            },
           ),
         ),
       );

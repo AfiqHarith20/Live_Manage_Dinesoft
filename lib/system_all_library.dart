@@ -38,6 +38,8 @@ export 'package:live_manage_dinesoft/components/home_components/menu_list.dart';
 export 'package:live_manage_dinesoft/components/home_components/payment_sales.dart';
 export 'package:live_manage_dinesoft/components/home_components/chart_components.dart';
 export 'package:live_manage_dinesoft/components/shop_selection_dialog.dart';
+export 'package:live_manage_dinesoft/components/shop_selector.dart';
+export 'package:live_manage_dinesoft/components/appbar_with_shop_selector.dart';
 
 //page
 export 'package:live_manage_dinesoft/pages/login_page.dart';
