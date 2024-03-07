@@ -6,9 +6,10 @@ import 'dart:async';
 class HomePage extends StatefulWidget {
   late String accessToken;
   late String shopToken;
+  late String selectedShopName;
   final String username;
   final String password;
-  final Function(String, String) onShopSelected;
+  final Function(String, String, String) onShopSelected;
   HomePage({
     super.key,
     required this.accessToken,
@@ -50,16 +51,17 @@ class _HomePageState extends State<HomePage> {
     loadData();
   }
 
-  // Function to handle shop selection
-  void _handleShopSelection(String newShopToken, String newAccessToken) {
+  void _handleShopSelection(
+      String newShopToken, String newAccessToken, String selectedShopName) {
     setState(() {
       // Update tokens with new values
       widget.shopToken = newShopToken;
       widget.accessToken = newAccessToken;
+      widget.selectedShopName = selectedShopName;
     });
 
     // Invoke the onShopSelected callback with the new shop token
-    widget.onShopSelected(newShopToken, newAccessToken);
+    widget.onShopSelected(newShopToken, newAccessToken, selectedShopName);
   }
 
   // Method to show DatePicker and update selectedDate

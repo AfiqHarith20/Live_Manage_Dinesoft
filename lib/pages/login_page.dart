@@ -75,7 +75,8 @@ class _LoginPageState extends State<LoginPage> {
 
               // Call saveTokens method here
               await saveTokens(context, accessToken, secretCode,
-                  (String newShopToken, String newAccessToken) {
+                  (String newShopToken, String newAccessToken,
+                      String selectedShopName) {
                 // Implement your logic here
               }, username, password);
             }
@@ -101,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
       BuildContext context,
       String accessToken,
       String secretCode,
-      Function(String, String) onShopSelected,
+      Function(String, String, String) onShopSelected,
       String username,
       String password) async {
     try {

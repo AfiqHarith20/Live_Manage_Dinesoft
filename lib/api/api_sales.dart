@@ -31,7 +31,12 @@ Future<Map<String, dynamic>> fetchSalesData(
       // Return the data including totalSalesAmount
       return {'rawData': json, 'totalSalesAmount': totalSalesAmount};
     } else {
-      throw Exception('Failed to fetch sales');
+      // Check for specific error codes and handle them accordingly
+      if (response.statusCode == 401) {
+        throw Exception('Unauthorized: Please check your access token');
+      } else {
+        throw Exception('Failed to fetch sales: ${response.statusCode}');
+      }
     }
   } on SocketException catch (_) {
     // Handle SocketException (no internet connection)

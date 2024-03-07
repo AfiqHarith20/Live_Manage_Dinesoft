@@ -40,8 +40,8 @@ class MyApp extends StatelessWidget {
                       shopToken: shopToken,
                       username: snapshot.data?['username'] ?? '',
                       password: snapshot.data?['password'] ?? '',
-                      onShopSelected:
-                          (String newShopToken, String newAccessToken) {
+                      onShopSelected: (String newShopToken,
+                          String newAccessToken, String selectedShopName) {
                         // Implement your logic here
                       },
                     ),

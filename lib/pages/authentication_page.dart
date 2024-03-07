@@ -49,7 +49,8 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
             shopToken: shopTokenController.text,
             username: username,
             password: password,
-            onShopSelected: (String newShopToken, String newAccessToken) {
+            onShopSelected: (String newShopToken, String newAccessToken,
+                String selectedShopName) {
               // Implement your logic here
             },
           ),
