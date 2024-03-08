@@ -4,9 +4,9 @@ class PaymentChart extends StatefulWidget {
   final List<Map<String, dynamic>> chartData;
 
   const PaymentChart({
-    Key? key,
+    super.key,
     required this.chartData,
-  }) : super(key: key);
+  });
 
   @override
   State<PaymentChart> createState() => _PaymentChartState();

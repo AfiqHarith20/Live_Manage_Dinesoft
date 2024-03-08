@@ -1,4 +1,6 @@
-// ignore_for_file: use_build_context_synchronously, avoid_print
+// ignore_for_file: use_build_context_synchronously, avoid_print, unnecessary_null_comparison
+
+import 'dart:async';
 
 import 'package:live_manage_dinesoft/system_all_library.dart';
 import 'package:http/http.dart' as http;
@@ -31,18 +33,30 @@ class AppBarWithShopSelector extends StatefulWidget
 class AppBarWithShopSelectorState extends State<AppBarWithShopSelector> {
   late String _selectedShop;
   List<String> _shops = [];
-  Map<String, String> _shopTokens =
-      {}; // Map to store shopName -> secretCode mapping
+  Map<String, String> _shopTokens = {};
   String? _errorMessage;
   bool _isLoading = false;
+  bool _isDropdownOpen = false;
+  late Timer _timer; // Declare the timer variable
 
   @override
   void initState() {
     super.initState();
     _isLoading = true;
-    _selectedShop =
-        widget.shopToken; // Initialize _selectedShop with widget.shopToken
+    _selectedShop = widget.shopToken;
     _fetchShops();
+
+    // Initialize the timer in initState
+    _timer = Timer.periodic(const Duration(seconds: 30), (timer) {
+      _fetchShops();
+    });
+  }
+
+  @override
+  void dispose() {
+    // Cancel the timer in dispose
+    _timer.cancel();
+    super.dispose();
   }
 
   Future<void> _fetchShops() async {
@@ -73,8 +87,8 @@ class AppBarWithShopSelectorState extends State<AppBarWithShopSelector> {
           };
 
           // Ensure the currently selected shop is in the updated list
-          _selectedShop = _shops.contains(_selectedShop)
-              ? _selectedShop
+          _selectedShop = _shops.contains(widget.shopToken)
+              ? widget.shopToken
               : _shops.isNotEmpty
                   ? _shops.first
                   : '';
@@ -102,7 +116,6 @@ class AppBarWithShopSelectorState extends State<AppBarWithShopSelector> {
       setState(() {
         _selectedShop = selectedShop;
         print('Updated _selectedShop: $_selectedShop');
-        setState(() {});
       });
 
       // Get the secret code (shop token) corresponding to the selected shop
@@ -169,27 +182,61 @@ class AppBarWithShopSelectorState extends State<AppBarWithShopSelector> {
                       style: const TextStyle(color: Colors.red))
                   : Builder(
                       builder: (BuildContext context) {
-                        return DropdownButton<String>(
-                          value:
-                              _selectedShop, // Use _selectedShop as the value
-                          onChanged: _handleShopSelection,
-                          style: const TextStyle(color: Colors.black),
-                          underline: Container(height: 2, color: Colors.grey),
-                          items: _shops
-                              .map<DropdownMenuItem<String>>(
-                                (String value) => DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(
-                                    value,
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            DropdownButton<String>(
+                              value: _selectedShop,
+                              onChanged: (newValue) {
+                                _handleShopSelection(newValue);
+                                setState(() {
+                                  _isDropdownOpen = false;
+                                });
+                              },
+                              style: const TextStyle(color: Colors.black),
+                              underline:
+                                  Container(height: 2, color: Colors.grey),
+                              items: _shops
+                                  .map<DropdownMenuItem<String>>(
+                                    (String value) => DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(
+                                        value,
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
-                              )
-                              .toList(),
+                                  )
+                                  .toList(),
+                              hint: !_isDropdownOpen || _selectedShop != null
+                                  ? Text(
+                                      _selectedShop,
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    )
+                                  : null, // Show selected shop only when dropdown is open
+                              onTap: () {
+                                setState(() {
+                                  _isDropdownOpen = true;
+                                });
+                              },
+                            ),
+                            // Show selected shop name if it's not null
+                            Text(
+                              'Selected Shop: $_selectedShop',
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         );
                       },
                     ),

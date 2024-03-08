@@ -130,16 +130,16 @@ class _HomePageState extends State<HomePage> {
               ),
               child: Column(
                 children: <Widget>[
-                  Skeletonizer(
-                    enabled: _loading,
-                    child: AppBarWithShopSelector(
-                      accessToken: widget.accessToken,
-                      shopToken: widget.shopToken,
-                      username: widget.username,
-                      password: widget.password,
-                      onShopSelected: _handleShopSelection,
-                    ),
-                  ),
+                  // Skeletonizer(
+                  //   enabled: _loading,
+                  //   child: AppBarWithShopSelector(
+                  //     accessToken: widget.accessToken,
+                  //     shopToken: widget.shopToken,
+                  //     username: widget.username,
+                  //     password: widget.password,
+                  //     onShopSelected: _handleShopSelection,
+                  //   ),
+                  // ),
                   Skeletonizer(
                     enabled: _loading,
                     child: LiveSales(

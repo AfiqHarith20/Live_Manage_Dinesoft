@@ -30,6 +30,7 @@ class _PaymentSalesState extends State<PaymentSales> {
     'TNG E-Wallet': 'TNG',
     'Maybank QR': 'MbQR',
     'ShopeePay': 'SPay',
+    'razECR': 'Razer',
   };
 
   @override
@@ -60,7 +61,8 @@ class _PaymentSalesState extends State<PaymentSales> {
       'MasterCard',
       'TNG E-Wallet',
       'Maybank QR',
-      'ShopeePay'
+      'ShopeePay',
+      'razECR',
     ];
 
     Map<String, Map<String, dynamic>> paymentTypeDetails = {};
@@ -88,8 +90,8 @@ class _PaymentSalesState extends State<PaymentSales> {
       );
 
       if (responseData.containsKey('rawData') &&
-          responseData['rawData'] is List &&
-          responseData['rawData'].isNotEmpty) {
+          responseData['rawData'] != null &&
+          responseData['rawData'] is List) {
         List<dynamic> allPayments = [];
         for (var order in responseData['rawData']) {
           if (order.containsKey('txPayments')) {
@@ -98,6 +100,12 @@ class _PaymentSalesState extends State<PaymentSales> {
           }
         }
 
+        // Extract and print the payment method names
+        List<String> paymentMethodNames = allPayments
+            .map((payment) => payment['paymentMethodName'] as String)
+            .toList();
+        print('Payment Method Names: $paymentMethodNames');
+
         // Create a set of payment types for quick lookup
         final Set<String> paymentTypes = {
           'Cash',
@@ -105,7 +113,8 @@ class _PaymentSalesState extends State<PaymentSales> {
           'MasterCard',
           'TNG E-Wallet',
           'Maybank QR',
-          'ShopeePay'
+          'ShopeePay',
+          'razECR',
         };
 
         // Create a map to hold payment type counts and total amounts
@@ -137,6 +146,7 @@ class _PaymentSalesState extends State<PaymentSales> {
           paymentData['paymentTypeDetails'] = paymentTypeDetails;
         });
       } else {
+        print('Payment Method Name: ${responseData['paymentMethodName']}');
         setState(() {
           paymentData.clear();
         });

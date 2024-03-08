@@ -119,7 +119,7 @@ class LiveSalesState extends State<LiveSales> {
     }
   }
 
-  // Function to calculate the total amount from sales data
+// Function to calculate the total amount from sales data
   double calculateTotalSalesAmount(List<dynamic> salesDetails) {
     double totalAmount = 0.0;
     for (var salesDetail in salesDetails) {
@@ -128,9 +128,11 @@ class LiveSalesState extends State<LiveSales> {
         totalAmount += (salesDetail['amountTotal'] ?? 0.0);
       }
     }
-    return totalAmount;
+    // Format the total amount to display only two decimal places
+    return double.parse(totalAmount.toStringAsFixed(2));
   }
 
+// Function to calculate the net sales amount from sales data
   double calculateNetSalesAmount(List<dynamic> salesDetails) {
     double totalAmount = 0.0;
     for (var salesDetail in salesDetails) {
@@ -139,7 +141,8 @@ class LiveSalesState extends State<LiveSales> {
         totalAmount += (salesDetail['amountSubtotal'] ?? 0.0);
       }
     }
-    return totalAmount;
+    // Format the net sales amount to display only two decimal places
+    return double.parse(totalAmount.toStringAsFixed(2));
   }
 
   // Function to calculate the order count based on txSalesHeaderId
@@ -261,10 +264,11 @@ class LiveSalesState extends State<LiveSales> {
                 dynamic data = snapshot.data;
                 dynamic value = dataSelector(data);
 
-                // Check if value is null, and handle accordingly
+                // Format the value with two decimal places to remove trailing zeroes
                 final formattedValue = value != null
-                    ? value.toString()
-                    : 'N/A'; // Adjusted formatting
+                    ? double.parse(
+                        value.toStringAsFixed(2)) // Format to 2 decimal places
+                    : 'N/A';
 
                 return Center(
                   child: Column(
@@ -281,7 +285,8 @@ class LiveSalesState extends State<LiveSales> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        formattedValue,
+                        formattedValue
+                            .toString(), // Ensure it's converted to a String
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           color: Colors.white,

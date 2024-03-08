@@ -22,14 +22,35 @@ Future<Map<String, dynamic>> fetchSalesData(
         'shop_token': shopToken,
       }),
     );
+
+    // Print the response body for debugging
+    print('Response Body: ${response.body}');
+
     if (response.statusCode == 200) {
-      final List<dynamic> json = jsonDecode(response.body);
+      final dynamic responseBody = jsonDecode(response.body);
 
-      // Calculate total sales amount
-      double totalSalesAmount = calculateTotalSalesAmount(json);
+      // Add null check here
+      if (responseBody == null) {
+        return {'rawData': [], 'totalSalesAmount': 0};
+      }
 
-      // Return the data including totalSalesAmount
-      return {'rawData': json, 'totalSalesAmount': totalSalesAmount};
+      if (responseBody is List<dynamic>) {
+        // Check if the list is not empty
+        if (responseBody.isNotEmpty) {
+          // Calculate total sales amount
+          double totalSalesAmount = calculateTotalSalesAmount(responseBody);
+
+          // Return the data including totalSalesAmount
+          return {
+            'rawData': responseBody,
+            'totalSalesAmount': totalSalesAmount
+          };
+        } else {
+          return {'rawData': [], 'totalSalesAmount': 0};
+        }
+      } else {
+        throw Exception('Invalid response format: Not a JSON array');
+      }
     } else {
       // Check for specific error codes and handle them accordingly
       if (response.statusCode == 401) {
@@ -87,7 +108,11 @@ Future<List<Map<String, dynamic>>> fetchReportData(
   );
 
   if (response.statusCode == 200) {
-    final List<dynamic> json = jsonDecode(response.body);
+    final dynamic responseBody = jsonDecode(response.body);
+    if (responseBody == null) {
+      throw Exception('Response body is null');
+    }
+    final List<dynamic> json = responseBody as List<dynamic>;
     print('API Response: $json');
     // Extract and return the required data directly
     return extractSummaryData(json);
