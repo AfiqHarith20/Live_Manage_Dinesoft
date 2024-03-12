@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:live_manage_dinesoft/system_all_library.dart';
 
 class PaymentSales extends StatefulWidget {
@@ -24,13 +25,13 @@ class _PaymentSalesState extends State<PaymentSales> {
 
   // Map full payment type names to short forms
   final Map<String, String> paymentShortForms = {
-    'Cash': 'CS',
-    'VISA': 'VISA',
-    'MasterCard': 'MCard',
-    'TNG E-Wallet': 'TNG',
-    'Maybank QR': 'MbQR',
-    'ShopeePay': 'SPay',
-    'razECR': 'Razer',
+    'Cash': 'C',
+    'VISA': 'V',
+    'MasterCard': 'M',
+    'TNG E-Wallet': 'T',
+    'Maybank QR': 'Q',
+    'ShopeePay': 'S',
+    'razECR': 'R',
   };
 
   @override
@@ -83,70 +84,70 @@ class _PaymentSalesState extends State<PaymentSales> {
   // Method to fetch payment data based on selectedDate
   void fetchPaymentData() async {
     try {
-      Map<String, dynamic> responseData = await fetchSalesData(
+      Map<String, dynamic>? responseData = await fetchSalesData(
         widget.selectedDate,
         widget.accessToken,
         widget.shopToken,
       );
 
-      if (responseData.containsKey('rawData') &&
-          responseData['rawData'] != null &&
+      if (responseData != null &&
+          responseData.containsKey('rawData') &&
           responseData['rawData'] is List) {
         List<dynamic> allPayments = [];
-        for (var order in responseData['rawData']) {
-          if (order.containsKey('txPayments')) {
-            List<dynamic> txPayments = order['txPayments'];
-            allPayments.addAll(txPayments);
+        if ((responseData['rawData'] as List).isNotEmpty) {
+          for (var order in responseData['rawData']) {
+            if (order.containsKey('txPayments')) {
+              List<dynamic>? txPayments = order['txPayments'];
+              if (txPayments != null) {
+                allPayments.addAll(txPayments);
+              }
+            }
           }
-        }
 
-        // Extract and print the payment method names
-        List<String> paymentMethodNames = allPayments
-            .map((payment) => payment['paymentMethodName'] as String)
-            .toList();
-        print('Payment Method Names: $paymentMethodNames');
+          // Process payment data if available
+          Map<String, dynamic> paymentTypeDetails =
+              initializePaymentTypeDetails();
+          for (var payment in allPayments) {
+            String paymentMethodName = payment['paymentMethodName'];
 
-        // Create a set of payment types for quick lookup
-        final Set<String> paymentTypes = {
-          'Cash',
-          'VISA',
-          'MasterCard',
-          'TNG E-Wallet',
-          'Maybank QR',
-          'ShopeePay',
-          'razECR',
-        };
+            // Ensure the payment type is in paymentTypes and paymentShortForms
+            if (!paymentTypeDetails.containsKey(paymentMethodName)) {
+              paymentTypeDetails[paymentMethodName] = {
+                'count': 0,
+                'totalAmount': 0.0,
+              };
 
-        // Create a map to hold payment type counts and total amounts
-        Map<String, Map<String, dynamic>> paymentTypeDetails = {
-          for (var paymentType in paymentTypes)
-            paymentType: {'count': 0, 'totalAmount': 0.0}
-        };
+              // Generate a short form if not present
+              if (!paymentShortForms.containsKey(paymentMethodName)) {
+                paymentShortForms[paymentMethodName] =
+                    generateShortForm(paymentMethodName);
+              }
+            }
 
-        // Calculate counts and total amounts for each payment type
-        for (var payment in allPayments) {
-          String paymentMethodName = payment['paymentMethodName'];
-          if (paymentTypes.contains(paymentMethodName)) {
-            paymentTypeDetails[paymentMethodName]!['count']++;
-            paymentTypeDetails[paymentMethodName]!['totalAmount'] +=
+            paymentTypeDetails[paymentMethodName]['count']++;
+            paymentTypeDetails[paymentMethodName]['totalAmount'] +=
                 payment['totalAmount'];
           }
+
+          List<Map<String, dynamic>> newChartData = paymentTypeDetails.entries
+              .map((entry) => {
+                    'genre': paymentShortForms[entry.key] ?? entry.key,
+                    'sold': entry.value['count'],
+                  })
+              .toList();
+
+          setState(() {
+            chartData = newChartData;
+            paymentData['paymentTypeDetails'] = paymentTypeDetails;
+          });
+        } else {
+          // If no payment data is available, clear paymentData and display message
+          setState(() {
+            paymentData.clear();
+          });
         }
-
-        // Calculate chart data
-        List<Map<String, dynamic>> newChartData = paymentTypeDetails.entries
-            .map((entry) => {
-                  'genre': paymentShortForms[entry.key] ?? entry.key,
-                  'sold': entry.value['count'],
-                })
-            .toList();
-
-        setState(() {
-          chartData = newChartData;
-          paymentData['paymentTypeDetails'] = paymentTypeDetails;
-        });
       } else {
-        print('Payment Method Name: ${responseData['paymentMethodName']}');
+        // If 'rawData' is not a list or null, clear paymentData and display message
         setState(() {
           paymentData.clear();
         });
@@ -154,6 +155,63 @@ class _PaymentSalesState extends State<PaymentSales> {
     } catch (e) {
       print('Error fetching payment data: $e');
     }
+  }
+
+  String generateShortForm(String paymentName) {
+    // Split the payment name into words
+    final List<String> words = paymentName.split(' ');
+
+    // Use the first letter of the first word as the short form
+    String shortForm = words[0][0];
+
+    // If there are multiple words and the first letters are the same, use the second letter as well
+    if (words.length > 1 && words[0][0] == words[1][0]) {
+      shortForm += words[1][1];
+    }
+
+    return shortForm;
+  }
+
+  // Update the paymentShortForms map to use the first and second letters of the payment name
+  void updatePaymentShortForms() {
+    final Map<String, String> updatedPaymentShortForms = {};
+    final List<String> paymentNames = paymentShortForms.keys.toList();
+
+    // Iterate through each payment name
+    for (final paymentName in paymentNames) {
+      final shortForm = generateShortForm(paymentName);
+      updatedPaymentShortForms[paymentName] = shortForm;
+    }
+
+    // Update the paymentShortForms map
+    setState(() {
+      paymentShortForms.clear();
+      paymentShortForms.addAll(updatedPaymentShortForms);
+    });
+  }
+
+  Map<String, dynamic> initializePaymentTypeDetails() {
+    final List<String> paymentTypes = [
+      'Cash',
+      'VISA',
+      'MasterCard',
+      'TNG E-Wallet',
+      'Maybank QR',
+      'ShopeePay',
+      'razECR',
+    ];
+
+    final Map<String, dynamic> paymentTypeDetails = {};
+
+    // Initialize counts and total amounts for each payment type to 0
+    for (final paymentType in paymentTypes) {
+      paymentTypeDetails[paymentType] = {
+        'count': 0,
+        'totalAmount': 0.0,
+      };
+    }
+
+    return paymentTypeDetails;
   }
 
   @override
@@ -240,7 +298,7 @@ class _PaymentSalesState extends State<PaymentSales> {
                             height: 3.h, // Adjust the height as needed
                           ),
                           Text(
-                            '${AppLocalizations.of(context)!.totalAmount}: RM$totalAmount',
+                            '${AppLocalizations.of(context)!.totalAmount}: RM${totalAmount.toStringAsFixed(2)}',
                             style: AppTextStyle.textsmall
                                 .copyWith(color: Colors.black),
                           ),

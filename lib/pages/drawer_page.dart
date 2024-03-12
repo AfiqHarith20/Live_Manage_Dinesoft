@@ -4,11 +4,13 @@ class DrawerPage extends StatefulWidget {
   final String accessToken;
   final String shopToken;
   final DateTime selectedDate;
+  // final String selectedShop;
   const DrawerPage({
     super.key,
     required this.accessToken,
     required this.shopToken,
     required this.selectedDate,
+    // required this.selectedShop,
   });
 
   @override
@@ -54,6 +56,7 @@ class _DrawerPageState extends State<DrawerPage> {
                     selectedDate: widget.selectedDate, // Pass selectedDate
                     accessToken: widget.accessToken,
                     shopToken: widget.shopToken,
+                    // selectedShopName: widget.selectedShop,
                   ),
                 ),
               );

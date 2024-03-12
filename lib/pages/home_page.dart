@@ -1,12 +1,13 @@
 // ignore_for_file: library_private_types_in_public_api, prefer_typing_uninitialized_variables, must_be_immutable
 
+import 'package:intl/intl.dart';
 import 'package:live_manage_dinesoft/system_all_library.dart';
 import 'dart:async';
 
 class HomePage extends StatefulWidget {
   late String accessToken;
   late String shopToken;
-  late String selectedShopName;
+  // late String selectedShopName;
   final String username;
   final String password;
   final Function(String, String, String) onShopSelected;
@@ -15,6 +16,7 @@ class HomePage extends StatefulWidget {
     required this.accessToken,
     required this.shopToken,
     required this.username,
+    // required this.selectedShopName,
     required this.password,
     required this.onShopSelected,
   });
@@ -57,7 +59,7 @@ class _HomePageState extends State<HomePage> {
       // Update tokens with new values
       widget.shopToken = newShopToken;
       widget.accessToken = newAccessToken;
-      widget.selectedShopName = selectedShopName;
+      // widget.selectedShopName = selectedShopName;
     });
 
     // Invoke the onShopSelected callback with the new shop token
@@ -95,6 +97,7 @@ class _HomePageState extends State<HomePage> {
         accessToken: widget.accessToken,
         shopToken: widget.shopToken,
         selectedDate: selectedDate,
+        // selectedShop: widget.selectedShopName,
       ),
       appBar: AppBar(
         leading: Builder(
@@ -114,6 +117,31 @@ class _HomePageState extends State<HomePage> {
           style: AppTextStyle.titleMedium,
         ),
         backgroundColor: darkColorScheme.primary,
+        actions: [
+          Builder(
+            builder: (context) {
+              double appBarWithShopSelectorHeight =
+                  20.h; // Adjust this value as needed
+              return PopupMenuButton(
+                icon: const FaIcon(FontAwesomeIcons.shop),
+                itemBuilder: (BuildContext context) {
+                  return [
+                    PopupMenuItem(
+                      height: appBarWithShopSelectorHeight,
+                      child: AppBarWithShopSelector(
+                        accessToken: widget.accessToken,
+                        shopToken: widget.shopToken,
+                        username: widget.username,
+                        password: widget.password,
+                        onShopSelected: _handleShopSelection,
+                      ),
+                    ),
+                  ];
+                },
+              );
+            },
+          ),
+        ],
       ),
       body: SafeArea(
         child: RefreshIndicator(
@@ -130,6 +158,56 @@ class _HomePageState extends State<HomePage> {
               ),
               child: Column(
                 children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          // Handle left icon press to change date or day
+                          // Example: Decrease date by one day
+                          setState(() {
+                            selectedDate =
+                                selectedDate.subtract(const Duration(days: 1));
+                            liveSalesKey.currentState?.updateDate(selectedDate);
+                            reportSalesKey.currentState
+                                ?.updateDate(selectedDate);
+                            // Reload data or perform necessary actions
+                            loadData();
+                          });
+                        },
+                        icon: const Icon(Icons.keyboard_arrow_left),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          // Show date picker when the date text is tapped
+                          _selectDate(context);
+                        },
+                        child: Text(
+                          DateFormat('MMM d, EEE').format(selectedDate),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          // Handle right icon press to change date or day
+                          // Example: Increase date by one day
+                          setState(() {
+                            selectedDate =
+                                selectedDate.add(const Duration(days: 1));
+                            liveSalesKey.currentState?.updateDate(selectedDate);
+                            reportSalesKey.currentState
+                                ?.updateDate(selectedDate);
+                            // Reload data or perform necessary actions
+                            loadData();
+                          });
+                        },
+                        icon: const Icon(Icons.keyboard_arrow_right),
+                      ),
+                    ],
+                  ),
                   // Skeletonizer(
                   //   enabled: _loading,
                   //   child: AppBarWithShopSelector(
@@ -157,6 +235,17 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Skeletonizer(
                     enabled: _loading,
+                    child: ComparingPage(
+                      selectedDate: selectedDate,
+                      accessToken: widget.accessToken,
+                      shopToken: widget.shopToken,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 2.h,
+                  ),
+                  Skeletonizer(
+                    enabled: _loading,
                     child: PaymentSales(
                       selectedDate: selectedDate,
                       accessToken: widget.accessToken,
@@ -169,20 +258,20 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: SpeedDial(
-        icon: Icons.add,
-        tooltip: AppLocalizations.of(context)!.selectDate,
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-        children: [
-          SpeedDialChild(
-            child: const FaIcon(FontAwesomeIcons.calendar),
-            label: AppLocalizations.of(context)!.selectDate,
-            onTap: () => _selectDate(context),
-          ),
-        ],
-      ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      // floatingActionButton: SpeedDial(
+      //   icon: Icons.add,
+      //   tooltip: AppLocalizations.of(context)!.selectDate,
+      //   backgroundColor: Colors.blue,
+      //   foregroundColor: Colors.white,
+      //   children: [
+      //     SpeedDialChild(
+      //       child: const FaIcon(FontAwesomeIcons.calendar),
+      //       label: AppLocalizations.of(context)!.selectDate,
+      //       onTap: () => _selectDate(context),
+      //     ),
+      //   ],
+      // ),
     );
   }
 }

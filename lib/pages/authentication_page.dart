@@ -14,6 +14,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
   TextEditingController shopTokenController = TextEditingController();
   late String username;
   late String password;
+  // late String selectedShopName;
 
   Future<void> saveTokens() async {
     try {
@@ -49,6 +50,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
             shopToken: shopTokenController.text,
             username: username,
             password: password,
+            // selectedShopName: selectedShopName,
             onShopSelected: (String newShopToken, String newAccessToken,
                 String selectedShopName) {
               // Implement your logic here

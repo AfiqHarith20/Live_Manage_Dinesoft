@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:live_manage_dinesoft/system_all_library.dart';
 
 class ReportSales extends StatefulWidget {
@@ -7,11 +7,11 @@ class ReportSales extends StatefulWidget {
   final String shopToken;
 
   const ReportSales({
-    Key? key,
+    super.key,
     required this.selectedDate,
     required this.accessToken,
     required this.shopToken,
-  }) : super(key: key);
+  });
 
   @override
   State<ReportSales> createState() => ReportSalesState();
@@ -84,7 +84,8 @@ List<Map<String, dynamic>> extractTxSalesDetails(List<dynamic> txSalesDetails) {
 class ReportSalesState extends State<ReportSales> {
   late DateTime selectedDate;
   late Map<String, Map<String, dynamic>> salesByCategory;
-  bool sortDescending = true; // Indicates whether to sort in descending order
+  bool sortDescending = true;
+  late double totalPrice = 0;
 
   void updateDate(DateTime newDate) {
     setState(() {
@@ -97,18 +98,97 @@ class ReportSalesState extends State<ReportSales> {
     super.initState();
     selectedDate = widget.selectedDate;
     salesByCategory = {};
+    fetchDataOnPageLoad();
+  }
+
+  Future<void> fetchDataOnPageLoad() async {
+    try {
+      Map<String, dynamic> salesData = await fetchSalesData(
+        widget.selectedDate,
+        widget.accessToken,
+        widget.shopToken,
+      );
+
+      // Extract summary data from sales data
+      List<Map<String, dynamic>> summaryList =
+          extractSummaryData(salesData['rawData']);
+
+      // Populate salesByCategory map
+      // Populate salesByCategory map
+      salesByCategory = {};
+      for (var order in summaryList) {
+        for (var detail in order['txSalesDetails']) {
+          String category = detail['categoryName'];
+          if (!salesByCategory.containsKey(category)) {
+            salesByCategory[category] = {};
+          }
+          String itemName = detail['itemName'];
+          int quantity = detail['quantity'];
+          double price = detail['price'];
+
+          // Exclude items with quantity 0
+          if (quantity > 0) {
+            if (!salesByCategory[category]!.containsKey(itemName)) {
+              salesByCategory[category]![itemName] = {
+                'quantity': quantity,
+                'price': price,
+              };
+            } else {
+              salesByCategory[category]![itemName]['quantity'] += quantity;
+              salesByCategory[category]![itemName]['price'] += price;
+            }
+          }
+        }
+      }
+
+      // Sort categories by total price in descending order
+      salesByCategory.forEach((key, value) {
+        var sortedEntries = value.entries.toList()
+          ..sort((a, b) => sortDescending
+              ? b.value['price'].compareTo(a.value['price'])
+              : a.value['price'].compareTo(b.value['price']));
+        salesByCategory[key] = Map.fromEntries(sortedEntries);
+      });
+
+      // Recalculate total price
+      calculateTotalPrice();
+    } catch (e) {
+      // Handle errors
+      print('Error fetching data on page load: $e');
+    }
   }
 
   Future<void> _refreshData() async {
     setState(() {
       // Manually trigger the loading state
     });
-    // Fetch new data here
-    await fetchReportData(
-      widget.selectedDate,
-      widget.accessToken,
-      widget.shopToken,
-    );
+    try {
+      // Fetch new data here
+      await fetchReportData(
+        widget.selectedDate,
+        widget.accessToken,
+        widget.shopToken,
+      );
+
+      // Recalculate total price
+      calculateTotalPrice();
+    } catch (e) {
+      // Handle errors
+      print('Error fetching data: $e');
+    }
+  }
+
+  // Method to calculate total price
+  void calculateTotalPrice() {
+    double sum = 0;
+    salesByCategory.values.forEach((value) {
+      value.forEach((itemName, itemData) {
+        sum += itemData['price']; // Add price of each item
+      });
+    });
+    setState(() {
+      totalPrice = sum;
+    });
   }
 
   void _toggleSorting() {
@@ -168,116 +248,141 @@ class ReportSalesState extends State<ReportSales> {
           physics: const AlwaysScrollableScrollPhysics(),
           child: Container(
             padding: const EdgeInsets.all(20.0),
-            child: FutureBuilder(
-              future: fetchReportData(
-                widget.selectedDate,
-                widget.accessToken,
-                widget.shopToken,
-              ),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (snapshot.hasError) {
-                  return Text(
-                    'Error: ${snapshot.error}',
-                    style: const TextStyle(
-                      color: Colors.red,
-                      fontSize: 16,
-                    ),
-                  );
-                } else if (!snapshot.hasData ||
-                    (snapshot.data as List).isEmpty) {
-                  return Center(
-                    child: Text(
-                      AppLocalizations.of(context)!.noSalesAvailable,
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 16,
-                      ),
-                    ),
-                  );
-                } else {
-                  List<Map<String, dynamic>>? summaryList =
-                      snapshot.data as List<Map<String, dynamic>>;
-                  salesByCategory = {};
-                  for (var order in summaryList) {
-                    for (var detail in order['txSalesDetails']) {
-                      String category = detail['categoryName'];
-                      if (!salesByCategory.containsKey(category)) {
-                        salesByCategory[category] = {};
-                      }
-                      String itemName = detail['itemName'];
-                      if (!salesByCategory[category]!.containsKey(itemName)) {
-                        salesByCategory[category]![itemName] = {
-                          'quantity': detail['quantity'],
-                          'price': detail['price'],
-                        };
-                      } else {
-                        salesByCategory[category]![itemName]['quantity'] +=
-                            detail['quantity'];
-                        salesByCategory[category]![itemName]['price'] +=
-                            detail['price'];
-                      }
-                    }
-                  }
-
-                  // Sort categories by total price in descending order
-                  salesByCategory.forEach((key, value) {
-                    var sortedEntries = value.entries.toList()
-                      ..sort((a, b) => sortDescending
-                          ? b.value['price'].compareTo(a.value['price'])
-                          : a.value['price'].compareTo(b.value['price']));
-                    salesByCategory[key] = Map.fromEntries(sortedEntries);
-                  });
-
-                  return Column(
-                    children: salesByCategory.keys.map((category) {
-                      return Card(
-                        margin: const EdgeInsets.symmetric(vertical: 10),
-                        elevation: 3,
-                        child: ExpansionTile(
-                          title: Text(
-                            category,
-                            style: AppTextStyle.textmedium,
-                          ),
-                          children: salesByCategory[category]!.entries.map(
-                            (entry) {
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: ListTile(
-                                  title: Text(
-                                    entry.key,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  subtitle: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        '${AppLocalizations.of(context)!.totalQty}: ${entry.value['quantity']}',
-                                        style: AppTextStyle.textsmall,
-                                      ),
-                                      Text(
-                                        '${AppLocalizations.of(context)!.totalPrice}: RM${entry.value['price'].toStringAsFixed(2)}',
-                                        style: AppTextStyle.textsmall,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          ).toList(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  DateFormat('yyyy-MM-dd')
+                      .format(selectedDate), // Display selected date
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                FutureBuilder(
+                  future: fetchReportData(
+                    widget.selectedDate,
+                    widget.accessToken,
+                    widget.shopToken,
+                  ),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Text(
+                        'Error: ${snapshot.error}',
+                        style: const TextStyle(
+                          color: Colors.red,
+                          fontSize: 16,
                         ),
                       );
-                    }).toList(),
-                  );
-                }
-              },
+                    } else if (!snapshot.hasData ||
+                        (snapshot.data as List).isEmpty) {
+                      return Center(
+                        child: Text(
+                          AppLocalizations.of(context)!.noSalesAvailable,
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 16,
+                          ),
+                        ),
+                      );
+                    } else {
+                      List<Map<String, dynamic>>? summaryList =
+                          snapshot.data as List<Map<String, dynamic>>;
+                      salesByCategory = {};
+                      for (var order in summaryList) {
+                        for (var detail in order['txSalesDetails']) {
+                          String category = detail['categoryName'];
+                          if (!salesByCategory.containsKey(category)) {
+                            salesByCategory[category] = {};
+                          }
+                          String itemName = detail['itemName'];
+                          if (!salesByCategory[category]!
+                              .containsKey(itemName)) {
+                            salesByCategory[category]![itemName] = {
+                              'quantity': detail['quantity'],
+                              'price': detail['price'],
+                            };
+                          } else {
+                            salesByCategory[category]![itemName]['quantity'] +=
+                                detail['quantity'];
+                            salesByCategory[category]![itemName]['price'] +=
+                                detail['price'];
+                          }
+                        }
+                      }
+
+                      // Sort categories by total price in descending order
+                      salesByCategory.forEach((key, value) {
+                        var sortedEntries = value.entries.toList()
+                          ..sort((a, b) => sortDescending
+                              ? b.value['price'].compareTo(a.value['price'])
+                              : a.value['price'].compareTo(b.value['price']));
+                        salesByCategory[key] = Map.fromEntries(sortedEntries);
+                      });
+
+                      return Column(
+                        children: salesByCategory.keys.map((category) {
+                          return Card(
+                            margin: const EdgeInsets.symmetric(vertical: 10),
+                            elevation: 3,
+                            child: ExpansionTile(
+                              title: Text(
+                                category,
+                                style: AppTextStyle.textmedium,
+                              ),
+                              children: salesByCategory[category]!.entries.map(
+                                (entry) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ListTile(
+                                      title: Text(
+                                        entry.key,
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      subtitle: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '${AppLocalizations.of(context)!.totalQty}: ${entry.value['quantity']}',
+                                            style: AppTextStyle.textsmall,
+                                          ),
+                                          Text(
+                                            '${AppLocalizations.of(context)!.totalPrice}: RM${entry.value['price'].toStringAsFixed(2)}',
+                                            style: AppTextStyle.textsmall,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ).toList(),
+                            ),
+                          );
+                        }).toList(),
+                      );
+                    }
+                  },
+                ),
+                const SizedBox(height: 20),
+                const Divider(), // Add a section separator
+                const SizedBox(height: 20),
+                Text(
+                  'Total Price: RM${totalPrice.toStringAsFixed(2)}', // Display total price
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
           ),
         ),

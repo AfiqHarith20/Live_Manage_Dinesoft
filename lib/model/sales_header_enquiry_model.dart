@@ -1,3 +1,7 @@
+// To parse this JSON data, do
+//
+//     final salesHeaderEnquiry = salesHeaderEnquiryFromJson(jsonString);
+
 import 'dart:convert';
 
 List<SalesHeaderEnquiry> salesHeaderEnquiryFromJson(String str) =>
@@ -8,7 +12,7 @@ String salesHeaderEnquiryToJson(List<SalesHeaderEnquiry> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class SalesHeaderEnquiry {
-  final String shopCode;
+  final dynamic shopCode;
   final String staffCode;
   final List<TxSalesDetail> txSalesDetails;
   final List<TxPayment> txPayments;
@@ -30,25 +34,25 @@ class SalesHeaderEnquiry {
   final DateTime checkinDatetime;
   final DateTime checkoutDatetime;
   final int checkinUserId;
-  final CashierUserName checkinUserName;
+  final String checkinUserName;
   final int checkoutUserId;
-  final CashierUserName checkoutUserName;
+  final String checkoutUserName;
   final int cashierUserId;
-  final CashierUserName cashierUserName;
+  final String cashierUserName;
   final DateTime cashierDatetime;
-  final int amountPaid;
+  final double amountPaid;
   final int amountChange;
-  final double amountSubtotal;
+  final int amountSubtotal;
   final int amountServiceCharge;
   final int amountDiscount;
-  final int amountTotal;
+  final double amountTotal;
   final double amountRounding;
   final bool txCompleted;
   final bool txChecked;
   final DateTime createdDate;
-  final CashierUserName createdBy;
+  final String createdBy;
   final DateTime modifiedDate;
-  final CashierUserName modifiedBy;
+  final String modifiedBy;
   final bool isTakeAway;
   final dynamic takeAwayRunningIndex;
   final dynamic disabledReasonId;
@@ -73,9 +77,9 @@ class SalesHeaderEnquiry {
   final dynamic discountByUserName;
   final dynamic amountPointTotal;
   final dynamic memberPointRemain;
-  final dynamic taxationId;
-  final dynamic taxationName;
-  final int amountTaxation;
+  final int taxationId;
+  final String taxationName;
+  final double amountTaxation;
   final dynamic amountMinChargeOffset;
   final dynamic isMinChargeOffsetWaived;
   final bool isMinChargeTx;
@@ -112,7 +116,7 @@ class SalesHeaderEnquiry {
   final dynamic overridedChecklistPrinterName;
   final int orderSourceTypeId;
   final dynamic orderSourceRefId;
-  final int? orderChannelId;
+  final int orderChannelId;
   final dynamic orderChannelCode;
   final dynamic orderChannelName;
   final dynamic apiGatewayRefCode;
@@ -296,25 +300,25 @@ class SalesHeaderEnquiry {
         checkinDatetime: DateTime.parse(json["checkinDatetime"]),
         checkoutDatetime: DateTime.parse(json["checkoutDatetime"]),
         checkinUserId: json["checkinUserId"],
-        checkinUserName: cashierUserNameValues.map[json["checkinUserName"]]!,
+        checkinUserName: json["checkinUserName"],
         checkoutUserId: json["checkoutUserId"],
-        checkoutUserName: cashierUserNameValues.map[json["checkoutUserName"]]!,
+        checkoutUserName: json["checkoutUserName"],
         cashierUserId: json["cashierUserId"],
-        cashierUserName: cashierUserNameValues.map[json["cashierUserName"]]!,
+        cashierUserName: json["cashierUserName"],
         cashierDatetime: DateTime.parse(json["cashierDatetime"]),
-        amountPaid: json["amountPaid"],
+        amountPaid: json["amountPaid"]?.toDouble(),
         amountChange: json["amountChange"],
-        amountSubtotal: json["amountSubtotal"]?.toDouble(),
+        amountSubtotal: json["amountSubtotal"],
         amountServiceCharge: json["amountServiceCharge"],
         amountDiscount: json["amountDiscount"],
-        amountTotal: json["amountTotal"],
+        amountTotal: json["amountTotal"]?.toDouble(),
         amountRounding: json["amountRounding"]?.toDouble(),
         txCompleted: json["txCompleted"],
         txChecked: json["txChecked"],
         createdDate: DateTime.parse(json["createdDate"]),
-        createdBy: cashierUserNameValues.map[json["createdBy"]]!,
+        createdBy: json["createdBy"],
         modifiedDate: DateTime.parse(json["modifiedDate"]),
-        modifiedBy: cashierUserNameValues.map[json["modifiedBy"]]!,
+        modifiedBy: json["modifiedBy"],
         isTakeAway: json["isTakeAway"],
         takeAwayRunningIndex: json["takeAwayRunningIndex"],
         disabledReasonId: json["disabledReasonId"],
@@ -341,7 +345,7 @@ class SalesHeaderEnquiry {
         memberPointRemain: json["memberPointRemain"],
         taxationId: json["taxationId"],
         taxationName: json["taxationName"],
-        amountTaxation: json["amountTaxation"],
+        amountTaxation: json["amountTaxation"]?.toDouble(),
         amountMinChargeOffset: json["amountMinChargeOffset"],
         isMinChargeOffsetWaived: json["isMinChargeOffsetWaived"],
         isMinChargeTx: json["isMinChargeTx"],
@@ -436,11 +440,11 @@ class SalesHeaderEnquiry {
         "checkinDatetime": checkinDatetime.toIso8601String(),
         "checkoutDatetime": checkoutDatetime.toIso8601String(),
         "checkinUserId": checkinUserId,
-        "checkinUserName": cashierUserNameValues.reverse[checkinUserName],
+        "checkinUserName": checkinUserName,
         "checkoutUserId": checkoutUserId,
-        "checkoutUserName": cashierUserNameValues.reverse[checkoutUserName],
+        "checkoutUserName": checkoutUserName,
         "cashierUserId": cashierUserId,
-        "cashierUserName": cashierUserNameValues.reverse[cashierUserName],
+        "cashierUserName": cashierUserName,
         "cashierDatetime": cashierDatetime.toIso8601String(),
         "amountPaid": amountPaid,
         "amountChange": amountChange,
@@ -452,9 +456,9 @@ class SalesHeaderEnquiry {
         "txCompleted": txCompleted,
         "txChecked": txChecked,
         "createdDate": createdDate.toIso8601String(),
-        "createdBy": cashierUserNameValues.reverse[createdBy],
+        "createdBy": createdBy,
         "modifiedDate": modifiedDate.toIso8601String(),
-        "modifiedBy": cashierUserNameValues.reverse[modifiedBy],
+        "modifiedBy": modifiedBy,
         "isTakeAway": isTakeAway,
         "takeAwayRunningIndex": takeAwayRunningIndex,
         "disabledReasonId": disabledReasonId,
@@ -551,31 +555,26 @@ class SalesHeaderEnquiry {
       };
 }
 
-enum CashierUserName { JOHN_DOE }
-
-final cashierUserNameValues =
-    EnumValues({"John Doe": CashierUserName.JOHN_DOE});
-
 class TxPayment {
-  final dynamic linkedGateway;
+  final String linkedGateway;
   final int txPaymentId;
   final int accountId;
   final int shopId;
   final int txSalesHeaderId;
   final int paymentMethodId;
   final String paymentMethodName;
-  final int totalAmount;
-  final int paidAmount;
+  final double totalAmount;
+  final double paidAmount;
   final bool enabled;
   final DateTime createdDate;
-  final CashierUserName createdBy;
+  final String createdBy;
   final DateTime modifiedDate;
-  final CashierUserName modifiedBy;
+  final String modifiedBy;
   final dynamic oclNum;
   final dynamic oclRemainValue;
   final dynamic oclDeviceNum;
   final dynamic refNum;
-  final dynamic remark1;
+  final String remark1;
   final dynamic remark2;
   final dynamic remark3;
   final dynamic remark4;
@@ -600,8 +599,8 @@ class TxPayment {
   final bool isNonSalesTxPayment;
   final dynamic isPreprintedCouponTxPayment;
   final int overpaymentAmount;
-  final dynamic paymentCurrency;
-  final dynamic paymentPathway;
+  final String paymentCurrency;
+  final String paymentPathway;
   final dynamic paymentRemark;
   final dynamic changeAmountFx;
   final bool isChangeAmountFx;
@@ -614,7 +613,7 @@ class TxPayment {
   final int txChargesRate;
   final int txTotalCharges;
   final int txTipCharges;
-  final int txNetTotal;
+  final double txNetTotal;
   final int txNetTip;
   final dynamic paymentMethod;
   final dynamic shop;
@@ -691,13 +690,13 @@ class TxPayment {
         txSalesHeaderId: json["txSalesHeaderId"],
         paymentMethodId: json["paymentMethodId"],
         paymentMethodName: json["paymentMethodName"],
-        totalAmount: json["totalAmount"],
-        paidAmount: json["paidAmount"],
+        totalAmount: json["totalAmount"]?.toDouble(),
+        paidAmount: json["paidAmount"]?.toDouble(),
         enabled: json["enabled"],
         createdDate: DateTime.parse(json["createdDate"]),
-        createdBy: cashierUserNameValues.map[json["createdBy"]]!,
+        createdBy: json["createdBy"],
         modifiedDate: DateTime.parse(json["modifiedDate"]),
-        modifiedBy: cashierUserNameValues.map[json["modifiedBy"]]!,
+        modifiedBy: json["modifiedBy"],
         oclNum: json["oclNum"],
         oclRemainValue: json["oclRemainValue"],
         oclDeviceNum: json["oclDeviceNum"],
@@ -741,7 +740,7 @@ class TxPayment {
         txChargesRate: json["txChargesRate"],
         txTotalCharges: json["txTotalCharges"],
         txTipCharges: json["txTipCharges"],
-        txNetTotal: json["txNetTotal"],
+        txNetTotal: json["txNetTotal"]?.toDouble(),
         txNetTip: json["txNetTip"],
         paymentMethod: json["paymentMethod"],
         shop: json["shop"],
@@ -759,9 +758,9 @@ class TxPayment {
         "paidAmount": paidAmount,
         "enabled": enabled,
         "createdDate": createdDate.toIso8601String(),
-        "createdBy": cashierUserNameValues.reverse[createdBy],
+        "createdBy": createdBy,
         "modifiedDate": modifiedDate.toIso8601String(),
-        "modifiedBy": cashierUserNameValues.reverse[modifiedBy],
+        "modifiedBy": modifiedBy,
         "oclNum": oclNum,
         "oclRemainValue": oclRemainValue,
         "oclDeviceNum": oclDeviceNum,
@@ -813,7 +812,7 @@ class TxPayment {
 }
 
 class TxSalesDetail {
-  final CategoryName categoryName;
+  final String categoryName;
   final bool isPriceInPercentage;
   final dynamic departmentRevenueAmount;
   final dynamic promoCode;
@@ -832,20 +831,20 @@ class TxSalesDetail {
   final int itemOrderRunningIndex;
   final DateTime orderDateTime;
   final int orderUserId;
-  final CashierUserName orderUserName;
+  final String orderUserName;
   final int itemId;
   final int categoryId;
   final String itemCode;
   final String itemName;
   final dynamic itemNameAlt2;
   final int qty;
-  final double price;
-  final double amount;
+  final int price;
+  final int amount;
   final bool enabled;
   final bool voided;
   final bool printedKitchen;
   final int printedKitchenByUserId;
-  final CashierUserName printedKitchenByUserName;
+  final String printedKitchenByUserName;
   final DateTime printedKitchenDateTime;
   final dynamic disabledReasonId;
   final dynamic disabledReasonDesc;
@@ -857,9 +856,9 @@ class TxSalesDetail {
   final dynamic chaseUserName;
   final dynamic chaseDateTime;
   final DateTime createdDate;
-  final CashierUserName createdBy;
+  final String createdBy;
   final DateTime modifiedDate;
-  final CashierUserName modifiedBy;
+  final String modifiedBy;
   final bool isPromoComboItem;
   final int shopId;
   final dynamic itemNameAlt;
@@ -868,7 +867,7 @@ class TxSalesDetail {
   final dynamic itemPosName;
   final dynamic itemPosNameAlt;
   final int departmentId;
-  final DepartmentName departmentName;
+  final String departmentName;
   final bool isPointPaidItem;
   final int amountPoint;
   final int point;
@@ -888,7 +887,7 @@ class TxSalesDetail {
   final dynamic apiGatewayRefId;
   final dynamic apiGatewayRefRemark;
   final int amountItemDiscount;
-  final int amountItemTaxation;
+  final double amountItemTaxation;
   final int amountItemSurcharge;
   final dynamic promoHeaderId;
   final dynamic promoDeductAmount;
@@ -1038,7 +1037,7 @@ class TxSalesDetail {
   });
 
   factory TxSalesDetail.fromJson(Map<String, dynamic> json) => TxSalesDetail(
-        categoryName: categoryNameValues.map[json["categoryName"]]!,
+        categoryName: json["categoryName"],
         isPriceInPercentage: json["isPriceInPercentage"],
         departmentRevenueAmount: json["departmentRevenueAmount"],
         promoCode: json["promoCode"],
@@ -1057,21 +1056,20 @@ class TxSalesDetail {
         itemOrderRunningIndex: json["itemOrderRunningIndex"],
         orderDateTime: DateTime.parse(json["orderDateTime"]),
         orderUserId: json["orderUserId"],
-        orderUserName: cashierUserNameValues.map[json["orderUserName"]]!,
+        orderUserName: json["orderUserName"],
         itemId: json["itemId"],
         categoryId: json["categoryId"],
         itemCode: json["itemCode"],
         itemName: json["itemName"],
         itemNameAlt2: json["itemNameAlt2"],
         qty: json["qty"],
-        price: json["price"]?.toDouble(),
-        amount: json["amount"]?.toDouble(),
+        price: json["price"],
+        amount: json["amount"],
         enabled: json["enabled"],
         voided: json["voided"],
         printedKitchen: json["printedKitchen"],
         printedKitchenByUserId: json["printedKitchenByUserId"],
-        printedKitchenByUserName:
-            cashierUserNameValues.map[json["printedKitchenByUserName"]]!,
+        printedKitchenByUserName: json["printedKitchenByUserName"],
         printedKitchenDateTime: DateTime.parse(json["printedKitchenDateTime"]),
         disabledReasonId: json["disabledReasonId"],
         disabledReasonDesc: json["disabledReasonDesc"],
@@ -1083,9 +1081,9 @@ class TxSalesDetail {
         chaseUserName: json["chaseUserName"],
         chaseDateTime: json["chaseDateTime"],
         createdDate: DateTime.parse(json["createdDate"]),
-        createdBy: cashierUserNameValues.map[json["createdBy"]]!,
+        createdBy: json["createdBy"],
         modifiedDate: DateTime.parse(json["modifiedDate"]),
-        modifiedBy: cashierUserNameValues.map[json["modifiedBy"]]!,
+        modifiedBy: json["modifiedBy"],
         isPromoComboItem: json["isPromoComboItem"],
         shopId: json["shopId"],
         itemNameAlt: json["itemNameAlt"],
@@ -1094,7 +1092,7 @@ class TxSalesDetail {
         itemPosName: json["itemPosName"],
         itemPosNameAlt: json["itemPosNameAlt"],
         departmentId: json["departmentId"],
-        departmentName: departmentNameValues.map[json["departmentName"]]!,
+        departmentName: json["departmentName"],
         isPointPaidItem: json["isPointPaidItem"],
         amountPoint: json["amountPoint"],
         point: json["point"],
@@ -1114,7 +1112,7 @@ class TxSalesDetail {
         apiGatewayRefId: json["apiGatewayRefId"],
         apiGatewayRefRemark: json["apiGatewayRefRemark"],
         amountItemDiscount: json["amountItemDiscount"],
-        amountItemTaxation: json["amountItemTaxation"],
+        amountItemTaxation: json["amountItemTaxation"]?.toDouble(),
         amountItemSurcharge: json["amountItemSurcharge"],
         promoHeaderId: json["promoHeaderId"],
         promoDeductAmount: json["promoDeductAmount"],
@@ -1155,7 +1153,7 @@ class TxSalesDetail {
       );
 
   Map<String, dynamic> toJson() => {
-        "categoryName": categoryNameValues.reverse[categoryName],
+        "categoryName": categoryName,
         "isPriceInPercentage": isPriceInPercentage,
         "departmentRevenueAmount": departmentRevenueAmount,
         "promoCode": promoCode,
@@ -1174,7 +1172,7 @@ class TxSalesDetail {
         "itemOrderRunningIndex": itemOrderRunningIndex,
         "orderDateTime": orderDateTime.toIso8601String(),
         "orderUserId": orderUserId,
-        "orderUserName": cashierUserNameValues.reverse[orderUserName],
+        "orderUserName": orderUserName,
         "itemId": itemId,
         "categoryId": categoryId,
         "itemCode": itemCode,
@@ -1187,8 +1185,7 @@ class TxSalesDetail {
         "voided": voided,
         "printedKitchen": printedKitchen,
         "printedKitchenByUserId": printedKitchenByUserId,
-        "printedKitchenByUserName":
-            cashierUserNameValues.reverse[printedKitchenByUserName],
+        "printedKitchenByUserName": printedKitchenByUserName,
         "printedKitchenDateTime": printedKitchenDateTime.toIso8601String(),
         "disabledReasonId": disabledReasonId,
         "disabledReasonDesc": disabledReasonDesc,
@@ -1200,9 +1197,9 @@ class TxSalesDetail {
         "chaseUserName": chaseUserName,
         "chaseDateTime": chaseDateTime,
         "createdDate": createdDate.toIso8601String(),
-        "createdBy": cashierUserNameValues.reverse[createdBy],
+        "createdBy": createdBy,
         "modifiedDate": modifiedDate.toIso8601String(),
-        "modifiedBy": cashierUserNameValues.reverse[modifiedBy],
+        "modifiedBy": modifiedBy,
         "isPromoComboItem": isPromoComboItem,
         "shopId": shopId,
         "itemNameAlt": itemNameAlt,
@@ -1211,7 +1208,7 @@ class TxSalesDetail {
         "itemPosName": itemPosName,
         "itemPosNameAlt": itemPosNameAlt,
         "departmentId": departmentId,
-        "departmentName": departmentNameValues.reverse[departmentName],
+        "departmentName": departmentName,
         "isPointPaidItem": isPointPaidItem,
         "amountPoint": amountPoint,
         "point": point,
@@ -1269,28 +1266,4 @@ class TxSalesDetail {
             List<dynamic>.from(rawMaterialTxSalesDetail.map((x) => x)),
         "txSalesDetailLog": List<dynamic>.from(txSalesDetailLog.map((x) => x)),
       };
-}
-
-enum CategoryName { BREAKFAST, DINNER, LUNCH }
-
-final categoryNameValues = EnumValues({
-  "Breakfast": CategoryName.BREAKFAST,
-  "Dinner": CategoryName.DINNER,
-  "Lunch": CategoryName.LUNCH
-});
-
-enum DepartmentName { KITCHEN }
-
-final departmentNameValues = EnumValues({"Kitchen": DepartmentName.KITCHEN});
-
-class EnumValues<T> {
-  Map<String, T> map;
-  late Map<T, String> reverseMap;
-
-  EnumValues(this.map);
-
-  Map<T, String> get reverse {
-    reverseMap = map.map((k, v) => MapEntry(v, k));
-    return reverseMap;
-  }
 }

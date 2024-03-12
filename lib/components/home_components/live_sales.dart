@@ -1,6 +1,5 @@
 // ignore_for_file: must_be_immutable, unnecessary_string_interpolations
 
-import 'package:intl/intl.dart';
 import 'package:live_manage_dinesoft/system_all_library.dart';
 
 import 'dart:async';
@@ -168,45 +167,45 @@ class LiveSalesState extends State<LiveSales> {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 206, 206, 202),
+        color: Color.fromARGB(255, 238, 238, 236),
         borderRadius: BorderRadius.circular(10.0),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            '${AppLocalizations.of(context)!.date}: ${DateFormat('yyyy-MM-dd').format(widget.selectedDate)}',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(
-            height: 2.h,
-          ),
+          // Text(
+          //   '${AppLocalizations.of(context)!.date}: ${DateFormat('yyyy-MM-dd').format(widget.selectedDate)}',
+          //   style: const TextStyle(
+          //     color: Colors.black87,
+          //     fontSize: 18,
+          //     fontWeight: FontWeight.bold,
+          //   ),
+          // ),
+          // SizedBox(
+          //   height: 2.h,
+          // ),
           Center(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 _buildSalesCard(
-                  title: '${AppLocalizations.of(context)!.grossSales}\n(RM)',
-                  future: futureSalesData,
-                  color: Colors.blue,
-                  dataSelector: (data) => data['totalSalesAmount'],
-                ),
-                _buildSalesCard(
                   title: '${AppLocalizations.of(context)!.netSales}\n(RM)',
                   future: futureNetSalesData,
-                  color: Colors.green,
+                  color: Colors.greenAccent,
                   dataSelector: (data) =>
                       calculateNetSalesAmount(data['rawData']),
+                ),
+                _buildSalesCard(
+                  title: '${AppLocalizations.of(context)!.grossSales}\n(RM)',
+                  future: futureSalesData,
+                  color: Colors.blueAccent,
+                  dataSelector: (data) => data['totalSalesAmount'],
                 ),
                 _buildSalesCard(
                   title: AppLocalizations.of(context)!
                       .count, // Uncommented for order count
                   future: futureSalesData,
-                  color: Colors.orange,
+                  color: Colors.orangeAccent,
                   dataSelector: (data) =>
                       orderCount, // Use order count as data selector
                 ),
@@ -228,7 +227,7 @@ class LiveSalesState extends State<LiveSales> {
       child: Card(
         elevation: 4,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
         ),
         color: color,
         child: Container(

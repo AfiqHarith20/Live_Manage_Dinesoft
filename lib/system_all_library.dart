@@ -47,3 +47,4 @@ export 'package:live_manage_dinesoft/pages/home_page.dart';
 export 'package:live_manage_dinesoft/pages/authentication_page.dart';
 export 'package:live_manage_dinesoft/pages/setting_page.dart';
 export 'package:live_manage_dinesoft/pages/drawer_page.dart';
+export 'package:live_manage_dinesoft/pages/comparison_page.dart';

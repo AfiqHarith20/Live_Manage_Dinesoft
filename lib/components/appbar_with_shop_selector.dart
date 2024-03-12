@@ -36,14 +36,15 @@ class AppBarWithShopSelectorState extends State<AppBarWithShopSelector> {
   Map<String, String> _shopTokens = {};
   String? _errorMessage;
   bool _isLoading = false;
-  bool _isDropdownOpen = false;
   late Timer _timer; // Declare the timer variable
+  late String selectedShopName;
 
   @override
   void initState() {
     super.initState();
     _isLoading = true;
     _selectedShop = widget.shopToken;
+    // selectedShopName = _selectedShop;
     _fetchShops();
 
     // Initialize the timer in initState
@@ -94,6 +95,8 @@ class AppBarWithShopSelectorState extends State<AppBarWithShopSelector> {
                   : '';
           _isLoading = false;
         });
+        // Pass the selected shop name to the HomePage widget
+        widget.onShopSelected(_selectedShop, widget.accessToken, _selectedShop);
       } else {
         print('Failed to fetch shops');
         setState(() {
@@ -111,11 +114,9 @@ class AppBarWithShopSelectorState extends State<AppBarWithShopSelector> {
   }
 
   void _handleShopSelection(String? selectedShop) {
-    print('Selected shop from Dropdown: $selectedShop');
     if (selectedShop != null) {
       setState(() {
         _selectedShop = selectedShop;
-        print('Updated _selectedShop: $_selectedShop');
       });
 
       // Get the secret code (shop token) corresponding to the selected shop
@@ -139,6 +140,7 @@ class AppBarWithShopSelectorState extends State<AppBarWithShopSelector> {
             shopToken: secretCode,
             username: widget.username,
             password: widget.password,
+            // selectedShopName: selectedShopName,
             onShopSelected: widget.onShopSelected,
           ),
         ),
@@ -155,8 +157,8 @@ class AppBarWithShopSelectorState extends State<AppBarWithShopSelector> {
       await prefs.setString('secretCode', secretCode);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Tokens saved successfully.'),
+        SnackBar(
+          content: Text('Successfully changed shop to $_selectedShop.'),
         ),
       );
     } catch (e) {
@@ -171,77 +173,42 @@ class AppBarWithShopSelectorState extends State<AppBarWithShopSelector> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: _isLoading
-              ? const CircularProgressIndicator(strokeWidth: 2)
-              : _errorMessage != null
-                  ? Text(_errorMessage!,
-                      style: const TextStyle(color: Colors.red))
-                  : Builder(
-                      builder: (BuildContext context) {
-                        return Column(
+    return SizedBox(
+      height: kToolbarHeight * 3, // Increase the height as needed
+      child: SingleChildScrollView(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: _isLoading
+                  ? const CircularProgressIndicator(strokeWidth: 2)
+                  : _errorMessage != null
+                      ? Text(
+                          _errorMessage!,
+                          style: const TextStyle(color: Colors.red),
+                        )
+                      : Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            DropdownButton<String>(
-                              value: _selectedShop,
-                              onChanged: (newValue) {
-                                _handleShopSelection(newValue);
-                                setState(() {
-                                  _isDropdownOpen = false;
-                                });
-                              },
-                              style: const TextStyle(color: Colors.black),
-                              underline:
-                                  Container(height: 2, color: Colors.grey),
-                              items: _shops
-                                  .map<DropdownMenuItem<String>>(
-                                    (String value) => DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(
-                                        value,
-                                        style: const TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                  .toList(),
-                              hint: !_isDropdownOpen || _selectedShop != null
-                                  ? Text(
-                                      _selectedShop,
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    )
-                                  : null, // Show selected shop only when dropdown is open
-                              onTap: () {
-                                setState(() {
-                                  _isDropdownOpen = true;
-                                });
-                              },
-                            ),
-                            // Show selected shop name if it's not null
-                            Text(
-                              'Selected Shop: $_selectedShop',
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                          children: _shops.map((shop) {
+                            return ListTile(
+                              title: Text(
+                                shop,
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
+                              onTap: () {
+                                _handleShopSelection(shop);
+                              },
+                            );
+                          }).toList(),
+                        ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

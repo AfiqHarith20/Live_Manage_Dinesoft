@@ -19,6 +19,8 @@ class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController userNameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController urlController = TextEditingController();
+  late String selectedShopName;
 
   Future<bool> _validateLoginResponse(http.Response response) async {
     if (response.statusCode == 200) {
@@ -119,6 +121,8 @@ class _LoginPageState extends State<LoginPage> {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('username', username);
       await prefs.setString('password', password);
+      await prefs.setString('access_token', accessToken);
+      await prefs.setString('shop_token', secretCode);
 
       // Print the tokens before saving
       print('Access Token: $accessToken');
@@ -127,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
       // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Tokens saved successfully.'),
+          content: Text('Login successfully.'),
         ),
       );
 
@@ -141,6 +145,7 @@ class _LoginPageState extends State<LoginPage> {
             onShopSelected: onShopSelected,
             username: username,
             password: password,
+            // selectedShopName: selectedShopName,
           ),
         ),
       );
@@ -159,6 +164,7 @@ class _LoginPageState extends State<LoginPage> {
   void dispose() {
     userNameController.dispose();
     passwordController.dispose();
+    urlController.dispose();
     super.dispose();
   }
 
@@ -217,6 +223,36 @@ class _LoginPageState extends State<LoginPage> {
                           SizedBox(
                             width: 85.w,
                             child: TextFormField(
+                              controller: urlController,
+                              decoration: InputDecoration(
+                                prefixIcon: const Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 10.0,
+                                    horizontal: 15.0,
+                                  ),
+                                  child: FaIcon(FontAwesomeIcons.link),
+                                ),
+                                hintText:
+                                    'URL Domain', // Placeholder text for URL domain
+                                hintStyle: AppTextStyle.hint,
+                                enabledBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.black),
+                                ),
+                                fillColor: Colors.white,
+                                filled: true,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 10.0,
+                                  horizontal: 15.0,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 3.h,
+                          ),
+                          SizedBox(
+                            width: 85.w,
+                            child: TextFormField(
                               validator: (value) {
                                 if (value?.isEmpty ?? true) {
                                   return 'Please enter your username';
@@ -240,7 +276,7 @@ class _LoginPageState extends State<LoginPage> {
                                 enabledBorder: const OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.black),
                                 ),
-                                fillColor: colorScheme.surface,
+                                fillColor: Colors.white,
                                 filled: true,
                                 contentPadding: const EdgeInsets.symmetric(
                                   vertical: 10.0,
