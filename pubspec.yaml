@@ -53,6 +53,8 @@ dependencies:
   rename: ^3.0.1
   graphic: ^2.2.1
   flutter_speed_dial: ^7.0.0
+  percent_indicator: ^4.2.3
+  loading_indicator: ^3.1.1
 
 dev_dependencies:
   flutter_test:

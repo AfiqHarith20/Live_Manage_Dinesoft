@@ -14,6 +14,8 @@ export 'package:rename/rename.dart';
 export 'package:graphic/graphic.dart';
 export 'package:flutter_speed_dial/flutter_speed_dial.dart';
 export 'package:flutter_secure_storage/flutter_secure_storage.dart';
+export 'package:percent_indicator/percent_indicator.dart';
+export 'package:loading_indicator/loading_indicator.dart';
 
 //theme
 export 'package:live_manage_dinesoft/theme/signature_theme/app_color.dart';

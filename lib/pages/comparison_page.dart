@@ -46,7 +46,18 @@ class _ComparingPageState extends State<ComparingPage> {
       future: Future.wait([todaySalesData, yesterdaySalesData]),
       builder: (context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+            child: SizedBox(
+              height: 20.h, // Set the desired height here
+              child: const LoadingIndicator(
+                indicatorType: Indicator.ballClipRotateMultiple,
+                colors: [Colors.orangeAccent],
+                strokeWidth: 3,
+                backgroundColor: Colors.transparent,
+                pathBackgroundColor: Colors.transparent,
+              ),
+            ),
+          );
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (!snapshot.hasData ||

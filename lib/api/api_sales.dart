@@ -24,7 +24,7 @@ Future<Map<String, dynamic>> fetchSalesData(
     );
 
     // Print the response body for debugging
-    print('Response Body: ${response.body}');
+    // print('Response Body: ${response.body}');
 
     if (response.statusCode == 200) {
       final dynamic responseBody = jsonDecode(response.body);

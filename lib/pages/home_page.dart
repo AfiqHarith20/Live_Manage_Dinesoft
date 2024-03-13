@@ -96,7 +96,8 @@ class _HomePageState extends State<HomePage> {
       drawer: DrawerPage(
         accessToken: widget.accessToken,
         shopToken: widget.shopToken,
-        selectedDate: selectedDate,
+        selectedDate: selectedDate, username: widget.username,
+        password: widget.password,
         // selectedShop: widget.selectedShopName,
       ),
       appBar: AppBar(

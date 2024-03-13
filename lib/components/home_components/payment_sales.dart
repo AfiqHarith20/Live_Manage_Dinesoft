@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:live_manage_dinesoft/system_all_library.dart';
 
 class PaymentSales extends StatefulWidget {
@@ -220,11 +219,7 @@ class _PaymentSalesState extends State<PaymentSales> {
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16.0),
-        gradient: const LinearGradient(
-          colors: [Color(0xFF6E63FF), Color(0xFF967ADC)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: Colors.white, // Use a light background color
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.3),
@@ -237,78 +232,35 @@ class _PaymentSalesState extends State<PaymentSales> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.0),
-              color: Colors.white,
-            ),
-            child: Column(
-              children: <Widget>[
-                PaymentChart(chartData: chartData),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 2.h,
-          ),
+          // Payment Chart Widget
+          PaymentChart(chartData: chartData),
+
+          const SizedBox(height: 16), // Add spacing
+
           Text(
             AppLocalizations.of(context)!.paymentListType,
-            style: AppTextStyle.titleMedium.copyWith(color: Colors.white),
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black, // Use a readable text color
+            ),
           ),
           const SizedBox(height: 8.0),
+
+          // Payment Details Widgets
           if (paymentData.isNotEmpty &&
               paymentData.containsKey('paymentTypeDetails'))
             Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: paymentData['paymentTypeDetails']
                   .entries
                   .map<Widget>((entry) {
                 final paymentType = entry.key;
                 final count = entry.value['count'];
                 final totalAmount = entry.value['totalAmount'];
-                return Column(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 8.0),
-                      padding: const EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                paymentType,
-                                style: AppTextStyle.titleSmall
-                                    .copyWith(color: Colors.black),
-                              ),
-                              Text(
-                                '${AppLocalizations.of(context)!.cnt}: $count',
-                                style: AppTextStyle.textsmall
-                                    .copyWith(color: Colors.black),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 3.h, // Adjust the height as needed
-                          ),
-                          Text(
-                            '${AppLocalizations.of(context)!.totalAmount}: RM${totalAmount.toStringAsFixed(2)}',
-                            style: AppTextStyle.textsmall
-                                .copyWith(color: Colors.black),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 3.h,
-                    ), // Space between payment entries
-                  ],
+                return PaymentDetailsWidget(
+                  paymentType: paymentType,
+                  count: count,
+                  totalAmount: totalAmount,
                 );
               }).toList(),
             )
@@ -316,11 +268,70 @@ class _PaymentSalesState extends State<PaymentSales> {
             Center(
               child: Text(
                 AppLocalizations.of(context)!.msgNoPayment,
-                style: AppTextStyle.titleMedium.copyWith(
-                  color: Colors.white,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey, // Use a muted color for messages
                 ),
               ),
             ),
+        ],
+      ),
+    );
+  }
+}
+
+// PaymentDetailsWidget for displaying payment details
+class PaymentDetailsWidget extends StatelessWidget {
+  final String paymentType;
+  final int count;
+  final double totalAmount;
+
+  const PaymentDetailsWidget({
+    super.key,
+    required this.paymentType,
+    required this.count,
+    required this.totalAmount,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8.0),
+      padding: const EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        color: Colors.grey[200], // Use a light background color
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                paymentType,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                '${AppLocalizations.of(context)!.cnt}: $count',
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.black54, // Use a muted color for counts
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            '${AppLocalizations.of(context)!.totalAmount}: RM${totalAmount.toStringAsFixed(2)}',
+            style: const TextStyle(
+              fontSize: 14,
+              color: Colors.black87, // Use a slightly darker color for amounts
+            ),
+          ),
         ],
       ),
     );

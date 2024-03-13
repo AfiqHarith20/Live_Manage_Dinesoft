@@ -181,7 +181,18 @@ class AppBarWithShopSelectorState extends State<AppBarWithShopSelector> {
           children: [
             Expanded(
               child: _isLoading
-                  ? const CircularProgressIndicator(strokeWidth: 2)
+                  ? Center(
+                      child: SizedBox(
+                        height: 20.h, // Set the desired height here
+                        child: const LoadingIndicator(
+                          indicatorType: Indicator.ballClipRotateMultiple,
+                          colors: [Colors.orangeAccent],
+                          strokeWidth: 3,
+                          backgroundColor: Colors.transparent,
+                          pathBackgroundColor: Colors.transparent,
+                        ),
+                      ),
+                    )
                   : _errorMessage != null
                       ? Text(
                           _errorMessage!,

@@ -11,7 +11,7 @@ class LiveSales extends StatefulWidget {
   final String shopToken;
 
   LiveSales({
-    super.key,
+    Key? key,
     required this.selectedDate,
     required this.onDateChanged,
     required this.accessToken,
@@ -74,22 +74,6 @@ class LiveSalesState extends State<LiveSales> {
       Map<String, dynamic> latestSalesData = await futureSalesData;
       Map<String, dynamic> latestNetSalesData = await futureNetSalesData;
 
-      // Print details for each txSalesDetailId and totalSales
-      latestSalesData.forEach((txSalesDetailId, sale) {
-        if (sale is Map<String, dynamic>) {
-          final totalSales = sale['amountTotal'];
-          print('TxSalesDetailId: $txSalesDetailId, TotalSales: $totalSales');
-        }
-      });
-
-      latestNetSalesData.forEach((txSalesDetailId, net) {
-        if (net is Map<String, dynamic>) {
-          final totalNetSales = net['amountSubTotal'];
-          print(
-              'TxSalesDetailId: $txSalesDetailId, TotalSubSales: $totalNetSales');
-        }
-      });
-
       // Accumulate the new payment amounts
       double newPaymentAmount =
           calculateTotalSalesAmount(latestSalesData['rawData']);
@@ -118,7 +102,7 @@ class LiveSalesState extends State<LiveSales> {
     }
   }
 
-// Function to calculate the total amount from sales data
+  // Function to calculate the total amount from sales data
   double calculateTotalSalesAmount(List<dynamic> salesDetails) {
     double totalAmount = 0.0;
     for (var salesDetail in salesDetails) {
@@ -131,7 +115,7 @@ class LiveSalesState extends State<LiveSales> {
     return double.parse(totalAmount.toStringAsFixed(2));
   }
 
-// Function to calculate the net sales amount from sales data
+  // Function to calculate the net sales amount from sales data
   double calculateNetSalesAmount(List<dynamic> salesDetails) {
     double totalAmount = 0.0;
     for (var salesDetail in salesDetails) {
@@ -167,23 +151,12 @@ class LiveSalesState extends State<LiveSales> {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: Color.fromARGB(255, 238, 238, 236),
+        color: const Color.fromARGB(255, 238, 238, 236),
         borderRadius: BorderRadius.circular(10.0),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Text(
-          //   '${AppLocalizations.of(context)!.date}: ${DateFormat('yyyy-MM-dd').format(widget.selectedDate)}',
-          //   style: const TextStyle(
-          //     color: Colors.black87,
-          //     fontSize: 18,
-          //     fontWeight: FontWeight.bold,
-          //   ),
-          // ),
-          // SizedBox(
-          //   height: 2.h,
-          // ),
           Center(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -199,7 +172,8 @@ class LiveSalesState extends State<LiveSales> {
                   title: '${AppLocalizations.of(context)!.grossSales}\n(RM)',
                   future: futureSalesData,
                   color: Colors.blueAccent,
-                  dataSelector: (data) => data['totalSalesAmount'],
+                  dataSelector: (data) =>
+                      calculateTotalSalesAmount(data['rawData']),
                 ),
                 _buildSalesCard(
                   title: AppLocalizations.of(context)!
@@ -207,7 +181,7 @@ class LiveSalesState extends State<LiveSales> {
                   future: futureSalesData,
                   color: Colors.orangeAccent,
                   dataSelector: (data) =>
-                      orderCount, // Use order count as data selector
+                      orderCount.toDouble(), // Use order count as data selector
                 ),
               ],
             ),
@@ -236,9 +210,22 @@ class LiveSalesState extends State<LiveSales> {
             future: future,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
+                return Center(
+                  child: SizedBox(
+                    height: 20.h, // Set the desired height here
+                    child: const LoadingIndicator(
+                      indicatorType: Indicator.lineScalePulseOut,
+                      colors: [
+                        Colors.orangeAccent,
+                        Colors.indigoAccent,
+                        Colors.pinkAccent,
+                        Colors.yellowAccent,
+                        Colors.purpleAccent,
+                      ],
+                      strokeWidth: 1,
+                      backgroundColor: Colors.transparent,
+                      pathBackgroundColor: Colors.transparent,
+                    ),
                   ),
                 );
               } else if (snapshot.hasError) {
@@ -273,23 +260,29 @@ class LiveSalesState extends State<LiveSales> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      CircularPercentIndicator(
+                        radius: 50.0,
+                        lineWidth: 8.0,
+                        percent: formattedValue != 'N/A'
+                            ? ((formattedValue as num) / 1000)
+                            : 0.0, // Adjust the percent as needed
+                        center: Text(
+                          '$formattedValue',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.0,
+                          ),
+                        ),
+                        backgroundColor: Colors.white,
+                        progressColor: Colors.red,
+                      ),
+                      const SizedBox(height: 8),
                       Text(
                         title,
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        formattedValue
-                            .toString(), // Ensure it's converted to a String
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

@@ -252,8 +252,7 @@ class ReportSalesState extends State<ReportSales> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  DateFormat('yyyy-MM-dd')
-                      .format(selectedDate), // Display selected date
+                  'Date: ${DateFormat('yyyy-MM-dd').format(selectedDate)}',
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -268,8 +267,17 @@ class ReportSalesState extends State<ReportSales> {
                   ),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
+                      return Center(
+                        child: SizedBox(
+                          height: 20.h, // Set the desired height here
+                          child: const LoadingIndicator(
+                            indicatorType: Indicator.ballClipRotateMultiple,
+                            colors: [Colors.orangeAccent],
+                            strokeWidth: 3,
+                            backgroundColor: Colors.transparent,
+                            pathBackgroundColor: Colors.transparent,
+                          ),
+                        ),
                       );
                     } else if (snapshot.hasError) {
                       return Text(
