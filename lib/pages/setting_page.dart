@@ -3,6 +3,7 @@
 import 'package:live_manage_dinesoft/system_all_library.dart';
 
 class SettingPage extends StatefulWidget {
+  static const String routeName = '/setting';
   const SettingPage({super.key});
 
   @override
@@ -10,18 +11,29 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
+  Future<void> logout() async {
+    // Clear user's tokens here
+    // Navigate back to the login page
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const LoginPage(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          AppLocalizations.of(context)!.settingPageContent,
+          AppLocalizations.of(context)?.settingPageContent ?? "Setting",
           style: AppTextStyle.titleMedium,
         ),
         backgroundColor: darkColorScheme.primary,
-        actions: const [
-          LocaleSwitcherWidget(),
-        ],
+        // actions: const [
+        //   LocaleSwitcherWidget(),
+        // ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -52,7 +64,8 @@ class _SettingPageState extends State<SettingPage> {
                   );
                 },
                 title: Text(
-                  AppLocalizations.of(context)!.authKeyTxt,
+                  AppLocalizations.of(context)?.authKeyTxt ??
+                      "Authentication Key",
                   style: AppTextStyle.textmedium.copyWith(
                     color: Colors.black,
                   ),
@@ -80,12 +93,41 @@ class _SettingPageState extends State<SettingPage> {
                   }
                 },
                 title: Text(
-                  AppLocalizations.of(context)!.aboutPageContent,
+                  AppLocalizations.of(context)?.aboutPageContent ??
+                      "About Page",
                   style: AppTextStyle.textmedium.copyWith(
                     color: Colors.black,
                   ),
                 ),
                 trailing: const Icon(Icons.arrow_forward_ios),
+              ),
+            ),
+            SizedBox(height: 8.h),
+            GestureDetector(
+              onTap: () {
+                logout();
+              },
+              child: Container(
+                height: 8.h,
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const FaIcon(
+                      FontAwesomeIcons.rightFromBracket,
+                    ),
+                    SizedBox(
+                      width: 2.h,
+                    ),
+                    Text(
+                      AppLocalizations.of(context)?.logoutBtn ?? 'Log Out',
+                      style: AppTextStyle.textmedium,
+                    ),
+                  ],
+                ),
               ),
             ),
             // Add more Container widgets with ListTile for additional settings

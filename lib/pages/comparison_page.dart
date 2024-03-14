@@ -68,22 +68,22 @@ class _ComparingPageState extends State<ComparingPage> {
           Map<String, dynamic>? todayData = snapshot.data![0];
           Map<String, dynamic>? yesterdayData = snapshot.data![1];
 
-          double todayTotalSalesAmount = todayData?['rawData'] != null
+          double todayTotalSalesAmount = todayData['rawData'] != null
               ? calculateTotalSalesAmount(todayData['rawData'])
               : 0.0;
-          double yesterdayTotalSalesAmount = yesterdayData?['rawData'] != null
+          double yesterdayTotalSalesAmount = yesterdayData['rawData'] != null
               ? calculateTotalSalesAmount(yesterdayData['rawData'])
               : 0.0;
-          double todayNetSalesAmount = todayData?['rawData'] != null
+          double todayNetSalesAmount = todayData['rawData'] != null
               ? calculateNetSalesAmount(todayData['rawData'])
               : 0.0;
-          double yesterdayNetSalesAmount = yesterdayData?['rawData'] != null
+          double yesterdayNetSalesAmount = yesterdayData['rawData'] != null
               ? calculateNetSalesAmount(yesterdayData['rawData'])
               : 0.0;
-          int todayOrderCount = todayData?['rawData'] != null
+          int todayOrderCount = todayData['rawData'] != null
               ? calculateOrderCount(todayData['rawData'])
               : 0;
-          int yesterdayOrderCount = yesterdayData?['rawData'] != null
+          int yesterdayOrderCount = yesterdayData['rawData'] != null
               ? calculateOrderCount(yesterdayData['rawData'])
               : 0;
 
