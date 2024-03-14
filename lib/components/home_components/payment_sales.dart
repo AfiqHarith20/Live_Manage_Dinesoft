@@ -238,7 +238,8 @@ class _PaymentSalesState extends State<PaymentSales> {
           const SizedBox(height: 16), // Add spacing
 
           Text(
-            AppLocalizations.of(context)!.paymentListType,
+            AppLocalizations.of(context)?.paymentListType ??
+                'Payment Type List',
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -267,7 +268,8 @@ class _PaymentSalesState extends State<PaymentSales> {
           else
             Center(
               child: Text(
-                AppLocalizations.of(context)!.msgNoPayment,
+                AppLocalizations.of(context)?.msgNoPayment ??
+                    'No Payment Happen',
                 style: const TextStyle(
                   fontSize: 16,
                   color: Colors.grey, // Use a muted color for messages
@@ -316,7 +318,7 @@ class PaymentDetailsWidget extends StatelessWidget {
                 ),
               ),
               Text(
-                '${AppLocalizations.of(context)!.cnt}: $count',
+                '${AppLocalizations.of(context)?.cnt ?? 'count'}: $count',
                 style: const TextStyle(
                   fontSize: 14,
                   color: Colors.black54, // Use a muted color for counts
@@ -326,7 +328,7 @@ class PaymentDetailsWidget extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            '${AppLocalizations.of(context)!.totalAmount}: RM${totalAmount.toStringAsFixed(2)}',
+            '${AppLocalizations.of(context)?.totalAmount ?? 'Total Amount'}: RM${totalAmount.toStringAsFixed(2)}',
             style: const TextStyle(
               fontSize: 14,
               color: Colors.black87, // Use a slightly darker color for amounts

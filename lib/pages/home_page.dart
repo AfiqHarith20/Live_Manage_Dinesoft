@@ -7,7 +7,6 @@ import 'dart:async';
 class HomePage extends StatefulWidget {
   late String accessToken;
   late String shopToken;
-  // late String selectedShopName;
   final String username;
   final String password;
   final Function(String, String, String) onShopSelected;
@@ -16,7 +15,6 @@ class HomePage extends StatefulWidget {
     required this.accessToken,
     required this.shopToken,
     required this.username,
-    // required this.selectedShopName,
     required this.password,
     required this.onShopSelected,
   });
@@ -25,11 +23,13 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with AutomaticKeepAliveClientMixin {
   bool _loading = true;
   DateTime selectedDate = DateTime.now();
   final GlobalKey<LiveSalesState> liveSalesKey = GlobalKey();
   final GlobalKey<ReportSalesState> reportSalesKey = GlobalKey();
+  bool get wantKeepAlive => true;
 
   // Add a method to simulate content loading
   void loadData() {
@@ -90,13 +90,30 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void _handleLeftIconPress() {
+    // Handle left icon press to change date or day
+    // Example: Decrease date by one day
+    setState(() {
+      selectedDate = selectedDate.subtract(const Duration(days: 1));
+    });
+
+    // Update the selected date in LiveSales and ReportSales
+    liveSalesKey.currentState?.updateDate(selectedDate);
+    reportSalesKey.currentState?.updateDate(selectedDate);
+
+    // Reload data or perform necessary actions
+    loadData();
+  }
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       drawer: DrawerPage(
         accessToken: widget.accessToken,
         shopToken: widget.shopToken,
-        selectedDate: selectedDate, username: widget.username,
+        selectedDate: selectedDate,
+        username: widget.username,
         password: widget.password,
         // selectedShop: widget.selectedShopName,
       ),
@@ -114,7 +131,7 @@ class _HomePageState extends State<HomePage> {
           },
         ),
         title: Text(
-          AppLocalizations.of(context)!.homePageTitle,
+          AppLocalizations.of(context)?.homePageTitle ?? 'Home',
           style: AppTextStyle.titleMedium,
         ),
         backgroundColor: darkColorScheme.primary,
@@ -164,17 +181,7 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       IconButton(
                         onPressed: () {
-                          // Handle left icon press to change date or day
-                          // Example: Decrease date by one day
-                          setState(() {
-                            selectedDate =
-                                selectedDate.subtract(const Duration(days: 1));
-                            liveSalesKey.currentState?.updateDate(selectedDate);
-                            reportSalesKey.currentState
-                                ?.updateDate(selectedDate);
-                            // Reload data or perform necessary actions
-                            loadData();
-                          });
+                          _handleLeftIconPress();
                         },
                         icon: const Icon(Icons.keyboard_arrow_left),
                       ),
@@ -209,23 +216,13 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ],
                   ),
-                  // Skeletonizer(
-                  //   enabled: _loading,
-                  //   child: AppBarWithShopSelector(
-                  //     accessToken: widget.accessToken,
-                  //     shopToken: widget.shopToken,
-                  //     username: widget.username,
-                  //     password: widget.password,
-                  //     onShopSelected: _handleShopSelection,
-                  //   ),
-                  // ),
                   Skeletonizer(
                     enabled: _loading,
                     child: LiveSales(
                       selectedDate: selectedDate,
                       onDateChanged: (newDate) {
                         // Update the selected date in ReportSales
-                        reportSalesKey.currentState?.updateDate(newDate);
+                        reportSalesKey.currentState!.updateDate(newDate);
                       },
                       accessToken: widget.accessToken,
                       shopToken: widget.shopToken,
@@ -259,19 +256,13 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      // floatingActionButton: SpeedDial(
-      //   icon: Icons.add,
-      //   tooltip: AppLocalizations.of(context)!.selectDate,
-      //   backgroundColor: Colors.blue,
-      //   foregroundColor: Colors.white,
-      //   children: [
-      //     SpeedDialChild(
-      //       child: const FaIcon(FontAwesomeIcons.calendar),
-      //       label: AppLocalizations.of(context)!.selectDate,
-      //       onTap: () => _selectDate(context),
-      //     ),
-      //   ],
+      // bottomNavigationBar: CustomBottomNavBar(
+      //   accessToken: widget.accessToken,
+      //   shopToken: widget.shopToken,
+      //   username: widget.username,
+      //   password: widget.password,
+      //   selectedDate: selectedDate,
+      //   onShopSelected: widget.onShopSelected,
       // ),
     );
   }

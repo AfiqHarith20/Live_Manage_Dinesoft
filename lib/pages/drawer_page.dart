@@ -1,5 +1,3 @@
-import 'package:live_manage_dinesoft/pages/shop_list_page.dart';
-import 'package:live_manage_dinesoft/pages/table_page.dart';
 import 'package:live_manage_dinesoft/system_all_library.dart';
 
 class DrawerPage extends StatefulWidget {
@@ -84,7 +82,8 @@ class _DrawerPageState extends State<DrawerPage> {
                     width: 2.h,
                   ),
                   Text(
-                    AppLocalizations.of(context)!.salesReportPageTitle,
+                    AppLocalizations.of(context)?.salesReportPageTitle ??
+                        "Sales Report",
                     style: AppTextStyle.textmedium,
                   ),
                 ],
@@ -99,6 +98,7 @@ class _DrawerPageState extends State<DrawerPage> {
                   builder: (context) => TablePage(
                     accessToken: widget.accessToken,
                     shopToken: widget.shopToken,
+                    selectedDate: widget.selectedDate,
                   ),
                 ),
               );
@@ -118,7 +118,8 @@ class _DrawerPageState extends State<DrawerPage> {
                     width: 2.h,
                   ),
                   Text(
-                    AppLocalizations.of(context)!.salesReportPageTitle,
+                    AppLocalizations.of(context)?.salesReportPageTitle ??
+                        "Table Report",
                     style: AppTextStyle.textmedium,
                   ),
                 ],
@@ -151,7 +152,7 @@ class _DrawerPageState extends State<DrawerPage> {
                     width: 2.h,
                   ),
                   Text(
-                    AppLocalizations.of(context)!.settingPageTitle,
+                    AppLocalizations.of(context)?.settingPageTitle ?? "Setting",
                     style: AppTextStyle.textmedium,
                   ),
                 ],
@@ -178,7 +179,7 @@ class _DrawerPageState extends State<DrawerPage> {
                     width: 2.h,
                   ),
                   Text(
-                    AppLocalizations.of(context)!.logoutBtn,
+                    AppLocalizations.of(context)?.logoutBtn ?? "Log Out",
                     style: AppTextStyle.textmedium,
                   ),
                 ],

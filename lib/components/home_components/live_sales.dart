@@ -162,22 +162,24 @@ class LiveSalesState extends State<LiveSales> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 _buildSalesCard(
-                  title: '${AppLocalizations.of(context)!.netSales}\n(RM)',
+                  title:
+                      '${AppLocalizations.of(context)?.netSales ?? 'Net Sales'}\n(RM)',
                   future: futureNetSalesData,
                   color: Colors.greenAccent,
                   dataSelector: (data) =>
                       calculateNetSalesAmount(data['rawData']),
                 ),
                 _buildSalesCard(
-                  title: '${AppLocalizations.of(context)!.grossSales}\n(RM)',
+                  title:
+                      '${AppLocalizations.of(context)?.grossSales ?? 'Gross Sales'}\n(RM)',
                   future: futureSalesData,
                   color: Colors.blueAccent,
                   dataSelector: (data) =>
                       calculateTotalSalesAmount(data['rawData']),
                 ),
                 _buildSalesCard(
-                  title: AppLocalizations.of(context)!
-                      .count, // Uncommented for order count
+                  title: AppLocalizations.of(context)?.count ??
+                      'Count', // Uncommented for order count
                   future: futureSalesData,
                   color: Colors.orangeAccent,
                   dataSelector: (data) =>

@@ -19,7 +19,6 @@ class MyApp extends StatelessWidget {
         final accessToken = snapshot.data?['access_token'] ?? '';
         final shopToken = snapshot.data?['shop_token'] ?? '';
         final isLoggedIn = snapshot.data?['is_logged_in'] == 'true';
-        final selectedShopName = snapshot.data?['selectedShop'] ?? '';
 
         if (isLoggedIn && accessToken.isNotEmpty && shopToken.isNotEmpty) {
           return ChangeNotifierProvider(

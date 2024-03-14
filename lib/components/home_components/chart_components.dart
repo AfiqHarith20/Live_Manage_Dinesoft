@@ -20,7 +20,8 @@ class _PaymentChartState extends State<PaymentChart> {
     if (widget.chartData.isEmpty) {
       return Center(
         child: Text(
-          AppLocalizations.of(context)!.noChartAvailable,
+          AppLocalizations.of(context)?.noChartAvailable ??
+              'No Chart Available',
           style: AppTextStyle.titleMedium,
         ),
       );

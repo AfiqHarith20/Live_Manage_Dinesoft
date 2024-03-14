@@ -221,7 +221,7 @@ class ReportSalesState extends State<ReportSales> {
       appBar: AppBar(
         backgroundColor: darkColorScheme.primary,
         title: Text(
-          AppLocalizations.of(context)!.salesReportPageTitle,
+          AppLocalizations.of(context)?.salesReportPageTitle ?? 'Sales Report',
           style: AppTextStyle.titleMedium,
         ),
         actions: <Widget>[
@@ -291,7 +291,8 @@ class ReportSalesState extends State<ReportSales> {
                         (snapshot.data as List).isEmpty) {
                       return Center(
                         child: Text(
-                          AppLocalizations.of(context)!.noSalesAvailable,
+                          AppLocalizations.of(context)?.noSalesAvailable ??
+                              "No Sales Available",
                           style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 16,
@@ -360,11 +361,11 @@ class ReportSalesState extends State<ReportSales> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            '${AppLocalizations.of(context)!.totalQty}: ${entry.value['quantity']}',
+                                            '${AppLocalizations.of(context)?.totalQty ?? "Quantity"}: ${entry.value['quantity']}',
                                             style: AppTextStyle.textsmall,
                                           ),
                                           Text(
-                                            '${AppLocalizations.of(context)!.totalPrice}: RM${entry.value['price'].toStringAsFixed(2)}',
+                                            '${AppLocalizations.of(context)?.totalPrice ?? "Total Price"}: RM${entry.value['price'].toStringAsFixed(2)}',
                                             style: AppTextStyle.textsmall,
                                           ),
                                         ],
