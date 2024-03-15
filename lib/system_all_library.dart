@@ -16,7 +16,8 @@ export 'package:flutter_speed_dial/flutter_speed_dial.dart';
 export 'package:flutter_secure_storage/flutter_secure_storage.dart';
 export 'package:percent_indicator/percent_indicator.dart';
 export 'package:loading_indicator/loading_indicator.dart';
-export 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
+export 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+export 'package:go_router/go_router.dart';
 
 //theme
 export 'package:live_manage_dinesoft/theme/signature_theme/app_color.dart';
@@ -44,6 +45,7 @@ export 'package:live_manage_dinesoft/components/home_components/chart_components
 export 'package:live_manage_dinesoft/components/shop_selection_dialog.dart';
 export 'package:live_manage_dinesoft/components/shop_selector.dart';
 export 'package:live_manage_dinesoft/components/appbar_with_shop_selector.dart';
+export 'package:live_manage_dinesoft/components/app_navigation/app_navigation.dart';
 
 //page
 export 'package:live_manage_dinesoft/pages/login_page.dart';

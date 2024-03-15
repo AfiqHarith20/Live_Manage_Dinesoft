@@ -7,12 +7,17 @@ class TablePage extends StatefulWidget {
   final String accessToken;
   final String shopToken;
   final DateTime selectedDate;
-
+  final String username;
+  final String password;
+  final Function(String, String, String) onShopSelected;
   const TablePage({
     super.key,
     required this.accessToken,
     required this.shopToken,
     required this.selectedDate,
+    required this.username,
+    required this.password,
+    required this.onShopSelected,
   });
 
   @override
@@ -21,6 +26,7 @@ class TablePage extends StatefulWidget {
 
 class _TablePageState extends State<TablePage> {
   late Future<List<Map<String, dynamic>>> tableDataFuture;
+  late StatefulNavigationShell navigationShell;
 
   @override
   void initState() {
@@ -135,6 +141,15 @@ class _TablePageState extends State<TablePage> {
             );
           }
         },
+      ),
+      bottomNavigationBar: CustomBottomNavBar(
+        accessToken: widget.accessToken,
+        shopToken: widget.shopToken,
+        username: widget.username,
+        password: widget.password,
+        selectedDate: widget.selectedDate,
+        onShopSelected: widget.onShopSelected,
+        navigationShell: navigationShell,
       ),
     );
   }

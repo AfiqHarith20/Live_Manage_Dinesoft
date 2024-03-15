@@ -60,6 +60,9 @@ class _DrawerPageState extends State<DrawerPage> {
                     selectedDate: widget.selectedDate, // Pass selectedDate
                     accessToken: widget.accessToken,
                     shopToken: widget.shopToken,
+                    username: widget.username,
+                    password: widget.password,
+                    onShopSelected: (p0, p1, p2) {},
                     // selectedShopName: widget.selectedShop,
                   ),
                 ),
@@ -96,9 +99,12 @@ class _DrawerPageState extends State<DrawerPage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => TablePage(
+                    selectedDate: widget.selectedDate, // Pass selectedDate
                     accessToken: widget.accessToken,
                     shopToken: widget.shopToken,
-                    selectedDate: widget.selectedDate,
+                    username: widget.username,
+                    password: widget.password,
+                    onShopSelected: (p0, p1, p2) {},
                   ),
                 ),
               );
@@ -130,7 +136,14 @@ class _DrawerPageState extends State<DrawerPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const SettingPage(),
+                  builder: (context) => SettingPage(
+                    selectedDate: widget.selectedDate, // Pass selectedDate
+                    accessToken: widget.accessToken,
+                    shopToken: widget.shopToken,
+                    username: widget.username,
+                    password: widget.password,
+                    onShopSelected: (p0, p1, p2) {},
+                  ),
                 ),
               );
             },

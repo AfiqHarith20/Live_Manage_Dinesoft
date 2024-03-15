@@ -38,6 +38,7 @@ class AppBarWithShopSelectorState extends State<AppBarWithShopSelector> {
   bool _isLoading = false;
   late Timer _timer; // Declare the timer variable
   late String selectedShopName;
+  late final StatefulNavigationShell navigationShell;
 
   @override
   void initState() {
@@ -142,6 +143,7 @@ class AppBarWithShopSelectorState extends State<AppBarWithShopSelector> {
             password: widget.password,
             // selectedShopName: selectedShopName,
             onShopSelected: widget.onShopSelected,
+            navigationShell: navigationShell,
           ),
         ),
       );

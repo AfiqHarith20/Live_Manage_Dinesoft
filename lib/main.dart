@@ -3,13 +3,14 @@ import 'package:live_manage_dinesoft/system_all_library.dart';
 bool isDebugMode = false;
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({
+  MyApp({
     super.key,
   });
+  late StatefulNavigationShell navigationShell;
 
   @override
   Widget build(BuildContext context) {
@@ -21,13 +22,27 @@ class MyApp extends StatelessWidget {
         final isLoggedIn = snapshot.data?['is_logged_in'] == 'true';
 
         if (isLoggedIn && accessToken.isNotEmpty && shopToken.isNotEmpty) {
+          // Initialize AppNavigation with the required parameters
+          final appNavigation = AppNavigation(
+            accessToken: accessToken,
+            shopToken: shopToken,
+            selectedDate: DateTime.now(),
+            username: snapshot.data?['username'] ?? '',
+            password: snapshot.data?['password'] ?? '',
+            onShopSelected: (String newShopToken, String newAccessToken,
+                String selectedShopName) {
+              // Implement your logic here
+            },
+            navigationShell: navigationShell,
+          );
+
           return ChangeNotifierProvider(
             create: (context) => LocaleProvider(),
             builder: (context, child) {
               final provider = Provider.of<LocaleProvider>(context);
               return ResponsiveSizer(
                 builder: (context, orientation, deviceType) {
-                  return MaterialApp(
+                  return MaterialApp.router(
                     onGenerateTitle: (context) =>
                         AppLocalizations.of(context)!.appTitle,
                     localizationsDelegates:
@@ -35,17 +50,18 @@ class MyApp extends StatelessWidget {
                     supportedLocales: AppLocalizations.supportedLocales,
                     locale: provider.locale,
                     debugShowCheckedModeBanner: isDebugMode,
-                    home: HomePage(
-                      accessToken: accessToken,
-                      shopToken: shopToken,
-                      // selectedShopName: selectedShopName,
-                      username: snapshot.data?['username'] ?? '',
-                      password: snapshot.data?['password'] ?? '',
-                      onShopSelected: (String newShopToken,
-                          String newAccessToken, String selectedShopName) {
-                        // Implement your logic here
-                      },
-                    ),
+                    routerConfig: appNavigation.router,
+                    // home: HomePage(
+                    //   accessToken: accessToken,
+                    //   shopToken: shopToken,
+                    //   // selectedShopName: selectedShopName,
+                    //   username: snapshot.data?['username'] ?? '',
+                    //   password: snapshot.data?['password'] ?? '',
+                    //   onShopSelected: (String newShopToken,
+                    //       String newAccessToken, String selectedShopName) {
+                    //     // Implement your logic here
+                    //   },
+                    // ),
                   );
                 },
               );

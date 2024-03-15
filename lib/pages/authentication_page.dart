@@ -14,6 +14,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
   TextEditingController shopTokenController = TextEditingController();
   late String username;
   late String password;
+  late final StatefulNavigationShell navigationShell;
   // late String selectedShopName;
 
   Future<void> saveTokens() async {
@@ -55,6 +56,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                 String selectedShopName) {
               // Implement your logic here
             },
+            navigationShell: navigationShell,
           ),
         ),
       );

@@ -10,6 +10,7 @@ class HomePage extends StatefulWidget {
   final String username;
   final String password;
   final Function(String, String, String) onShopSelected;
+  final StatefulNavigationShell navigationShell;
   HomePage({
     super.key,
     required this.accessToken,
@@ -17,6 +18,7 @@ class HomePage extends StatefulWidget {
     required this.username,
     required this.password,
     required this.onShopSelected,
+    required this.navigationShell,
   });
 
   @override
@@ -27,19 +29,18 @@ class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
   bool _loading = true;
   DateTime selectedDate = DateTime.now();
+  late final StatefulNavigationShell navigationShell;
   final GlobalKey<LiveSalesState> liveSalesKey = GlobalKey();
   final GlobalKey<ReportSalesState> reportSalesKey = GlobalKey();
+  @override
   bool get wantKeepAlive => true;
 
-  // Add a method to simulate content loading
   void loadData() {
     setState(() {
-      _loading = true; // Set _loading to true before initiating data fetching
+      _loading = true;
     });
 
-    // Simulate an asynchronous operation
     Future.delayed(const Duration(seconds: 2), () {
-      // Once the data fetching is complete, set _loading to false
       setState(() {
         _loading = false;
       });
@@ -49,24 +50,19 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-    // Call loadData in initState or wherever appropriate in your code
     loadData();
   }
 
   void _handleShopSelection(
       String newShopToken, String newAccessToken, String selectedShopName) {
     setState(() {
-      // Update tokens with new values
       widget.shopToken = newShopToken;
       widget.accessToken = newAccessToken;
-      // widget.selectedShopName = selectedShopName;
     });
 
-    // Invoke the onShopSelected callback with the new shop token
     widget.onShopSelected(newShopToken, newAccessToken, selectedShopName);
   }
 
-  // Method to show DatePicker and update selectedDate
   Future<void> _selectDate(BuildContext context) async {
     DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -79,29 +75,29 @@ class _HomePageState extends State<HomePage>
       setState(() {
         selectedDate = pickedDate;
       });
-
-      // Update the selected date in LiveSales
-      liveSalesKey.currentState?.updateDate(selectedDate);
-      // Update the selected date in ReportSales
-      reportSalesKey.currentState?.updateDate(selectedDate);
-
-      // Reload the page by calling the loadData method
+      _updateDates();
       loadData();
     }
   }
 
+  void _updateDates() {
+    liveSalesKey.currentState?.updateDate(selectedDate);
+    reportSalesKey.currentState?.updateDate(selectedDate);
+  }
+
   void _handleLeftIconPress() {
-    // Handle left icon press to change date or day
-    // Example: Decrease date by one day
     setState(() {
       selectedDate = selectedDate.subtract(const Duration(days: 1));
     });
+    _updateDates();
+    loadData();
+  }
 
-    // Update the selected date in LiveSales and ReportSales
-    liveSalesKey.currentState?.updateDate(selectedDate);
-    reportSalesKey.currentState?.updateDate(selectedDate);
-
-    // Reload data or perform necessary actions
+  void _handleRightIconPress() {
+    setState(() {
+      selectedDate = selectedDate.add(const Duration(days: 1));
+    });
+    _updateDates();
     loadData();
   }
 
@@ -109,27 +105,7 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      drawer: DrawerPage(
-        accessToken: widget.accessToken,
-        shopToken: widget.shopToken,
-        selectedDate: selectedDate,
-        username: widget.username,
-        password: widget.password,
-        // selectedShop: widget.selectedShopName,
-      ),
       appBar: AppBar(
-        leading: Builder(
-          builder: (context) {
-            return IconButton(
-              icon: const FaIcon(
-                FontAwesomeIcons.bars,
-              ),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
-          },
-        ),
         title: Text(
           AppLocalizations.of(context)?.homePageTitle ?? 'Home',
           style: AppTextStyle.titleMedium,
@@ -138,8 +114,7 @@ class _HomePageState extends State<HomePage>
         actions: [
           Builder(
             builder: (context) {
-              double appBarWithShopSelectorHeight =
-                  20.h; // Adjust this value as needed
+              double appBarWithShopSelectorHeight = 20.h;
               return PopupMenuButton(
                 icon: const FaIcon(FontAwesomeIcons.shop),
                 itemBuilder: (BuildContext context) {
@@ -164,7 +139,6 @@ class _HomePageState extends State<HomePage>
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
-            // Perform the data loading here
             loadData();
           },
           child: SingleChildScrollView(
@@ -179,15 +153,12 @@ class _HomePageState extends State<HomePage>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IconButton(
-                        onPressed: () {
-                          _handleLeftIconPress();
-                        },
-                        icon: const Icon(Icons.keyboard_arrow_left),
+                      GestureDetector(
+                        onTap: _handleLeftIconPress,
+                        child: const Icon(Icons.keyboard_arrow_left),
                       ),
                       GestureDetector(
                         onTap: () {
-                          // Show date picker when the date text is tapped
                           _selectDate(context);
                         },
                         child: Text(
@@ -198,30 +169,18 @@ class _HomePageState extends State<HomePage>
                           ),
                         ),
                       ),
-                      IconButton(
-                        onPressed: () {
-                          // Handle right icon press to change date or day
-                          // Example: Increase date by one day
-                          setState(() {
-                            selectedDate =
-                                selectedDate.add(const Duration(days: 1));
-                            liveSalesKey.currentState?.updateDate(selectedDate);
-                            reportSalesKey.currentState
-                                ?.updateDate(selectedDate);
-                            // Reload data or perform necessary actions
-                            loadData();
-                          });
-                        },
-                        icon: const Icon(Icons.keyboard_arrow_right),
+                      GestureDetector(
+                        onTap: _handleRightIconPress,
+                        child: const Icon(Icons.keyboard_arrow_right),
                       ),
                     ],
                   ),
                   Skeletonizer(
                     enabled: _loading,
                     child: LiveSales(
+                      key: liveSalesKey,
                       selectedDate: selectedDate,
                       onDateChanged: (newDate) {
-                        // Update the selected date in ReportSales
                         reportSalesKey.currentState!.updateDate(newDate);
                       },
                       accessToken: widget.accessToken,
@@ -256,14 +215,15 @@ class _HomePageState extends State<HomePage>
           ),
         ),
       ),
-      // bottomNavigationBar: CustomBottomNavBar(
-      //   accessToken: widget.accessToken,
-      //   shopToken: widget.shopToken,
-      //   username: widget.username,
-      //   password: widget.password,
-      //   selectedDate: selectedDate,
-      //   onShopSelected: widget.onShopSelected,
-      // ),
+      bottomNavigationBar: CustomBottomNavBar(
+        accessToken: widget.accessToken,
+        shopToken: widget.shopToken,
+        username: widget.username,
+        password: widget.password,
+        selectedDate: selectedDate,
+        onShopSelected: widget.onShopSelected,
+        navigationShell: navigationShell,
+      ),
     );
   }
 }
