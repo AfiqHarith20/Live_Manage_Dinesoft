@@ -118,8 +118,7 @@ class _DrawerPageState extends State<DrawerPage> {
                     width: 2.h,
                   ),
                   Text(
-                    AppLocalizations.of(context)?.salesReportPageTitle ??
-                        "Table Report",
+                    "Table Report",
                     style: AppTextStyle.textmedium,
                   ),
                 ],
