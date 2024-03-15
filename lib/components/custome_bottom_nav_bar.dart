@@ -1,14 +1,15 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first, must_be_immutable
 import 'package:live_manage_dinesoft/system_all_library.dart';
 
-class CustomBottomNavBar extends StatelessWidget {
-  late String accessToken;
-  late String shopToken;
+class CustomBottomNavBar extends StatefulWidget {
+  final StatefulNavigationShell navigationShell;
+  final String accessToken;
+  final String shopToken;
   final String username;
   final String password;
   final DateTime selectedDate;
   final Function(String, String, String) onShopSelected;
-  CustomBottomNavBar({
+
+  const CustomBottomNavBar({
     super.key,
     required this.accessToken,
     required this.shopToken,
@@ -16,67 +17,48 @@ class CustomBottomNavBar extends StatelessWidget {
     required this.password,
     required this.selectedDate,
     required this.onShopSelected,
+    required this.navigationShell,
   });
 
   @override
+  State<CustomBottomNavBar> createState() => _CustomBottomNavBarState();
+}
+
+class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
+  var _currentIndex = 0;
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: PersistentTabView(
-        tabs: [
-          PersistentTabConfig(
-            screen: HomePage(
-              accessToken: accessToken,
-              shopToken: shopToken,
-              onShopSelected: onShopSelected,
-              username: username,
-              password: password,
-            ),
-            item: ItemConfig(
-              icon: const FaIcon(
-                FontAwesomeIcons.house,
-              ),
-              title: "Home",
-            ),
+    return Scaffold(
+      body: SizedBox(
+        width: double.infinity,
+        height: double.infinity,
+        child: widget.navigationShell,
+      ),
+      bottomNavigationBar: SalomonBottomBar(
+        currentIndex: _currentIndex,
+        onTap: (i) => setState(() => _currentIndex = i),
+        items: [
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.home),
+            title: const Text("Home"),
+            selectedColor: Colors.blue,
           ),
-          PersistentTabConfig(
-            screen: ReportSales(
-              selectedDate: selectedDate,
-              accessToken: accessToken,
-              shopToken: shopToken,
-            ),
-            item: ItemConfig(
-              icon: const FaIcon(
-                FontAwesomeIcons.list,
-              ),
-              title: "Report",
-            ),
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.list),
+            title: const Text("Report"),
+            selectedColor: Colors.green,
           ),
-          PersistentTabConfig(
-            screen: TablePage(
-              accessToken: accessToken,
-              shopToken: shopToken,
-              selectedDate: selectedDate,
-            ),
-            item: ItemConfig(
-              icon: const Icon(
-                Icons.table_restaurant_outlined,
-              ),
-              title: "Table",
-            ),
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.table_chart),
+            title: const Text("Table"),
+            selectedColor: Colors.orange,
           ),
-          PersistentTabConfig(
-            screen: const SettingPage(),
-            item: ItemConfig(
-              icon: const FaIcon(
-                FontAwesomeIcons.gear,
-              ),
-              title: "Setting",
-            ),
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.settings),
+            title: const Text("Settings"),
+            selectedColor: Colors.purple,
           ),
         ],
-        navBarBuilder: (navBarConfig) => Style8BottomNavBar(
-          navBarConfig: navBarConfig,
-        ),
       ),
     );
   }

@@ -5,7 +5,7 @@ import 'package:live_manage_dinesoft/system_all_library.dart';
 import 'dart:async';
 
 class LiveSales extends StatefulWidget {
-  DateTime selectedDate;
+  final DateTime selectedDate;
   final Function(DateTime) onDateChanged;
   final String accessToken;
   final String shopToken;
@@ -16,7 +16,7 @@ class LiveSales extends StatefulWidget {
     required this.onDateChanged,
     required this.accessToken,
     required this.shopToken,
-  });
+  }) : super(key: key);
 
   @override
   State<LiveSales> createState() => LiveSalesState();
@@ -28,24 +28,15 @@ class LiveSalesState extends State<LiveSales> {
   late Timer _timer;
   double totalAmount = 0.0;
   double subTotalAmount = 0.0;
-  int orderCount = 0; // New variable to hold the order count
+  int orderCount = 0;
   bool isFetchingData = false;
   bool isCalculatingTotal = false;
   bool isCalculatingSubTotal = false;
-
-  void updateDate(DateTime newDate) {
-    setState(() {
-      widget.selectedDate = newDate;
-      fetchDataAndUpdateState();
-    });
-  }
 
   @override
   void initState() {
     super.initState();
     fetchDataAndUpdateState();
-
-    // Perform initial loading when the widget is initialized
     updateTotalAmount();
 
     _timer = Timer.periodic(const Duration(seconds: 30), (Timer timer) {
@@ -55,11 +46,26 @@ class LiveSalesState extends State<LiveSales> {
     });
   }
 
+  @override
+  void didUpdateWidget(covariant LiveSales oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.selectedDate != oldWidget.selectedDate) {
+      fetchDataAndUpdateState();
+      updateTotalAmount();
+    }
+  }
+
   void fetchDataAndUpdateState() {
     futureSalesData = fetchSalesData(
         widget.selectedDate, widget.accessToken, widget.shopToken);
     futureNetSalesData = fetchSalesData(
         widget.selectedDate, widget.accessToken, widget.shopToken);
+  }
+
+  void updateDate(DateTime newDate) {
+    setState(() {
+      fetchDataAndUpdateState();
+    });
   }
 
   // Function to update the total amount based on new payments
@@ -211,22 +217,16 @@ class LiveSalesState extends State<LiveSales> {
           child: FutureBuilder(
             future: future,
             builder: (context, snapshot) {
+              print('Snapshot: $snapshot'); // Debug statement
+
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
+                return const Center(
                   child: SizedBox(
-                    height: 20.h, // Set the desired height here
-                    child: const LoadingIndicator(
-                      indicatorType: Indicator.lineScalePulseOut,
-                      colors: [
-                        Colors.orangeAccent,
-                        Colors.indigoAccent,
-                        Colors.pinkAccent,
-                        Colors.yellowAccent,
-                        Colors.purpleAccent,
-                      ],
-                      strokeWidth: 1,
-                      backgroundColor: Colors.transparent,
-                      pathBackgroundColor: Colors.transparent,
+                    height: 20, // Adjust height as needed
+                    width: 20, // Adjust width as needed
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
                   ),
                 );
@@ -252,6 +252,8 @@ class LiveSalesState extends State<LiveSales> {
                 dynamic data = snapshot.data;
                 dynamic value = dataSelector(data);
 
+                print('Value: $value'); // Debug statement
+
                 // Format the value with two decimal places to remove trailing zeroes
                 final formattedValue = value != null
                     ? double.parse(
@@ -262,21 +264,12 @@ class LiveSalesState extends State<LiveSales> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CircularPercentIndicator(
-                        radius: 50.0,
-                        lineWidth: 8.0,
-                        percent: formattedValue != 'N/A'
-                            ? ((formattedValue as num) / 1000)
-                            : 0.0, // Adjust the percent as needed
-                        center: Text(
-                          '$formattedValue',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16.0,
-                          ),
+                      Text(
+                        '$formattedValue',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.0,
                         ),
-                        backgroundColor: Colors.white,
-                        progressColor: Colors.red,
                       ),
                       const SizedBox(height: 8),
                       Text(
