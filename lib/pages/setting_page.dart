@@ -53,7 +53,7 @@ class _SettingPageState extends State<SettingPage> {
                   ),
                 ),
               ),
-              child: InkWell(
+              child: ListTile(
                 onTap: () {
                   // Navigate to the authentication page
                   Navigator.push(
@@ -63,23 +63,17 @@ class _SettingPageState extends State<SettingPage> {
                     ),
                   );
                 },
-                child: ListTile(
-                  leading: const Icon(Icons.key),
-                  title: Text(
-                    AppLocalizations.of(context)?.authKeyTxt ??
-                        "Authentication Key",
-                    style: AppTextStyle.textmedium.copyWith(
-                      color: Colors.black,
-                    ),
+                title: Text(
+                  AppLocalizations.of(context)?.authKeyTxt ??
+                      "Authentication Key",
+                  style: AppTextStyle.textmedium.copyWith(
+                    color: Colors.black,
                   ),
-                  trailing: const Icon(Icons.arrow_forward_ios),
                 ),
+                trailing: const Icon(Icons.arrow_forward_ios),
               ),
             ),
-            Divider(
-              color: Colors.black,
-              height: 1.h,
-            ),
+            // Add more Container widgets with ListTile for additional settings
             Container(
               decoration: const BoxDecoration(
                 border: Border(
@@ -89,7 +83,7 @@ class _SettingPageState extends State<SettingPage> {
                   ),
                 ),
               ),
-              child: InkWell(
+              child: ListTile(
                 onTap: () async {
                   const url = 'https://www.dinesoft.com.my/';
                   if (await canLaunch(url)) {
@@ -98,68 +92,72 @@ class _SettingPageState extends State<SettingPage> {
                     throw 'Could not launch $url';
                   }
                 },
-                child: ListTile(
-                  leading: const Icon(Icons.info),
-                  title: Text(
-                    AppLocalizations.of(context)?.aboutPageContent ??
-                        "About Page",
-                    style: AppTextStyle.textmedium.copyWith(
-                      color: Colors.black,
-                    ),
+                title: Text(
+                  AppLocalizations.of(context)?.aboutPageContent ??
+                      "About Page",
+                  style: AppTextStyle.textmedium.copyWith(
+                    color: Colors.black,
                   ),
-                  trailing: const Icon(Icons.arrow_forward_ios),
+                ),
+                trailing: const Icon(Icons.arrow_forward_ios),
+              ),
+            ),
+            SizedBox(height: 8.h),
+            GestureDetector(
+              onTap: () {
+                logout();
+              },
+              child: Container(
+                height: 8.h,
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const FaIcon(
+                      FontAwesomeIcons.rightFromBracket,
+                    ),
+                    SizedBox(
+                      width: 2.h,
+                    ),
+                    Text(
+                      AppLocalizations.of(context)?.logoutBtn ?? 'Log Out',
+                      style: AppTextStyle.textmedium,
+                    ),
+                  ],
                 ),
               ),
             ),
-            Divider(
-              color: Colors.black,
-              height: 1.h,
-            ),
-            // ListTile(
-            //   leading: const Icon(Icons.logout),
-            //   title: Text(
-            //     AppLocalizations.of(context)?.logoutBtn ?? 'Log Out',
-            //     style: AppTextStyle.textmedium,
+            // Add more Container widgets with ListTile for additional settings
+            // Container(
+            //   decoration: const BoxDecoration(
+            //     border: Border(
+            //       bottom: BorderSide(
+            //         color: Colors.black,
+            //         width: 1.0,
+            //       ),
+            //     ),
             //   ),
-            //   onTap: logout,
-            //   onLongPress: () {
-            //     showDialog(
-            //       context: context,
-            //       builder: (context) {
-            //         return AlertDialog(
-            //           title: Text(
-            //             "Log Out",
-            //             style: AppTextStyle.titleMedium,
-            //           ),
-            //           content: Text(
-            //             "Are you sure you want to log out?",
-            //             style: AppTextStyle.textmedium,
-            //           ),
-            //           actions: [
-            //             TextButton(
-            //               onPressed: () {
-            //                 Navigator.pop(context);
-            //               },
-            //               child: Text(
-            //                 'Cancel',
-            //                 style: AppTextStyle.textmedium,
-            //               ),
-            //             ),
-            //             TextButton(
-            //               onPressed: () {
-            //                 logout();
-            //               },
-            //               child: Text(
-            //                 AppLocalizations.of(context)?.logoutBtn ??
-            //                     'Log Out',
-            //                 style: AppTextStyle.textmedium,
-            //               ),
-            //             ),
-            //           ],
-            //         );
-            //       },
-            //     );
-            //   },
+            //   child: ListTile(
+            //     onTap: () {
+            //       // Navigate to the authentication page
+            //       Navigator.push(
+            //         context,
+            //         MaterialPageRoute(
+            //           builder: (context) => const AuthenticationPage(),
+            //         ),
+            //       );
+            //     },
+            //     title: Text(
+            //       "Language",
+            //       style: AppTextStyle.textmedium.copyWith(
+            //         color: Colors.black,
+            //       ),
+            //     ),
+            //     trailing: const Icon(Icons.arrow_forward_ios),
+            //   ),
             // ),
           ],
         ),

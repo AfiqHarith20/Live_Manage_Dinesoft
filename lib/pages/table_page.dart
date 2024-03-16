@@ -21,20 +21,12 @@ class TablePage extends StatefulWidget {
 
 class _TablePageState extends State<TablePage> {
   late Future<List<Map<String, dynamic>>> tableDataFuture;
-  late DateTime selectedDate;
-
-  void updateDate(DateTime newDate) {
-    setState(() {
-      selectedDate = newDate;
-    });
-  }
 
   @override
   void initState() {
     super.initState();
-    selectedDate = widget.selectedDate; // Initialize selectedDate here
     // Initialize tableDataFuture in initState with the selected date
-    tableDataFuture = fetchData(selectedDate);
+    tableDataFuture = fetchData(widget.selectedDate);
   }
 
   Future<List<Map<String, dynamic>>> fetchData(DateTime selectedDate) async {
@@ -76,108 +68,73 @@ class _TablePageState extends State<TablePage> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        // Wrap the Column with SingleChildScrollView
-        child: Column(
-          children: [
-            Text(
-              'Date: ${DateFormat('yyyy-MM-dd').format(selectedDate)}',
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+      body: FutureBuilder<List<Map<String, dynamic>>>(
+        future: tableDataFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: SizedBox(
+                height: 20.h, // Set the desired height here
+                child: const LoadingIndicator(
+                  indicatorType: Indicator.ballClipRotateMultiple,
+                  colors: [Colors.orangeAccent],
+                  strokeWidth: 3,
+                  backgroundColor: Colors.transparent,
+                  pathBackgroundColor: Colors.transparent,
+                ),
               ),
-            ),
-            Container(
-              height: 8,
-              color: Colors.grey.shade200,
-            ),
-            FutureBuilder<List<Map<String, dynamic>>>(
-              future: tableDataFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: SizedBox(
-                      height: 20.h, // Set the desired height here
-                      child: const LoadingIndicator(
-                        indicatorType: Indicator.ballClipRotateMultiple,
-                        colors: [Colors.orangeAccent],
-                        strokeWidth: 3,
-                        backgroundColor: Colors.transparent,
-                        pathBackgroundColor: Colors.transparent,
+            );
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('No data available'));
+          } else {
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                final data = snapshot.data![index];
+                final tableCode = data['tableCode'];
+                final tableRemark = data['tableRemark'];
+                final date = DateTime.parse(data['checkinDatetime']);
+                final amountTotal = data['amountTotal'];
+
+                return Card(
+                  elevation: 4,
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  child: ListTile(
+                    leading: const Icon(Icons.table_chart_outlined),
+                    title: Text('Table $tableCode'),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (tableRemark != null && tableRemark.isNotEmpty)
+                          Text(
+                            tableRemark,
+                            style: const TextStyle(
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        Text(
+                          DateFormat.yMd().add_jm().format(date),
+                          style: const TextStyle(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                    trailing: Text(
+                      'Total: RM ${amountTotal ?? ''}',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  );
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('No data available'));
-                } else {
-                  return Column(
-                    children: [
-                      ...snapshot.data!.map((data) {
-                        final tableCode = data['tableCode'];
-                        final tableRemark = data['tableRemark'];
-                        final date = DateTime.parse(data['checkinDatetime']);
-                        final amountTotal = data['amountTotal'];
-
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: Column(
-                            children: [
-                              ListTile(
-                                leading: const Icon(Icons.table_chart_outlined),
-                                title: Text('Table $tableCode'),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    if (tableRemark != null &&
-                                        tableRemark.isNotEmpty)
-                                      Text(
-                                        tableRemark,
-                                        style: const TextStyle(
-                                          fontStyle: FontStyle.italic,
-                                        ),
-                                      ),
-                                    Text(
-                                      DateFormat.jm().format(date),
-                                      style: const TextStyle(
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                trailing: Text(
-                                  'Total: RM ${amountTotal ?? ''}',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              const Divider(),
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            selectedDate =
-                                DateTime.parse(selectedDate.toString())
-                                    .subtract(
-                              const Duration(days: 1),
-                            );
-                            tableDataFuture = fetchData(selectedDate);
-                          });
-                        },
-                        child: const Text('Previous Day'),
-                      ),
-                    ],
-                  );
-                }
+                  ),
+                );
               },
-            ),
-          ],
-        ),
+            );
+          }
+        },
       ),
     );
   }

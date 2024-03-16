@@ -11,7 +11,7 @@ class LiveSales extends StatefulWidget {
   final String shopToken;
 
   LiveSales({
-    super.key,
+    Key? key,
     required this.selectedDate,
     required this.onDateChanged,
     required this.accessToken,
@@ -33,6 +33,13 @@ class LiveSalesState extends State<LiveSales> {
   bool isCalculatingTotal = false;
   bool isCalculatingSubTotal = false;
 
+  void updateDate(DateTime newDate) {
+    setState(() {
+      widget.selectedDate = newDate;
+      fetchDataAndUpdateState();
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -42,18 +49,9 @@ class LiveSalesState extends State<LiveSales> {
     updateTotalAmount();
 
     _timer = Timer.periodic(const Duration(seconds: 30), (Timer timer) {
-      if (mounted) {
-        setState(() {
-          fetchDataAndUpdateState();
-        });
-      }
-    });
-  }
-
-  void updateDate(DateTime newDate) {
-    setState(() {
-      widget.selectedDate = newDate;
-      fetchDataAndUpdateState();
+      setState(() {
+        fetchDataAndUpdateState();
+      });
     });
   }
 
