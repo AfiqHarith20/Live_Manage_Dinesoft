@@ -86,6 +86,8 @@ class ReportSalesState extends State<ReportSales> {
   late Map<String, Map<String, dynamic>> salesByCategory;
   bool sortDescending = true;
   late double totalPrice = 0;
+  bool isLoading = false;
+  String? errorMessage;
 
   void updateDate(DateTime newDate) {
     setState(() {
@@ -102,9 +104,12 @@ class ReportSalesState extends State<ReportSales> {
   }
 
   Future<void> fetchDataOnPageLoad() async {
+    setState(() {
+      isLoading = true;
+    });
     try {
       Map<String, dynamic> salesData = await fetchSalesData(
-        widget.selectedDate,
+        selectedDate,
         widget.accessToken,
         widget.shopToken,
       );
@@ -123,8 +128,8 @@ class ReportSalesState extends State<ReportSales> {
             salesByCategory[category] = {};
           }
           String itemName = detail['itemName'];
-          int quantity = detail['quantity'];
-          double price = detail['price'];
+          int quantity = (detail['quantity'] ?? 0).toInt();
+          double price = detail['price'] ?? 0.0;
 
           // Exclude items with quantity 0
           if (quantity > 0) {
@@ -155,6 +160,13 @@ class ReportSalesState extends State<ReportSales> {
     } catch (e) {
       // Handle errors
       print('Error fetching data on page load: $e');
+      setState(() {
+        errorMessage = 'Error fetching data. Please try again.';
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -251,12 +263,32 @@ class ReportSalesState extends State<ReportSales> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Date: ${DateFormat('yyyy-MM-dd').format(selectedDate)}',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Date: ${DateFormat('yyyy-MM-dd').format(selectedDate)}',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        final DateTime? newDate = await showDatePicker(
+                          context: context,
+                          initialDate: selectedDate,
+                          firstDate: DateTime(2022),
+                          lastDate: DateTime(2030),
+                        );
+                        if (newDate != null) {
+                          updateDate(newDate);
+                          fetchDataOnPageLoad();
+                        }
+                      },
+                      child: const Text('Change Date'),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 20),
                 FutureBuilder(
