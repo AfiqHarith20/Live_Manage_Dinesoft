@@ -125,7 +125,8 @@ class _TablePageState extends State<TablePage> {
                           child: Column(
                             children: [
                               ListTile(
-                                leading: const Icon(Icons.table_chart_outlined),
+                                leading:
+                                    const Icon(Icons.table_restaurant_outlined),
                                 title: Text('Table $tableCode'),
                                 subtitle: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,6 +150,7 @@ class _TablePageState extends State<TablePage> {
                                 trailing: Text(
                                   'Total: RM ${amountTotal ?? ''}',
                                   style: const TextStyle(
+                                    fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
