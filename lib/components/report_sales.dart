@@ -86,6 +86,8 @@ class ReportSalesState extends State<ReportSales> {
   late Map<String, Map<String, dynamic>> salesByCategory;
   bool sortDescending = true;
   late double totalPrice = 0;
+  bool isLoading = false;
+  String? errorMessage;
 
   void updateDate(DateTime newDate) {
     setState(() {
@@ -102,9 +104,12 @@ class ReportSalesState extends State<ReportSales> {
   }
 
   Future<void> fetchDataOnPageLoad() async {
+    setState(() {
+      isLoading = true;
+    });
     try {
       Map<String, dynamic> salesData = await fetchSalesData(
-        widget.selectedDate,
+        selectedDate,
         widget.accessToken,
         widget.shopToken,
       );
@@ -123,8 +128,8 @@ class ReportSalesState extends State<ReportSales> {
             salesByCategory[category] = {};
           }
           String itemName = detail['itemName'];
-          int quantity = detail['quantity'];
-          double price = detail['price'];
+          int quantity = (detail['quantity'] ?? 0).toInt();
+          double price = detail['price'] ?? 0.0;
 
           // Exclude items with quantity 0
           if (quantity > 0) {
@@ -155,6 +160,13 @@ class ReportSalesState extends State<ReportSales> {
     } catch (e) {
       // Handle errors
       print('Error fetching data on page load: $e');
+      setState(() {
+        errorMessage = 'Error fetching data. Please try again.';
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
