@@ -376,9 +376,18 @@ class ReportSalesState extends State<ReportSales> {
                                             '${AppLocalizations.of(context)?.totalQty ?? "Quantity"}: ${entry.value['quantity']}',
                                             style: AppTextStyle.textsmall,
                                           ),
-                                          Text(
-                                            '${AppLocalizations.of(context)?.totalPrice ?? "Total Price"}: RM${entry.value['price'].toStringAsFixed(2)}',
-                                            style: AppTextStyle.textsmall,
+                                          Consumer<CurrencyProvider>(
+                                            builder:
+                                                (context, currencyProvider, _) {
+                                              return Text(
+                                                '${AppLocalizations.of(context)?.totalPrice}: ${currencyProvider.selectedCurrency}${entry.value['price'].toStringAsFixed(2)}',
+                                                style: const TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors
+                                                      .black, // Use a slightly darker color for amounts
+                                                ),
+                                              );
+                                            },
                                           ),
                                         ],
                                       ),
@@ -393,15 +402,20 @@ class ReportSalesState extends State<ReportSales> {
                     }
                   },
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 3.h),
                 const Divider(), // Add a section separator
-                const SizedBox(height: 20),
-                Text(
-                  'Total Price: RM${totalPrice.toStringAsFixed(2)}', // Display total price
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                SizedBox(height: 3.h),
+                Consumer<CurrencyProvider>(
+                  builder: (context, currencyProvider, _) {
+                    return Text(
+                      '${AppLocalizations.of(context)?.totalPrice}: ${currencyProvider.selectedCurrency}${totalPrice.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors
+                            .black, // Use a slightly darker color for amounts
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

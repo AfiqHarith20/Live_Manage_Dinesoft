@@ -161,21 +161,25 @@ class LiveSalesState extends State<LiveSales> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                _buildSalesCard(
-                  title:
-                      '${AppLocalizations.of(context)?.netSales ?? 'Net Sales'}\n(RM)',
-                  future: futureNetSalesData,
-                  color: Colors.greenAccent,
-                  dataSelector: (data) =>
-                      calculateNetSalesAmount(data['rawData']),
+                Consumer<CurrencyProvider>(
+                  builder: (context, currencyProvider, _) => _buildSalesCard(
+                    title:
+                        '${AppLocalizations.of(context)?.netSales ?? 'Net Sales'}\n(${currencyProvider.selectedCurrency})',
+                    future: futureNetSalesData,
+                    color: Colors.greenAccent,
+                    dataSelector: (data) =>
+                        calculateNetSalesAmount(data['rawData']),
+                  ),
                 ),
-                _buildSalesCard(
-                  title:
-                      '${AppLocalizations.of(context)?.grossSales ?? 'Gross Sales'}\n(RM)',
-                  future: futureSalesData,
-                  color: Colors.blueAccent,
-                  dataSelector: (data) =>
-                      calculateTotalSalesAmount(data['rawData']),
+                Consumer<CurrencyProvider>(
+                  builder: (context, currencyProvider, _) => _buildSalesCard(
+                    title:
+                        '${AppLocalizations.of(context)?.grossSales ?? 'Gross Sales'}\n(${currencyProvider.selectedCurrency})',
+                    future: futureSalesData,
+                    color: Colors.blueAccent,
+                    dataSelector: (data) =>
+                        calculateTotalSalesAmount(data['rawData']),
+                  ),
                 ),
                 _buildSalesCard(
                   title: AppLocalizations.of(context)?.count ??

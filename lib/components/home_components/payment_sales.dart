@@ -329,12 +329,17 @@ class PaymentDetailsWidget extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          Text(
-            '${AppLocalizations.of(context)?.totalAmount ?? 'Total Amount'}: RM${totalAmount.toStringAsFixed(2)}',
-            style: const TextStyle(
-              fontSize: 14,
-              color: Colors.black87, // Use a slightly darker color for amounts
-            ),
+          Consumer<CurrencyProvider>(
+            builder: (context, currencyProvider, _) {
+              return Text(
+                '${AppLocalizations.of(context)?.totalAmount ?? 'Total Amount'}: ${currencyProvider.selectedCurrency}${totalAmount.toStringAsFixed(2)}',
+                style: const TextStyle(
+                  fontSize: 14,
+                  color:
+                      Colors.black87, // Use a slightly darker color for amounts
+                ),
+              );
+            },
           ),
         ],
       ),

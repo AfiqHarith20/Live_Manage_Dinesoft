@@ -29,6 +29,7 @@ class _HomePageState extends State<HomePage>
   DateTime selectedDate = DateTime.now();
   final GlobalKey<LiveSalesState> liveSalesKey = GlobalKey();
   final GlobalKey<ReportSalesState> reportSalesKey = GlobalKey();
+  @override
   bool get wantKeepAlive => true;
 
   // Add a method to simulate content loading
@@ -263,7 +264,6 @@ class _HomePageState extends State<HomePage>
       //   password: widget.password,
       //   selectedDate: selectedDate,
       //   onShopSelected: widget.onShopSelected,
-      // ),
     );
   }
 }

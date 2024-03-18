@@ -147,19 +147,24 @@ class _TablePageState extends State<TablePage> {
                                     ),
                                   ],
                                 ),
-                                trailing: Text(
-                                  'Total: RM ${amountTotal ?? ''}',
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                trailing: Consumer<CurrencyProvider>(
+                                  builder: (context, currencyProvider, _) {
+                                    return Text(
+                                      '${AppLocalizations.of(context)?.total}: ${currencyProvider.selectedCurrency}${amountTotal.toStringAsFixed(2)}',
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Colors
+                                            .black, // Use a slightly darker color for amounts
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
                               const Divider(),
                             ],
                           ),
                         );
-                      }).toList(),
+                      }),
                       TextButton(
                         onPressed: () {
                           setState(() {
