@@ -44,48 +44,48 @@ class _SettingPageState extends State<SettingPage> {
           style: AppTextStyle.titleMedium,
         ),
         backgroundColor: darkColorScheme.primary,
-        // actions: const [
-        //   LocaleSwitcherWidget(),
-        // ],
+        actions: const [
+          LocaleSwitcherWidget(),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Container(
-              decoration: const BoxDecoration(
-                border: Border(
-                  top: BorderSide(
-                    color: Colors.black,
-                    width: 1.0,
-                  ),
-                  bottom: BorderSide(
-                    color: Colors.black,
-                    width: 1.0,
-                  ),
-                ),
-              ),
-              child: ListTile(
-                onTap: () {
-                  // Navigate to the authentication page
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const AuthenticationPage(),
-                    ),
-                  );
-                },
-                title: Text(
-                  AppLocalizations.of(context)?.authKeyTxt ??
-                      "Authentication Key",
-                  style: AppTextStyle.textmedium.copyWith(
-                    color: Colors.black,
-                  ),
-                ),
-                trailing: const Icon(Icons.arrow_forward_ios),
-              ),
-            ),
+            // Container(
+            //   decoration: const BoxDecoration(
+            //     border: Border(
+            //       top: BorderSide(
+            //         color: Colors.black,
+            //         width: 1.0,
+            //       ),
+            //       bottom: BorderSide(
+            //         color: Colors.black,
+            //         width: 1.0,
+            //       ),
+            //     ),
+            //   ),
+            //   child: ListTile(
+            //     onTap: () {
+            //       // Navigate to the authentication page
+            //       Navigator.push(
+            //         context,
+            //         MaterialPageRoute(
+            //           builder: (context) => const AuthenticationPage(),
+            //         ),
+            //       );
+            //     },
+            //     title: Text(
+            //       AppLocalizations.of(context)?.authKeyTxt ??
+            //           "Authentication Key",
+            //       style: AppTextStyle.textmedium.copyWith(
+            //         color: Colors.black,
+            //       ),
+            //     ),
+            //     trailing: const Icon(Icons.arrow_forward_ios),
+            //   ),
+            // ),
             // Add more Container widgets with ListTile for additional settings
             Container(
               decoration: const BoxDecoration(
@@ -115,7 +115,63 @@ class _SettingPageState extends State<SettingPage> {
                 trailing: const Icon(Icons.arrow_forward_ios),
               ),
             ),
-            SizedBox(height: 8.h),
+            SizedBox(
+              height: 2.h,
+            ),
+            Center(
+              child: TextButton(
+                onPressed: () async {
+                  showCurrencyPicker(
+                    context: context,
+                    theme: CurrencyPickerThemeData(
+                      flagSize: 25,
+                      titleTextStyle: const TextStyle(fontSize: 17),
+                      subtitleTextStyle: TextStyle(
+                          fontSize: 15, color: Theme.of(context).hintColor),
+                      bottomSheetHeight: MediaQuery.of(context).size.height / 2,
+                      inputDecoration: InputDecoration(
+                        labelText: 'Search',
+                        hintText: 'Start typing to search',
+                        prefixIcon: const Icon(Icons.search),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: const Color(0xFF8C98A8).withOpacity(0.2),
+                          ),
+                        ),
+                      ),
+                    ),
+                    onSelect: (Currency currency) {
+                      // Handle the selected currency here
+                      print('Selected currency: ${currency.name}');
+
+                      // Update the selected currency in the app
+                      Provider.of<CurrencyProvider>(context, listen: false)
+                          .setSelectedCurrency(currency.code);
+
+                      // Save the selected currency to shared preferences
+                      SharedPreferences.getInstance().then((prefs) {
+                        prefs.setString('selectedCurrency', currency.code);
+                      });
+                    },
+                  );
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.monetization_on), // Currency change icon
+                    const SizedBox(
+                        width: 8), // Add some space between icon and text
+                    Consumer<CurrencyProvider>(
+                      builder: (context, currencyProvider, _) => Text(
+                        'Change Currency (${currencyProvider.selectedCurrency})',
+                        style: AppTextStyle.textmedium,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 4.h),
             GestureDetector(
               onTap: () {
                 logout();

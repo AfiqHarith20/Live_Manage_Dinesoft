@@ -4,18 +4,17 @@ class DrawerPage extends StatefulWidget {
   final String accessToken;
   final String shopToken;
   final DateTime selectedDate;
-  final String username; // Add username property
-  final String password; // Add password property
-  // final String selectedShop;
+  final String username;
+  final String password;
+
   const DrawerPage({
-    super.key,
+    Key? key,
     required this.accessToken,
     required this.shopToken,
     required this.selectedDate,
     required this.username,
     required this.password,
-    // required this.selectedShop,
-  });
+  }) : super(key: key);
 
   @override
   State<DrawerPage> createState() => _DrawerPageState();
@@ -23,7 +22,6 @@ class DrawerPage extends StatefulWidget {
 
 class _DrawerPageState extends State<DrawerPage> {
   final GlobalKey<ReportSalesState> reportSalesKey = GlobalKey();
-  DateTime selectedDate = DateTime.now();
 
   Future<void> logout() async {
     // Clear user's tokens here
@@ -38,168 +36,188 @@ class _DrawerPageState extends State<DrawerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return GFDrawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: darkColorScheme.primary,
-            ),
-            child: Text(
-              'Welcome to Dinesmart',
-              style: AppTextStyle.titleMedium,
-            ),
+    return Stack(
+      children: [
+        GFDrawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  color: darkColorScheme.primary,
+                ),
+                child: Text(
+                  'Welcome to Dinesmart',
+                  style: AppTextStyle.titleMedium,
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ReportSales(
+                        selectedDate: widget.selectedDate,
+                        accessToken: widget.accessToken,
+                        shopToken: widget.shopToken,
+                      ),
+                    ),
+                  );
+                },
+                child: Container(
+                  height: 8.h,
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const FaIcon(
+                        FontAwesomeIcons.list,
+                      ),
+                      SizedBox(
+                        width: 2.h,
+                      ),
+                      Text(
+                        AppLocalizations.of(context)?.salesReportPageTitle ??
+                            "Sales Report",
+                        style: AppTextStyle.textmedium,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TablePage(
+                        accessToken: widget.accessToken,
+                        shopToken: widget.shopToken,
+                        selectedDate: widget.selectedDate,
+                      ),
+                    ),
+                  );
+                },
+                child: Container(
+                  height: 8.h,
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.table_restaurant_outlined),
+                      SizedBox(
+                        width: 2.h,
+                      ),
+                      Text(
+                        "Table Report",
+                        style: AppTextStyle.textmedium,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              // GestureDetector(
+              //   onTap: () {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //         builder: (context) => const SettingPage(),
+              //       ),
+              //     );
+              //   },
+              //   child: Container(
+              //     height: 8.h,
+              //     decoration: BoxDecoration(
+              //       color: Colors.transparent,
+              //       borderRadius: BorderRadius.circular(20),
+              //     ),
+              //     child: Row(
+              //       mainAxisAlignment: MainAxisAlignment.center,
+              //       children: [
+              //         const FaIcon(
+              //           FontAwesomeIcons.gear,
+              //         ),
+              //         SizedBox(
+              //           width: 2.h,
+              //         ),
+              //         Text(
+              //           AppLocalizations.of(context)?.settingPageTitle ??
+              //               "Setting",
+              //           style: AppTextStyle.textmedium,
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // ),
+              // GestureDetector(
+              //   onTap: () {
+              //     logout();
+              //   },
+              //   child: Container(
+              //     height: 8.h,
+              //     decoration: BoxDecoration(
+              //       color: Colors.transparent,
+              //       borderRadius: BorderRadius.circular(20),
+              //     ),
+              //     child: Row(
+              //       mainAxisAlignment: MainAxisAlignment.center,
+              //       children: [
+              //         const FaIcon(
+              //           FontAwesomeIcons.rightFromBracket,
+              //         ),
+              //         SizedBox(
+              //           width: 2.h,
+              //         ),
+              //         Text(
+              //           AppLocalizations.of(context)?.logoutBtn ?? "Log Out",
+              //           style: AppTextStyle.textmedium,
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // ),
+            ],
           ),
-          GestureDetector(
+        ),
+        Positioned(
+          left: 16,
+          bottom: 16,
+          child: GestureDetector(
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ReportSales(
-                    selectedDate: widget.selectedDate, // Pass selectedDate
-                    accessToken: widget.accessToken,
-                    shopToken: widget.shopToken,
-                    username: widget.username,
-                    password: widget.password,
-                    onShopSelected: (p0, p1, p2) {},
-                    // selectedShopName: widget.selectedShop,
-                  ),
+                  builder: (context) => const SettingPage(),
                 ),
               );
             },
             child: Container(
-              height: 8.h,
-              // width: 20.w,
+              padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.transparent,
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const FaIcon(
-                    FontAwesomeIcons.list,
-                  ),
-                  SizedBox(
-                    width: 2.h,
-                  ),
-                  Text(
-                    AppLocalizations.of(context)?.salesReportPageTitle ??
-                        "Sales Report",
-                    style: AppTextStyle.textmedium,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
                   ),
                 ],
               ),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => TablePage(
-                    selectedDate: widget.selectedDate, // Pass selectedDate
-                    accessToken: widget.accessToken,
-                    shopToken: widget.shopToken,
-                    username: widget.username,
-                    password: widget.password,
-                    onShopSelected: (p0, p1, p2) {},
-                  ),
-                ),
-              );
-            },
-            child: Container(
-              height: 8.h,
-              // width: 20.w,
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.table_restaurant_outlined),
-                  SizedBox(
-                    width: 2.h,
-                  ),
-                  Text(
-                    "Table Report",
-                    style: AppTextStyle.textmedium,
-                  ),
-                ],
+              child: const Icon(
+                Icons.settings,
+                color: Colors.black,
               ),
             ),
           ),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SettingPage(
-                    selectedDate: widget.selectedDate, // Pass selectedDate
-                    accessToken: widget.accessToken,
-                    shopToken: widget.shopToken,
-                    username: widget.username,
-                    password: widget.password,
-                    onShopSelected: (p0, p1, p2) {},
-                  ),
-                ),
-              );
-            },
-            child: Container(
-              height: 8.h,
-              // width: 20.w,
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const FaIcon(
-                    FontAwesomeIcons.gear,
-                  ),
-                  SizedBox(
-                    width: 2.h,
-                  ),
-                  Text(
-                    AppLocalizations.of(context)?.settingPageTitle ?? "Setting",
-                    style: AppTextStyle.textmedium,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              logout();
-            },
-            child: Container(
-              height: 8.h,
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const FaIcon(
-                    FontAwesomeIcons.rightFromBracket,
-                  ),
-                  SizedBox(
-                    width: 2.h,
-                  ),
-                  Text(
-                    AppLocalizations.of(context)?.logoutBtn ?? "Log Out",
-                    style: AppTextStyle.textmedium,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

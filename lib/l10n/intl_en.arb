@@ -107,10 +107,12 @@
     "price": "Price",
     "totalQty": "Total Quantity",
     "totalPrice": "Total Price",
+    "total": "Total",
 
     "paymentListType": "Payment List Type",
     "cnt": "Count",
     "totalAmount": "Total Amount",
+    
 
     "msgNoPayment": "No Payment Available",
     "noDataAvailable": "No Data Available",

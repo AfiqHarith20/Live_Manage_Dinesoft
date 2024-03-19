@@ -63,7 +63,7 @@ Future<Map<String, dynamic>> fetchSalesData(
     // Handle SocketException (no internet connection)
     throw Exception('No internet connection');
   } catch (e) {
-    throw Exception('Error fetching payment data: $e');
+    throw Exception('0');
   }
 }
 

@@ -36,12 +36,8 @@ class _PaymentSalesState extends State<PaymentSales> {
   @override
   void initState() {
     super.initState();
-    // Fetch payment data when the widget is initialized
     fetchPaymentData();
-    // Initialize paymentData with default values
     initializePaymentData();
-
-    // Set up a timer to refresh data every 30 seconds
     _timer = Timer.periodic(const Duration(seconds: 30), (Timer timer) {
       fetchPaymentData();
     });
@@ -135,21 +131,27 @@ class _PaymentSalesState extends State<PaymentSales> {
                   })
               .toList();
 
-          setState(() {
-            chartData = newChartData;
-            paymentData['paymentTypeDetails'] = paymentTypeDetails;
-          });
+          if (mounted) {
+            setState(() {
+              chartData = newChartData;
+              paymentData['paymentTypeDetails'] = paymentTypeDetails;
+            });
+          }
         } else {
           // If no payment data is available, clear paymentData and display message
+          if (mounted) {
+            setState(() {
+              paymentData.clear();
+            });
+          }
+        }
+      } else {
+        // If 'rawData' is not a list or null, clear paymentData and display message
+        if (mounted) {
           setState(() {
             paymentData.clear();
           });
         }
-      } else {
-        // If 'rawData' is not a list or null, clear paymentData and display message
-        setState(() {
-          paymentData.clear();
-        });
       }
     } catch (e) {
       print('Error fetching payment data: $e');
@@ -327,12 +329,17 @@ class PaymentDetailsWidget extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          Text(
-            '${AppLocalizations.of(context)?.totalAmount ?? 'Total Amount'}: RM${totalAmount.toStringAsFixed(2)}',
-            style: const TextStyle(
-              fontSize: 14,
-              color: Colors.black87, // Use a slightly darker color for amounts
-            ),
+          Consumer<CurrencyProvider>(
+            builder: (context, currencyProvider, _) {
+              return Text(
+                '${AppLocalizations.of(context)?.totalAmount ?? 'Total Amount'}: ${currencyProvider.selectedCurrency}${totalAmount.toStringAsFixed(2)}',
+                style: const TextStyle(
+                  fontSize: 14,
+                  color:
+                      Colors.black87, // Use a slightly darker color for amounts
+                ),
+              );
+            },
           ),
         ],
       ),

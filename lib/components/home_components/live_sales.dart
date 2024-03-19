@@ -40,9 +40,18 @@ class LiveSalesState extends State<LiveSales> {
     updateTotalAmount();
 
     _timer = Timer.periodic(const Duration(seconds: 30), (Timer timer) {
-      setState(() {
-        fetchDataAndUpdateState();
-      });
+      if (mounted) {
+        setState(() {
+          fetchDataAndUpdateState();
+        });
+      }
+    });
+  }
+
+  void updateDate(DateTime newDate) {
+    setState(() {
+      widget.selectedDate = newDate;
+      fetchDataAndUpdateState();
     });
   }
 
@@ -70,41 +79,39 @@ class LiveSalesState extends State<LiveSales> {
 
   // Function to update the total amount based on new payments
   Future<void> updateTotalAmount() async {
+    if (!mounted) return; // Exit the method if the widget is not mounted
+
     try {
-      // Set the flag to true before calculating total amount
       setState(() {
         isCalculatingTotal = true;
       });
 
-      // Fetch the latest sales data
       Map<String, dynamic> latestSalesData = await futureSalesData;
       Map<String, dynamic> latestNetSalesData = await futureNetSalesData;
 
-      // Accumulate the new payment amounts
       double newPaymentAmount =
           calculateTotalSalesAmount(latestSalesData['rawData']);
       double newNetPaymentAmount =
           calculateNetSalesAmount(latestNetSalesData['rawData']);
 
-      // Calculate order count
       orderCount = calculateOrderCount(latestSalesData['rawData']);
 
-      // Update the total amount by adding the new payment amount
       setState(() {
         totalAmount += newPaymentAmount;
         subTotalAmount += newNetPaymentAmount;
-        isFetchingData = false; // Reset the flag after data is fetched
-        isCalculatingTotal =
-            false; // Reset the flag after calculating total amount
+        isFetchingData = false;
+        isCalculatingTotal = false;
         isCalculatingSubTotal = false;
       });
     } catch (e) {
       print('Error updating total amount: $e');
-      setState(() {
-        isFetchingData = false; // Reset the flag on error
-        isCalculatingTotal = false; // Reset the flag on error
-        isCalculatingSubTotal = false;
-      });
+      if (mounted) {
+        setState(() {
+          isFetchingData = false;
+          isCalculatingTotal = false;
+          isCalculatingSubTotal = false;
+        });
+      }
     }
   }
 
@@ -148,7 +155,7 @@ class LiveSalesState extends State<LiveSales> {
 
   @override
   void dispose() {
-    _timer.cancel();
+    _timer.cancel(); // Cancel the timer to avoid memory leaks
     super.dispose();
   }
 
@@ -167,21 +174,25 @@ class LiveSalesState extends State<LiveSales> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                _buildSalesCard(
-                  title:
-                      '${AppLocalizations.of(context)?.netSales ?? 'Net Sales'}\n(RM)',
-                  future: futureNetSalesData,
-                  color: Colors.greenAccent,
-                  dataSelector: (data) =>
-                      calculateNetSalesAmount(data['rawData']),
+                Consumer<CurrencyProvider>(
+                  builder: (context, currencyProvider, _) => _buildSalesCard(
+                    title:
+                        '${AppLocalizations.of(context)?.netSales ?? 'Net Sales'}\n(${currencyProvider.selectedCurrency})',
+                    future: futureNetSalesData,
+                    color: Colors.greenAccent,
+                    dataSelector: (data) =>
+                        calculateNetSalesAmount(data['rawData']),
+                  ),
                 ),
-                _buildSalesCard(
-                  title:
-                      '${AppLocalizations.of(context)?.grossSales ?? 'Gross Sales'}\n(RM)',
-                  future: futureSalesData,
-                  color: Colors.blueAccent,
-                  dataSelector: (data) =>
-                      calculateTotalSalesAmount(data['rawData']),
+                Consumer<CurrencyProvider>(
+                  builder: (context, currencyProvider, _) => _buildSalesCard(
+                    title:
+                        '${AppLocalizations.of(context)?.grossSales ?? 'Gross Sales'}\n(${currencyProvider.selectedCurrency})',
+                    future: futureSalesData,
+                    color: Colors.blueAccent,
+                    dataSelector: (data) =>
+                        calculateTotalSalesAmount(data['rawData']),
+                  ),
                 ),
                 _buildSalesCard(
                   title: AppLocalizations.of(context)?.count ??

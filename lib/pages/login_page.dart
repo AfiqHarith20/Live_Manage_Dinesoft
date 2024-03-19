@@ -13,6 +13,7 @@ class LoginPage extends StatefulWidget {
 }
 
 bool _obscureText = true;
+bool _rememberMe = false;
 
 class _LoginPageState extends State<LoginPage> {
   @override
@@ -120,10 +121,14 @@ class _LoginPageState extends State<LoginPage> {
         return;
       }
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('username', username);
-      await prefs.setString('password', password);
       await prefs.setString('access_token', accessToken);
       await prefs.setString('shop_token', secretCode);
+
+      // Save user credentials if Remember Me is checked
+      if (_rememberMe) {
+        await prefs.setString('username', username);
+        await prefs.setString('password', password);
+      }
 
       // Print the tokens before saving
       print('Access Token: $accessToken');
@@ -224,27 +229,32 @@ class _LoginPageState extends State<LoginPage> {
                           SizedBox(
                             width: 85.w,
                             child: TextFormField(
-                              controller: urlController,
-                              decoration: InputDecoration(
-                                prefixIcon: const Padding(
+                              controller: urlController
+                                ..text = 'hq.caterlord', // Set initial text
+                              decoration: const InputDecoration(
+                                prefixIcon: Padding(
                                   padding: EdgeInsets.symmetric(
                                     vertical: 10.0,
                                     horizontal: 15.0,
                                   ),
                                   child: FaIcon(FontAwesomeIcons.link),
                                 ),
-                                hintText:
-                                    'URL Domain', // Placeholder text for URL domain
-                                hintStyle: AppTextStyle.hint,
-                                enabledBorder: const OutlineInputBorder(
+                                enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.black),
                                 ),
                                 fillColor: Colors.white,
                                 filled: true,
-                                contentPadding: const EdgeInsets.symmetric(
+                                contentPadding: EdgeInsets.symmetric(
                                   vertical: 10.0,
                                   horizontal: 15.0,
                                 ),
+                              ),
+                              style: const TextStyle(
+                                // TextStyle for the default text
+                                fontStyle: FontStyle.normal,
+                                fontWeight: FontWeight.normal,
+                                color:
+                                    Colors.grey, // Adjust the color if needed
                               ),
                             ),
                           ),
@@ -344,25 +354,21 @@ class _LoginPageState extends State<LoginPage> {
                           SizedBox(
                             height: 1.h,
                           ),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: AppLocalizations.of(context)!
-                                        .forgotPassword,
-                                    style: AppTextStyle.textsmall,
-                                  ),
-                                  TextSpan(
-                                    text:
-                                        AppLocalizations.of(context)!.clickHere,
-                                    style: AppTextStyle.textlink,
-                                  ),
-                                ],
+                          Row(
+                            children: [
+                              Checkbox(
+                                value: _rememberMe,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _rememberMe = value!;
+                                  });
+                                },
                               ),
-                              textAlign: TextAlign.center,
-                            ),
+                              Text(
+                                'Remember Me',
+                                style: AppTextStyle.textsmall,
+                              ),
+                            ],
                           ),
                           SizedBox(
                             height: 5.h,

@@ -3,14 +3,18 @@ import 'package:live_manage_dinesoft/system_all_library.dart';
 bool isDebugMode = false;
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => CurrencyProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({
+  const MyApp({
     super.key,
   });
-  late StatefulNavigationShell navigationShell;
 
   @override
   Widget build(BuildContext context) {

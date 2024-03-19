@@ -150,8 +150,18 @@ class _ComparingPageState extends State<ComparingPage> {
               ),
             ),
             const SizedBox(height: 8),
-            _buildMetric('Total Sales', 'RM$totalSales', totalSalesArrow),
-            _buildMetric('Net Sales', 'RM$netSales', netSalesArrow),
+            Consumer<CurrencyProvider>(
+              builder: (context, currencyProvider, _) => _buildMetric(
+                  'Total Sales',
+                  '${currencyProvider.selectedCurrency}$totalSales',
+                  totalSalesArrow),
+            ),
+            Consumer<CurrencyProvider>(
+              builder: (context, currencyProvider, _) => _buildMetric(
+                  'Net Sales',
+                  '${currencyProvider.selectedCurrency}$netSales',
+                  netSalesArrow),
+            ),
             _buildMetric('Order Count', '$orderCount', orderCountArrow),
           ],
         ),
