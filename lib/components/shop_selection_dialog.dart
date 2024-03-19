@@ -17,7 +17,7 @@ class _ShopSelectionDialogState extends State<ShopSelectionDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('${AppLocalizations.of(context)?.selectShop}'),
+      title: const Text('Select a shop'),
       content: SizedBox(
         height: 200,
         child: SingleChildScrollView(
