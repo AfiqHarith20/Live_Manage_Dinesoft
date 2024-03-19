@@ -1,3 +1,5 @@
+// ignore_for_file: constant_pattern_never_matches_value_type
+
 import 'package:live_manage_dinesoft/system_all_library.dart';
 
 class SecureStorage {
@@ -33,25 +35,21 @@ class SecureStorage {
     writeSecureData('selected_language', selectedLanguage);
 
     // Update the app's language instantly
-    final locale =
-        selectedLanguage == 'ms' ? const Locale('ms') : const Locale('en');
+    Locale? locale;
+    switch (selectedLanguage) {
+      case 'ms':
+        locale = const Locale('ms');
+        break;
+      case 'cmn':
+        locale = const Locale('zh');
+        break;
+      default:
+        locale = const Locale('en');
+    }
     Provider.of<LocaleProvider>(dialogContext, listen: false).setLocale(locale);
 
     // Close the dialog
     Navigator.pop(dialogContext);
-  }
-
-  //Read data from secure storage to check language have already selected or not
-  void checkLanguageSelection(BuildContext context) {
-    readSecureData('selected_language').then((value) {
-      if (value == 'en' || value == 'ms') {
-        languagePreference.isLanguageSelected = true;
-        final locale = value == 'ms' ? const Locale('ms') : const Locale('en');
-        Provider.of<LocaleProvider>(context, listen: false).setLocale(locale);
-      } else {
-        showLanguageSelectionDialog(context);
-      }
-    });
   }
 
   // Check if language is selected, if not, prompt user to select
@@ -87,6 +85,15 @@ class SecureStorage {
                         });
                       },
                     ),
+                    ListTile(
+                      title: const Text('🇨🇳 官話'),
+                      tileColor: selectedLanguage == 'zh' ? Colors.green : null,
+                      onTap: () {
+                        setState(() {
+                          selectedLanguage = 'zh';
+                        });
+                      },
+                    ),
                     const SizedBox(
                       height: 30,
                     ),
@@ -110,5 +117,29 @@ class SecureStorage {
         },
       );
     }
+  }
+
+//Read data from secure storage to check language have already selected or not
+  void checkLanguageSelection(BuildContext context) {
+    readSecureData('selected_language').then((value) {
+      if (value == 'en' || value == 'ms' || value == 'zh') {
+        languagePreference.isLanguageSelected = true;
+        Locale? locale;
+        switch (value) {
+          // Corrected variable name from 'locale' to 'value'
+          case 'ms':
+            locale = const Locale('ms');
+            break;
+          case 'zh':
+            locale = const Locale('zh');
+            break;
+          default:
+            locale = const Locale('en');
+        }
+        Provider.of<LocaleProvider>(context, listen: false).setLocale(locale);
+      } else {
+        showLanguageSelectionDialog(context);
+      }
+    });
   }
 }

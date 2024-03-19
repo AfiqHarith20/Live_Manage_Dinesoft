@@ -69,9 +69,9 @@ class _TablePageState extends State<TablePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Table Page',
-          style: TextStyle(
+        title: Text(
+          AppLocalizations.of(context)!.tableReportPageTitle,
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -81,7 +81,7 @@ class _TablePageState extends State<TablePage> {
         child: Column(
           children: [
             Text(
-              'Date: ${DateFormat('yyyy-MM-dd').format(selectedDate)}',
+              '${AppLocalizations.of(context)!.date}: ${DateFormat('yyyy-MM-dd').format(selectedDate)}',
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -110,7 +110,9 @@ class _TablePageState extends State<TablePage> {
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('No data available'));
+                  return Center(
+                    child: Text(AppLocalizations.of(context)!.noTableAvailable),
+                  );
                 } else {
                   return Column(
                     children: [
@@ -127,7 +129,8 @@ class _TablePageState extends State<TablePage> {
                               ListTile(
                                 leading:
                                     const Icon(Icons.table_restaurant_outlined),
-                                title: Text('Table $tableCode'),
+                                title: Text(
+                                    '${AppLocalizations.of(context)!.table} $tableCode'),
                                 subtitle: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -176,7 +179,8 @@ class _TablePageState extends State<TablePage> {
                             tableDataFuture = fetchData(selectedDate);
                           });
                         },
-                        child: const Text('Previous Day'),
+                        child: Text(
+                            '${AppLocalizations.of(context)?.previousDay}'),
                       ),
                     ],
                   );

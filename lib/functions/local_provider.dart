@@ -19,6 +19,8 @@ class LocaleProvider extends ChangeNotifier {
       } else if (locale.languageCode == 'ms') {
         printDebugLog('Bahasa Malaysia');
         // You can use 'ms' or any other language code you're using for Bahasa Malaysia
+      } else if (locale.languageCode == 'zh') {
+        printDebugLog('官話');
       }
     }
   }

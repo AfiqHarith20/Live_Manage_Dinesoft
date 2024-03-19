@@ -150,7 +150,7 @@ class _SettingPageState extends State<SettingPage> {
                         width: 8), // Add some space between icon and text
                     Consumer<CurrencyProvider>(
                       builder: (context, currencyProvider, _) => Text(
-                        'Change Currency (${currencyProvider.selectedCurrency})',
+                        '${AppLocalizations.of(context)?.chngCurrency} (${currencyProvider.selectedCurrency})',
                         style: AppTextStyle.textmedium,
                       ),
                     ),
