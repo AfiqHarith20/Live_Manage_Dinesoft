@@ -5,12 +5,17 @@ class ReportSales extends StatefulWidget {
   final DateTime selectedDate;
   final String accessToken;
   final String shopToken;
-
+  final String username;
+  final String password;
+  final Function(String, String, String) onShopSelected;
   const ReportSales({
     super.key,
     required this.selectedDate,
     required this.accessToken,
     required this.shopToken,
+    required this.username,
+    required this.password,
+    required this.onShopSelected,
   });
 
   @override
@@ -82,6 +87,10 @@ List<Map<String, dynamic>> extractTxSalesDetails(List<dynamic> txSalesDetails) {
 }
 
 class ReportSalesState extends State<ReportSales> {
+  late String username;
+  late String password;
+  // late StatefulNavigationShell navigationShell;
+  late Function(String, String, String) onShopSelected;
   late DateTime selectedDate;
   late Map<String, Map<String, dynamic>> salesByCategory;
   bool sortDescending = true;
@@ -99,6 +108,9 @@ class ReportSalesState extends State<ReportSales> {
   void initState() {
     super.initState();
     selectedDate = widget.selectedDate;
+    username = widget.username;
+    password = widget.password;
+    onShopSelected = widget.onShopSelected;
     salesByCategory = {};
     fetchDataOnPageLoad();
   }
@@ -422,6 +434,15 @@ class ReportSalesState extends State<ReportSales> {
           ),
         ),
       ),
+      // bottomNavigationBar: CustomBottomNavBar(
+      //   accessToken: widget.accessToken,
+      //   shopToken: widget.shopToken,
+      //   username: username,
+      //   password: password,
+      //   selectedDate: selectedDate,
+      //   onShopSelected: onShopSelected,
+      //   navigationShell: navigationShell,
+      // ),
     );
   }
 }

@@ -22,6 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController urlController = TextEditingController();
   late String selectedShopName;
+  late final StatefulNavigationShell navigationShell;
 
   Future<bool> _validateLoginResponse(http.Response response) async {
     if (response.statusCode == 200) {

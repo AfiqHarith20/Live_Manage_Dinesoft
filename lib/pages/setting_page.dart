@@ -3,14 +3,27 @@
 import 'package:live_manage_dinesoft/system_all_library.dart';
 
 class SettingPage extends StatefulWidget {
-  static const String routeName = '/setting';
-  const SettingPage({super.key});
+  final String accessToken;
+  final String shopToken;
+  final DateTime selectedDate;
+  final String username;
+  final String password;
+  final Function(String, String, String) onShopSelected;
+  const SettingPage(
+      {super.key,
+      required this.accessToken,
+      required this.shopToken,
+      required this.selectedDate,
+      required this.username,
+      required this.password,
+      required this.onShopSelected});
 
   @override
   State<SettingPage> createState() => _SettingPageState();
 }
 
 class _SettingPageState extends State<SettingPage> {
+  late StatefulNavigationShell navigationShell;
   Future<void> logout() async {
     // Clear user's tokens here
     // Navigate back to the login page
