@@ -175,15 +175,6 @@ class _SettingPageState extends State<SettingPage> {
           ],
         ),
       ),
-      bottomNavigationBar: CustomBottomNavBar(
-        accessToken: widget.accessToken,
-        shopToken: widget.shopToken,
-        username: widget.username,
-        password: widget.password,
-        selectedDate: widget.selectedDate,
-        onShopSelected: widget.onShopSelected,
-        navigationShell: navigationShell,
-      ),
     );
   }
 }

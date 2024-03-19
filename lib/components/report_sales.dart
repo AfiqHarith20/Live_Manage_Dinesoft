@@ -89,7 +89,7 @@ List<Map<String, dynamic>> extractTxSalesDetails(List<dynamic> txSalesDetails) {
 class ReportSalesState extends State<ReportSales> {
   late String username;
   late String password;
-  late StatefulNavigationShell navigationShell;
+  // late StatefulNavigationShell navigationShell;
   late Function(String, String, String) onShopSelected;
   late DateTime selectedDate;
   late Map<String, Map<String, dynamic>> salesByCategory;
@@ -408,15 +408,15 @@ class ReportSalesState extends State<ReportSales> {
           ),
         ),
       ),
-      bottomNavigationBar: CustomBottomNavBar(
-        accessToken: widget.accessToken,
-        shopToken: widget.shopToken,
-        username: username,
-        password: password,
-        selectedDate: selectedDate,
-        onShopSelected: onShopSelected,
-        navigationShell: navigationShell,
-      ),
+      // bottomNavigationBar: CustomBottomNavBar(
+      //   accessToken: widget.accessToken,
+      //   shopToken: widget.shopToken,
+      //   username: username,
+      //   password: password,
+      //   selectedDate: selectedDate,
+      //   onShopSelected: onShopSelected,
+      //   navigationShell: navigationShell,
+      // ),
     );
   }
 }

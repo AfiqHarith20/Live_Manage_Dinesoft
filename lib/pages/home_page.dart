@@ -10,7 +10,7 @@ class HomePage extends StatefulWidget {
   final String username;
   final String password;
   final Function(String, String, String) onShopSelected;
-  final StatefulNavigationShell navigationShell;
+
   HomePage({
     super.key,
     required this.accessToken,
@@ -18,7 +18,6 @@ class HomePage extends StatefulWidget {
     required this.username,
     required this.password,
     required this.onShopSelected,
-    required this.navigationShell,
   });
 
   @override
@@ -214,15 +213,6 @@ class _HomePageState extends State<HomePage>
             ),
           ),
         ),
-      ),
-      bottomNavigationBar: CustomBottomNavBar(
-        accessToken: widget.accessToken,
-        shopToken: widget.shopToken,
-        username: widget.username,
-        password: widget.password,
-        selectedDate: selectedDate,
-        onShopSelected: widget.onShopSelected,
-        navigationShell: navigationShell,
       ),
     );
   }

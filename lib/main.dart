@@ -22,27 +22,13 @@ class MyApp extends StatelessWidget {
         final isLoggedIn = snapshot.data?['is_logged_in'] == 'true';
 
         if (isLoggedIn && accessToken.isNotEmpty && shopToken.isNotEmpty) {
-          // Initialize AppNavigation with the required parameters
-          final appNavigation = AppNavigation(
-            accessToken: accessToken,
-            shopToken: shopToken,
-            selectedDate: DateTime.now(),
-            username: snapshot.data?['username'] ?? '',
-            password: snapshot.data?['password'] ?? '',
-            onShopSelected: (String newShopToken, String newAccessToken,
-                String selectedShopName) {
-              // Implement your logic here
-            },
-            navigationShell: navigationShell,
-          );
-
           return ChangeNotifierProvider(
             create: (context) => LocaleProvider(),
             builder: (context, child) {
               final provider = Provider.of<LocaleProvider>(context);
               return ResponsiveSizer(
                 builder: (context, orientation, deviceType) {
-                  return MaterialApp.router(
+                  return MaterialApp(
                     onGenerateTitle: (context) =>
                         AppLocalizations.of(context)!.appTitle,
                     localizationsDelegates:
@@ -50,18 +36,17 @@ class MyApp extends StatelessWidget {
                     supportedLocales: AppLocalizations.supportedLocales,
                     locale: provider.locale,
                     debugShowCheckedModeBanner: isDebugMode,
-                    routerConfig: appNavigation.router,
-                    // home: HomePage(
-                    //   accessToken: accessToken,
-                    //   shopToken: shopToken,
-                    //   // selectedShopName: selectedShopName,
-                    //   username: snapshot.data?['username'] ?? '',
-                    //   password: snapshot.data?['password'] ?? '',
-                    //   onShopSelected: (String newShopToken,
-                    //       String newAccessToken, String selectedShopName) {
-                    //     // Implement your logic here
-                    //   },
-                    // ),
+                    home: HomePage(
+                      accessToken: accessToken,
+                      shopToken: shopToken,
+                      // selectedShopName: selectedShopName,
+                      username: snapshot.data?['username'] ?? '',
+                      password: snapshot.data?['password'] ?? '',
+                      onShopSelected: (String newShopToken,
+                          String newAccessToken, String selectedShopName) {
+                        // Implement your logic here
+                      },
+                    ),
                   );
                 },
               );

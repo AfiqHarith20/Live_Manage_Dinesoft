@@ -145,7 +145,7 @@ class _LoginPageState extends State<LoginPage> {
             shopToken: secretCode,
             onShopSelected: onShopSelected,
             username: username,
-            password: password, navigationShell: navigationShell,
+            password: password,
             // selectedShopName: selectedShopName,
           ),
         ),

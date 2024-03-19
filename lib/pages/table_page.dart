@@ -142,15 +142,6 @@ class _TablePageState extends State<TablePage> {
           }
         },
       ),
-      bottomNavigationBar: CustomBottomNavBar(
-        accessToken: widget.accessToken,
-        shopToken: widget.shopToken,
-        username: widget.username,
-        password: widget.password,
-        selectedDate: widget.selectedDate,
-        onShopSelected: widget.onShopSelected,
-        navigationShell: navigationShell,
-      ),
     );
   }
 

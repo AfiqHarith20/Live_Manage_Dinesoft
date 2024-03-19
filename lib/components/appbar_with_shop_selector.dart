@@ -143,7 +143,6 @@ class AppBarWithShopSelectorState extends State<AppBarWithShopSelector> {
             password: widget.password,
             // selectedShopName: selectedShopName,
             onShopSelected: widget.onShopSelected,
-            navigationShell: navigationShell,
           ),
         ),
       );

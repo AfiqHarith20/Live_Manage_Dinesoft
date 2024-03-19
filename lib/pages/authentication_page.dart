@@ -56,7 +56,6 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                 String selectedShopName) {
               // Implement your logic here
             },
-            navigationShell: navigationShell,
           ),
         ),
       );
