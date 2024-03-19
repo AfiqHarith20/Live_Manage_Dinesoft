@@ -52,7 +52,7 @@
     },
     "selectLaguageTitle": "Sila pilih bahasa",
     
-    "homePageTitle": "Umum",
+    "homePageTitle": "Halaman Utama",
     "authPageTitle": "Pengesahan",
     "aboutPageTitle": "Perihal",
     "aboutPageContent": "Perihal",
@@ -62,14 +62,13 @@
     "settingPageContent": "Seting",
     "salesReportPageTitle": "Laporan Jualan",
     "salesReportPageContent": "Laporan Jualan",
-    "tableReportPageTitle": "Laporan Meja",
-    "tableReportPageContent": "Laporan Meja",
 
     "welcomePageTitle": "Selamat Kembali",
     "welcomePageSubTitle": "Masukkan butiran peribadi ke akaun anda",
     "welcomePageSignInBtn": "Log Masuk",
     "welcomePageSignUpBtn": "Daftar",
     "logoutBtn": "Log Keluar",
+    "verificationCodeBtn": "Terima Verifikasi Kod",
     
     "hintAccountNameLabel": "Masukkan Nama Akaun",
     "hintPasswordLabel": "Masukkan Kata Laluan",
@@ -83,8 +82,16 @@
     "messageSnackBar1": "Memproses Data",
     "messageSnackBar2": "Sila bersetuju dengan pemprosesan data peribadi",
     "messageSnackBar3": "Sila masukkan kedua-dua nama akaun dan kata laluan",
+    
+    "signUpPageTitle": "Daftar Perniagaan Anda",
+    "registerBusinessTitle": "Pendaftaran Perniagaan",
+    "registerIndividualTitle": "Pendaftaran Perseorangan",
+    "signUpTerms": "Saya bersetuju dengan pemprosesan ",
+    "personalData": "Data Peribadi",
+    "requestSignIn": "Sudah ada akaun? ",
 
-    "selectShop": "Pilih Kedai",
+    "signatureTitle": "Tandatangan",
+
     "selectDate": "Pilih Tarikh",
     "savebtn": "Simpan",
     "authKeyTxt": "Pengesahan Kunci",
@@ -109,12 +116,5 @@
     "msgNoPayment": "Tiada Bayaran Tersedia",
     "noDataAvailable": "Tiada Data Tersedia",
     "noSalesAvailable": "Tiada Jualan Berlaku",
-    "noChartAvailable": "Tiada Carta Alir",
-
-    "table": "Meja",
-    "noTableAvailable": "Tiada Meja Tersedia",
-    "previousDay": "Hari Semalam",
-    "today": "Hari Ini",
-    "chngCurrency": "Pertukaran Matawang"
-    
+    "noChartAvailable": "Tiada Carta Alir"
 }

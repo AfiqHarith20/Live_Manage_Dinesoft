@@ -9,8 +9,6 @@ class LocaleSwitcherWidget extends StatelessWidget {
         return '🇺🇸 English';
       case 'ms':
         return '🇲🇾 Bahasa Malaysia';
-      case 'zh':
-        return '🇨🇳 官話';
       default:
         return locale.languageCode;
     }
@@ -60,17 +58,9 @@ class LocaleSwitcherWidget extends StatelessWidget {
                       onPressed: () {
                         final provider =
                             Provider.of<LocaleProvider>(context, listen: false);
-                        Locale? locale;
-                        switch (selectedLanguage) {
-                          case 'ms':
-                            locale = const Locale('ms');
-                            break;
-                          case 'zh':
-                            locale = const Locale('zh');
-                            break;
-                          default:
-                            locale = const Locale('en');
-                        }
+                        final locale = selectedLanguage == 'ms'
+                            ? const Locale('ms')
+                            : const Locale('en');
                         provider.setLocale(locale);
                         SecureStorage().writeSecureData(
                             'selected_language', selectedLanguage);
