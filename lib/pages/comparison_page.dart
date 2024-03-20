@@ -183,12 +183,12 @@ class _ComparingPageState extends State<ComparingPage> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            if (arrowIcon != null) // Show arrow icon if it's not null
-              Icon(
-                arrowIcon,
-                color:
-                    arrowIcon == Icons.arrow_upward ? Colors.green : Colors.red,
-              ),
+            // Show arrow icon if it's not null
+            Icon(
+              arrowIcon,
+              color:
+                  arrowIcon == Icons.arrow_upward ? Colors.green : Colors.red,
+            ),
           ],
         ),
         Text(

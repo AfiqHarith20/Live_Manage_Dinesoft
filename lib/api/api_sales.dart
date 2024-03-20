@@ -14,7 +14,6 @@ Future<Map<String, dynamic>> fetchSalesData(
         "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
     final url = Uri.parse(
         "https://ewapi.azurewebsites.net/api/shop/orders?date=$formattedDate");
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
     final http.Response response = await http.get(
       url,
       headers: ({
@@ -98,7 +97,6 @@ Future<List<Map<String, dynamic>>> fetchReportData(
   final url = Uri.parse(
       "https://ewapi.azurewebsites.net/api/shop/orders?date=$formattedDate");
 
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
   final http.Response response = await http.get(
     url,
     headers: {

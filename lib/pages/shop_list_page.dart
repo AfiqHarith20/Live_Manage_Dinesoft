@@ -28,10 +28,9 @@ class _ShopListPageState extends State<ShopListPage> {
   late String _selectedShop;
   List<String> selectedShops = [];
   List<String> _shops = []; // Initialize shops list
-  Map<String, String> _shopTokens = {};
   String? _errorMessage;
   bool _isLoading = false;
-  late Timer _timer; // Declare the timer variable
+// Declare the timer variable
 
   Future<void> _fetchShops() async {
     try {
@@ -53,10 +52,6 @@ class _ShopListPageState extends State<ShopListPage> {
           final List<dynamic> shopList = json.decode(response.body);
           _shops = shopList.map((shop) => shop['shopName'] as String).toList();
           // Populate the shop tokens map
-          _shopTokens = {
-            for (var shop in shopList)
-              shop['shopName'] as String: shop['secretCode'] as String
-          };
           // Ensure the currently selected shop is in the updated list
           _selectedShop = _shops.contains(widget.shopToken)
               ? widget.shopToken

@@ -16,7 +16,6 @@ bool _obscureText = true;
 bool _rememberMe = false;
 
 class _LoginPageState extends State<LoginPage> {
-  @override
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController userNameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
