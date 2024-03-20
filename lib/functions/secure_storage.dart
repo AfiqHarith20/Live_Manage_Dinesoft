@@ -33,8 +33,17 @@ class SecureStorage {
     writeSecureData('selected_language', selectedLanguage);
 
     // Update the app's language instantly
-    final locale =
-        selectedLanguage == 'ms' ? const Locale('ms') : const Locale('en');
+    Locale? locale;
+    switch (selectedLanguage) {
+      case 'ms':
+        locale = const Locale('ms');
+        break;
+      case 'cmn':
+        locale = const Locale('zh');
+        break;
+      default:
+        locale = const Locale('en');
+    }
     Provider.of<LocaleProvider>(dialogContext, listen: false).setLocale(locale);
 
     // Close the dialog
@@ -44,9 +53,20 @@ class SecureStorage {
   //Read data from secure storage to check language have already selected or not
   void checkLanguageSelection(BuildContext context) {
     readSecureData('selected_language').then((value) {
-      if (value == 'en' || value == 'ms') {
+      if (value == 'en' || value == 'ms' || value == 'zh') {
         languagePreference.isLanguageSelected = true;
-        final locale = value == 'ms' ? const Locale('ms') : const Locale('en');
+        Locale? locale;
+        switch (value) {
+          // Corrected variable name from 'locale' to 'value'
+          case 'ms':
+            locale = const Locale('ms');
+            break;
+          case 'zh':
+            locale = const Locale('zh');
+            break;
+          default:
+            locale = const Locale('en');
+        }
         Provider.of<LocaleProvider>(context, listen: false).setLocale(locale);
       } else {
         showLanguageSelectionDialog(context);
@@ -84,6 +104,15 @@ class SecureStorage {
                       onTap: () {
                         setState(() {
                           selectedLanguage = 'ms';
+                        });
+                      },
+                    ),
+                    ListTile(
+                      title: const Text('🇨🇳 官話'),
+                      tileColor: selectedLanguage == 'zh' ? Colors.green : null,
+                      onTap: () {
+                        setState(() {
+                          selectedLanguage = 'zh';
                         });
                       },
                     ),

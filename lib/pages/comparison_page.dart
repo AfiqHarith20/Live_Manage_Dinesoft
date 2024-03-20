@@ -93,7 +93,7 @@ class _ComparingPageState extends State<ComparingPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 _buildCard(
-                  'Today',
+                  '${AppLocalizations.of(context)?.today}',
                   todayTotalSalesAmount,
                   todayNetSalesAmount,
                   todayOrderCount,
@@ -105,7 +105,7 @@ class _ComparingPageState extends State<ComparingPage> {
                 ),
                 const SizedBox(height: 16),
                 _buildCard(
-                  'Yesterday',
+                  '${AppLocalizations.of(context)?.previousDay}',
                   yesterdayTotalSalesAmount,
                   yesterdayNetSalesAmount,
                   yesterdayOrderCount,
@@ -152,17 +152,18 @@ class _ComparingPageState extends State<ComparingPage> {
             const SizedBox(height: 8),
             Consumer<CurrencyProvider>(
               builder: (context, currencyProvider, _) => _buildMetric(
-                  'Total Sales',
+                  '${AppLocalizations.of(context)?.grossSales}',
                   '${currencyProvider.selectedCurrency}$totalSales',
                   totalSalesArrow),
             ),
             Consumer<CurrencyProvider>(
               builder: (context, currencyProvider, _) => _buildMetric(
-                  'Net Sales',
+                  '${AppLocalizations.of(context)?.netSales}',
                   '${currencyProvider.selectedCurrency}$netSales',
                   netSalesArrow),
             ),
-            _buildMetric('Order Count', '$orderCount', orderCountArrow),
+            _buildMetric('${AppLocalizations.of(context)?.cnt}', '$orderCount',
+                orderCountArrow),
           ],
         ),
       ),

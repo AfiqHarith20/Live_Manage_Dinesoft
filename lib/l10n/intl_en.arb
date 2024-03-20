@@ -62,13 +62,14 @@
     "settingPageContent": "Setting",
     "salesReportPageTitle": "Sales Report",
     "salesReportPageContent": "Sales Report",
+    "tableReportPageTitle": "Table Report",
+    "tableReportPageContent": "Table Report",
 
     "welcomePageTitle": "Welcome Back",
     "welcomePageSubTitle": "Enter personal details to your account",
     "welcomePageSignInBtn": "Sign In",
     "welcomePageSignUpBtn": "Sign Up",
     "logoutBtn": "Log Out",
-    "verificationCodeBtn": "Receive Verification Code",
 
     "hintAccountNameLabel": "Enter Account Name",
     "hintPasswordLabel": "Enter Password",
@@ -83,14 +84,7 @@
     "messageSnackBar2": "Please agree to the processing of personal data",
     "messageSnackBar3": "Please enter both username and password",
 
-    "signUpPageTitle": "Let's Start Business",
-    "registerBusinessTitle": "Business Registration",
-    "registerIndividualTitle": "Individual Registration",
-    "signUpTerms": "I agree to the processing of ",
-    "personalData": "Personal Data",
-    "requestSignIn": "Already have an account? ",
-
-    "signatureTitle": "Signature",
+    "selectShop": "Select a Shop",
 
     "selectDate": "Select Date",
     "savebtn": "Save",
@@ -117,7 +111,13 @@
     "msgNoPayment": "No Payment Available",
     "noDataAvailable": "No Data Available",
     "noSalesAvailable": "No Sales Available",
-    "noChartAvailable": "No Chart Available"
+    "noChartAvailable": "No Chart Available",
+
+    "table": "Table",
+    "noTableAvailable": "No Table Available",
+    "previousDay": "Previous Day",
+    "today": "Today",
+    "chngCurrency": "Change Currency"
 
 
 }
