@@ -5,17 +5,12 @@ class ReportSales extends StatefulWidget {
   final DateTime selectedDate;
   final String accessToken;
   final String shopToken;
-  final String username;
-  final String password;
-  final Function(String, String, String) onShopSelected;
+
   const ReportSales({
     super.key,
     required this.selectedDate,
     required this.accessToken,
     required this.shopToken,
-    required this.username,
-    required this.password,
-    required this.onShopSelected,
   });
 
   @override
@@ -108,9 +103,6 @@ class ReportSalesState extends State<ReportSales> {
   void initState() {
     super.initState();
     selectedDate = widget.selectedDate;
-    username = widget.username;
-    password = widget.password;
-    onShopSelected = widget.onShopSelected;
     salesByCategory = {};
     fetchDataOnPageLoad();
   }

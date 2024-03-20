@@ -48,13 +48,6 @@ class LiveSalesState extends State<LiveSales> {
     });
   }
 
-  void updateDate(DateTime newDate) {
-    setState(() {
-      widget.selectedDate = newDate;
-      fetchDataAndUpdateState();
-    });
-  }
-
   @override
   void didUpdateWidget(covariant LiveSales oldWidget) {
     super.didUpdateWidget(oldWidget);
