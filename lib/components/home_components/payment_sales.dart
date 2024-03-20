@@ -85,8 +85,7 @@ class _PaymentSalesState extends State<PaymentSales> {
         widget.shopToken,
       );
 
-      if (responseData != null &&
-          responseData.containsKey('rawData') &&
+      if (responseData.containsKey('rawData') &&
           responseData['rawData'] is List) {
         List<dynamic> allPayments = [];
         if ((responseData['rawData'] as List).isNotEmpty) {

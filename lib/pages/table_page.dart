@@ -43,7 +43,6 @@ class _TablePageState extends State<TablePage> {
     final url = Uri.parse(
         "https://ewapi.azurewebsites.net/api/shop/orders?date=$formattedDate");
 
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
     final http.Response response = await http.get(
       url,
       headers: {
