@@ -203,20 +203,25 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const LocaleSwitcherWidget(),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(1.0),
                     child: Form(
                       key: _formKey,
                       child: Column(
                         children: [
-                          SizedBox(
-                            height: 10.h,
+                          // SizedBox(
+                          //   height: 10.h,
+                          // ),
+                          Image.asset(
+                            'assets/logo.png',
+                            height: 20.h, // Adjust the height as needed
+                            width: 50.h, // Adjust the width as needed
                           ),
                           Text(
                             "DINESMART",
                             style: AppTextStyle.titleLarge,
                           ),
                           SizedBox(
-                            height: 5.h,
+                            height: 2.h,
                           ),
                           Text(
                             AppLocalizations.of(context)!.welcomePageTitle,
@@ -229,7 +234,7 @@ class _LoginPageState extends State<LoginPage> {
                             width: 85.w,
                             child: TextFormField(
                               controller: urlController
-                                ..text = 'hq.caterlord', // Set initial text
+                                ..text = 'hq.caterlord.com', // Set initial text
                               decoration: const InputDecoration(
                                 prefixIcon: Padding(
                                   padding: EdgeInsets.symmetric(
@@ -265,7 +270,7 @@ class _LoginPageState extends State<LoginPage> {
                             child: TextFormField(
                               validator: (value) {
                                 if (value?.isEmpty ?? true) {
-                                  return 'Please enter your username';
+                                  return '${AppLocalizations.of(context)?.hintAccountNameLabel}';
                                 }
                                 return null;
                               },
@@ -303,7 +308,7 @@ class _LoginPageState extends State<LoginPage> {
                             child: TextFormField(
                               validator: (value) {
                                 if (value?.isEmpty ?? true) {
-                                  return 'Please enter your password';
+                                  return '${AppLocalizations.of(context)?.hintPasswordLabel}';
                                 }
                                 return null;
                               },
