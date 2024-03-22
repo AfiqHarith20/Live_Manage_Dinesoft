@@ -38,7 +38,7 @@ export 'package:live_manage_dinesoft/components/currency_provider.dart';
 
 //components
 export 'package:live_manage_dinesoft/components/home_components/live_sales.dart';
-export 'package:live_manage_dinesoft/components/report_sales.dart';
+export 'package:live_manage_dinesoft/pages/report_sales_page.dart';
 export 'package:live_manage_dinesoft/components/home_components/menu_list.dart';
 export 'package:live_manage_dinesoft/components/home_components/payment_sales.dart';
 export 'package:live_manage_dinesoft/components/home_components/chart_components.dart';
