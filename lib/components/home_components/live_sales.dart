@@ -268,12 +268,21 @@ class LiveSalesState extends State<LiveSales> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        '$formattedValue',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0,
+                      CircularPercentIndicator(
+                        radius: 50.0,
+                        lineWidth: 8.0,
+                        percent: formattedValue != 'N/A'
+                            ? ((formattedValue as num) / 1000)
+                            : 0.0, // Adjust the percent as needed
+                        center: Text(
+                          '$formattedValue',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.0,
+                          ),
                         ),
+                        backgroundColor: Colors.white,
+                        progressColor: Colors.red,
                       ),
                       const SizedBox(height: 8),
                       Text(
