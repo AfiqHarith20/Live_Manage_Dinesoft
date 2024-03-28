@@ -121,67 +121,7 @@ class _DrawerPageState extends State<DrawerPage> {
                     ],
                   ),
                 ),
-              ),
-              // GestureDetector(
-              //   onTap: () {
-              //     Navigator.push(
-              //       context,
-              //       MaterialPageRoute(
-              //         builder: (context) => const SettingPage(),
-              //       ),
-              //     );
-              //   },
-              //   child: Container(
-              //     height: 8.h,
-              //     decoration: BoxDecoration(
-              //       color: Colors.transparent,
-              //       borderRadius: BorderRadius.circular(20),
-              //     ),
-              //     child: Row(
-              //       mainAxisAlignment: MainAxisAlignment.center,
-              //       children: [
-              //         const FaIcon(
-              //           FontAwesomeIcons.gear,
-              //         ),
-              //         SizedBox(
-              //           width: 2.h,
-              //         ),
-              //         Text(
-              //           AppLocalizations.of(context)?.settingPageTitle ??
-              //               "Setting",
-              //           style: AppTextStyle.textmedium,
-              //         ),
-              //       ],
-              //     ),
-              //   ),
-              // ),
-              // GestureDetector(
-              //   onTap: () {
-              //     logout();
-              //   },
-              //   child: Container(
-              //     height: 8.h,
-              //     decoration: BoxDecoration(
-              //       color: Colors.transparent,
-              //       borderRadius: BorderRadius.circular(20),
-              //     ),
-              //     child: Row(
-              //       mainAxisAlignment: MainAxisAlignment.center,
-              //       children: [
-              //         const FaIcon(
-              //           FontAwesomeIcons.rightFromBracket,
-              //         ),
-              //         SizedBox(
-              //           width: 2.h,
-              //         ),
-              //         Text(
-              //           AppLocalizations.of(context)?.logoutBtn ?? "Log Out",
-              //           style: AppTextStyle.textmedium,
-              //         ),
-              //       ],
-              //     ),
-              //   ),
-              // ),
+              ),        
             ],
           ),
         ),

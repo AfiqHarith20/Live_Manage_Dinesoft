@@ -12,6 +12,20 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
+  late String _appVersion;
+
+  @override
+  void initState() {
+    super.initState();
+    _getAppVersion();
+  }
+
+  Future<void> _getAppVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      _appVersion = packageInfo.version;
+    });
+  }
   Future<void> logout() async {
     // Clear user's tokens here
     // Navigate back to the login page
@@ -187,6 +201,23 @@ class _SettingPageState extends State<SettingPage> {
                 ),
               ),
             ),
+             // Version section
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 110, vertical: 10),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'App Version: $_appVersion',
+                        style: const TextStyle(
+                          color: Colors.black26,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             // Add more Container widgets with ListTile for additional settings
             // Container(
             //   decoration: const BoxDecoration(

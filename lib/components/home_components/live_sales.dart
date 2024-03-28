@@ -10,13 +10,13 @@ class LiveSales extends StatefulWidget {
   final String accessToken;
   final String shopToken;
 
-  LiveSales({
-    Key? key,
+  const LiveSales({
+    super.key,
     required this.selectedDate,
     required this.onDateChanged,
     required this.accessToken,
     required this.shopToken,
-  }) : super(key: key);
+  });
 
   @override
   State<LiveSales> createState() => LiveSalesState();
@@ -204,104 +204,100 @@ class LiveSalesState extends State<LiveSales> {
   }
 
   Widget _buildSalesCard({
-    required String title,
-    required Future future,
-    required Color color,
-    required dynamic Function(dynamic) dataSelector,
-  }) {
-    return Expanded(
-      child: Card(
-        elevation: 4,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        color: color,
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          child: FutureBuilder(
-            future: future,
-            builder: (context, snapshot) {
-              print('Snapshot: $snapshot'); // Debug statement
+  required String title,
+  required Future future,
+  required Color color,
+  required dynamic Function(dynamic) dataSelector,
+}) {
+  return SizedBox(
+    height: 27.h,
+    width: 13.5.h,
+    child: Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      color: color,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        child: FutureBuilder(
+          future: future,
+          builder: (context, snapshot) {
+            print('Snapshot: $snapshot'); // Debug statement
 
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: SizedBox(
-                    height: 20, // Adjust height as needed
-                    width: 20, // Adjust width as needed
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: SizedBox(
+                  height: 20, // Adjust height as needed
+                  width: 20, // Adjust width as needed
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   ),
-                );
-              } else if (snapshot.hasError) {
-                return Center(
-                  child: Text(
-                    'Error: ${snapshot.error}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                    ),
+                ),
+              );
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text(
+                  'Error: ${snapshot.error}',
+                  style: const TextStyle(
+                    color: Colors.white,
                   ),
-                );
-              } else if (!snapshot.hasData) {
-                return Center(
-                  child: Text(
-                    AppLocalizations.of(context)!.noDataAvailable,
-                    style: const TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                );
-              } else {
-                dynamic data = snapshot.data;
-                dynamic value = dataSelector(data);
+                ),
+              );
+            } else {
+              dynamic data = snapshot.data;
+              dynamic value = dataSelector(data);
 
-                print('Value: $value'); // Debug statement
+              print('Value: $value'); // Debug statement
 
-                // Format the value with two decimal places to remove trailing zeroes
-                final formattedValue = value != null
-                    ? double.parse(
-                        value.toStringAsFixed(2)) // Format to 2 decimal places
-                    : 'N/A';
+              // Check if data is null or empty
+              if (value == null || value == 0) {
+                value = 0.0; // Set value to 0.0 if it's null or 0
+              }
 
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircularPercentIndicator(
-                        radius: 50.0,
-                        lineWidth: 8.0,
-                        percent: formattedValue != 'N/A'
-                            ? ((formattedValue as num) / 1000)
-                            : 0.0, // Adjust the percent as needed
-                        center: Text(
-                          '$formattedValue',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16.0,
-                          ),
-                        ),
-                        backgroundColor: Colors.white,
-                        progressColor: Colors.red,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        title,
-                        textAlign: TextAlign.center,
+              // Format the value with two decimal places to remove trailing zeroes
+              final formattedValue = double.parse(
+                  value.toStringAsFixed(2)); // Format to 2 decimal places
+
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularPercentIndicator(
+                      radius: 50.0,
+                      lineWidth: 8.0,
+                      percent: formattedValue != 0.0
+                          ? ((formattedValue as num) / 1000)
+                          : 0.0, // Adjust the percent as needed
+                      center: Text(
+                        '$formattedValue',
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
                         ),
                       ),
-                    ],
-                  ),
-                );
-              }
-            },
-          ),
+                      backgroundColor: Colors.white,
+                      progressColor: Colors.red,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      title,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+          },
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }

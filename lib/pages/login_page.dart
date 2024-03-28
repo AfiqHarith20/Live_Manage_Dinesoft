@@ -198,7 +198,7 @@ class _LoginPageState extends State<LoginPage> {
                     padding: EdgeInsets.all(8.0),
                   ),
                   SizedBox(
-                    height: 2.h,
+                    height: 3.h,
                   ),
                   const LocaleSwitcherWidget(),
                   Padding(
@@ -208,7 +208,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: Column(
                         children: [
                           // SizedBox(
-                          //   height: 10.h,
+                          //   height: 5.h,
                           // ),
                           Image.asset(
                             'assets/logo.png',
@@ -374,7 +374,7 @@ class _LoginPageState extends State<LoginPage> {
                             ],
                           ),
                           SizedBox(
-                            height: 5.h,
+                            height: 3.h,
                           ),
                           ElevatedButton(
                             onPressed: () async {

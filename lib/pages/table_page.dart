@@ -68,6 +68,7 @@ class _TablePageState extends State<TablePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor:  darkColorScheme.primary,
         title: Text(
           AppLocalizations.of(context)!.tableReportPageTitle,
           style: const TextStyle(

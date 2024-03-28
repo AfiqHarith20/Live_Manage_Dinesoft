@@ -16,6 +16,16 @@
 	<string>live_manage_dinesoft</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	<key>CFBundleIcons</key>
+	<dict>
+    	<key>CFBundlePrimaryIcon</key>
+    		<dict>
+        		<key>CFBundleIconFiles</key>
+        	<array>
+            	<string>ic_launcher</string>
+        	</array>
+    	</dict>
+	</dict>
 	<key>CFBundleShortVersionString</key>
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
