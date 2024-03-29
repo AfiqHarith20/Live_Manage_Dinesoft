@@ -12,7 +12,7 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
-  late String _appVersion;
+  late String _appVersion = ''; // Initialize with an empty string
 
   @override
   void initState() {
@@ -26,6 +26,7 @@ class _SettingPageState extends State<SettingPage> {
       _appVersion = packageInfo.version;
     });
   }
+
   Future<void> logout() async {
     // Clear user's tokens here
     // Navigate back to the login page
@@ -55,40 +56,6 @@ class _SettingPageState extends State<SettingPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            // Container(
-            //   decoration: const BoxDecoration(
-            //     border: Border(
-            //       top: BorderSide(
-            //         color: Colors.black,
-            //         width: 1.0,
-            //       ),
-            //       bottom: BorderSide(
-            //         color: Colors.black,
-            //         width: 1.0,
-            //       ),
-            //     ),
-            //   ),
-            //   child: ListTile(
-            //     onTap: () {
-            //       // Navigate to the authentication page
-            //       Navigator.push(
-            //         context,
-            //         MaterialPageRoute(
-            //           builder: (context) => const AuthenticationPage(),
-            //         ),
-            //       );
-            //     },
-            //     title: Text(
-            //       AppLocalizations.of(context)?.authKeyTxt ??
-            //           "Authentication Key",
-            //       style: AppTextStyle.textmedium.copyWith(
-            //         color: Colors.black,
-            //       ),
-            //     ),
-            //     trailing: const Icon(Icons.arrow_forward_ios),
-            //   ),
-            // ),
-            // Add more Container widgets with ListTile for additional settings
             Container(
               decoration: const BoxDecoration(
                 border: Border(
@@ -201,52 +168,24 @@ class _SettingPageState extends State<SettingPage> {
                 ),
               ),
             ),
-             // Version section
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 110, vertical: 10),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'App Version: $_appVersion',
-                        style: const TextStyle(
-                          color: Colors.black26,
-                          fontSize: 16,
-                        ),
+            // Version section
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 110, vertical: 10),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'App Version: $_appVersion',
+                      style: const TextStyle(
+                        color: Colors.black26,
+                        fontSize: 16,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            // Add more Container widgets with ListTile for additional settings
-            // Container(
-            //   decoration: const BoxDecoration(
-            //     border: Border(
-            //       bottom: BorderSide(
-            //         color: Colors.black,
-            //         width: 1.0,
-            //       ),
-            //     ),
-            //   ),
-            //   child: ListTile(
-            //     onTap: () {
-            //       // Navigate to the authentication page
-            //       Navigator.push(
-            //         context,
-            //         MaterialPageRoute(
-            //           builder: (context) => const AuthenticationPage(),
-            //         ),
-            //       );
-            //     },
-            //     title: Text(
-            //       "Language",
-            //       style: AppTextStyle.textmedium.copyWith(
-            //         color: Colors.black,
-            //       ),
-            //     ),
-            //     trailing: const Icon(Icons.arrow_forward_ios),
-            //   ),
-            // ),
+            ),
           ],
         ),
       ),

@@ -118,3 +118,9 @@ Future<List<Map<String, dynamic>>> fetchReportData(
     throw Exception('Failed to fetch sales');
   }
 }
+
+//Sales Detail Enquiry
+//https://ewapi.azurewebsites.net/api/shop/order?txSalesHeaderId=2
+
+//Payment Details Enquiry
+//https://ewapi.azurewebsites.net/api/menu/brand/payment?date=2024-01-15&shopCode=DMS
