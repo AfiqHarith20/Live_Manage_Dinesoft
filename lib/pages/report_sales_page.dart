@@ -298,7 +298,7 @@ class ReportSalesState extends State<ReportSales> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Date: ${DateFormat('yyyy-MM-dd').format(selectedDate)}',
+                    '${AppLocalizations.of(context)!.date}: ${DateFormat('yyyy-MM-dd').format(selectedDate)}',
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,

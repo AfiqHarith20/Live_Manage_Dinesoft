@@ -1,5 +1,124 @@
 {
     "@@locale": "zh",
     "hello": "你好",
-    "welcome": "欢迎"
+    "welcome": "欢迎",
+    "appTitle": "颤动 i18n",
+    "@appTitle": {
+        "description": "主要申请标题"
+    },
+    "createdBy": "{company} 的教程",
+    "@createdBy": {
+        "description": "版权留言",
+        "placeholders": {
+            "company": {
+                "type": "细绳",
+                "example": "演示"
+            }
+        }
+    },
+    "currentLocale": "当前区域设置是 {locale}",
+    "currentDate": "Today is {date}",
+    "@currentDate": {
+        "description": "本地化当前日期",
+        "placeholders": {
+            "date": {
+                "type": "DateTime",
+                "format": "yMMMMEEEEd"
+            }
+        }
+    },
+    "currencyDemo": "这是演示价格：{value}",
+    "@currencyDemo": {
+      "description": "展示如何本地化货币的演示",
+      "placeholders": {
+        "value": {
+          "type": "int",
+          "format": "currency",
+          "optionalParameters": {
+            "decimalDigits": 2
+          }
+        }
+      }
+    },
+    "pressButton": "按下面的按钮",
+    "buttonPressed": "{count,plural,=0{尚未按下} =1{按下了 1 次} other{按下了 {count} 次}}",
+    "@buttonPressed": {
+      "description": "显示按钮被按下的次数（复数）",
+      "placeholders": {
+        "count": {
+          "type": "num",
+          "format": "compact"
+        }
+      }
+    },
+
+    "selectLaguageTitle": "请选择一种语言",
+    
+    "homePageTitle": "一般的",
+    "authPageTitle": "验证",
+    "aboutPageTitle": "关于",
+    "aboutPageContent": "关于",
+    "contactPageTitle": "联系我们",
+    "contactPageContent": "联系我们",
+    "settingPageTitle": "环境",
+    "settingPageContent": "环境",
+    "salesReportPageTitle": "销售报告",
+    "salesReportPageContent": "销售报告",
+    "tableReportPageTitle": "表格报告",
+    "tableReportPageContent": "表格报告",
+
+    "welcomePageTitle": "欢迎回来",
+    "welcomePageSubTitle": "在您的帐户中输入个人详细信息",
+    "welcomePageSignInBtn": "登入",
+    "welcomePageSignUpBtn": "报名",
+    "logoutBtn": "登出",
+    
+    
+    "hintAccountNameLabel": "输入帐户名称",
+    "hintPasswordLabel": "输入密码",
+    "rememberMe": "记住账号",
+    "resetPassword": "重设密码？",
+    "clickHere": "点击这里",
+    "signWithIconDesc": "注册",
+    "requestNewAccount": "没有帐户？",
+    "registerNewAccount": "在这里注册",
+    "messageSnackBar1": "处理数据",
+    "messageSnackBar2": "请同意处理个人数据",
+    "messageSnackBar3": "请输入用户名和密码",
+    
+    "selectShop": "选择商店",
+    "selectDate": "选择日期",
+    "savebtn": "节省",
+    "authKeyTxt": "验证密钥",
+    "date": "日期",
+
+    "grossSales": "总销售额",
+    "netSales": "净销售额",
+    "count": "命令",
+    "listSales": "销售清单",
+    "workingPeriod": "工作期限",
+    "category": "类别",
+    "qty": "数量",
+    "price": "价格",
+    "totalQty": "总数（量",
+    "totalPrice": "总价",
+    "total": "全部的",
+
+    "paymentListType": "付款清单类型",
+    "cnt": "数数",
+    "totalAmount": "总金额",
+
+    "msgNoPayment": "无法付款",
+    "noDataAvailable": "无可用数据",
+    "noSalesAvailable": "没有可用的销售",
+    "noChartAvailable": "没有可用图表",
+    
+    "table": "桌子",
+    "noTableAvailable": "没有空位",
+    "previousDay": "前一天",
+    "today": "今天",
+    "chngCurrency": "更改货币"
+
   }
+
+  
