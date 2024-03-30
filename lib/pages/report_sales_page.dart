@@ -326,15 +326,20 @@ class ReportSalesState extends State<ReportSales> {
                             ),
                           ),
                         );
-                      } else if (snapshot.hasError) {
-                        return Text(
-                          'Error: ${snapshot.error}',
-                          style: const TextStyle(
-                            color: Colors.red,
-                            fontSize: 16,
-                          ),
-                        );
-                      } else if (!snapshot.hasData ||
+                      } 
+                      else if (snapshot.hasError) {
+      return Center(
+        child: Text(
+          AppLocalizations.of(context)?.noSalesAvailable ??
+              "No Sales Available",
+          style: const TextStyle(
+            color: Colors.grey,
+            fontSize: 16,
+          ),
+        ),
+      );
+    } 
+                      else if (!snapshot.hasData ||
                           (snapshot.data as List).isEmpty) {
                         return Center(
                           child: Text(

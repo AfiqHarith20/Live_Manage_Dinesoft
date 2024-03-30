@@ -108,7 +108,9 @@ class _TablePageState extends State<TablePage> {
                     ),
                   );
                 } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
+                  return Center(
+                    child: Text(AppLocalizations.of(context)!.noTableAvailable),
+                  );
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return Center(
                     child: Text(AppLocalizations.of(context)!.noTableAvailable),
